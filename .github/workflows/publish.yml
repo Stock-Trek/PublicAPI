@@ -19,11 +19,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    env:
-      # Initialize with empty strings so VS Code knows they exist
-      AUTHORS: ""
-      VERSION: ""
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,17 +31,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Find publish metadata
-        run: |
-          python - <<EOF
-          import json, subprocess, os
-          metadata = json.loads(subprocess.check_output(["cargo", "metadata", "--format-version=1", "--no-deps"]))
-          package_data = metadata["packages"][0]
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write(f"AUTHORS={', '.join(package_data['authors'])}\n")
-            f.write(f"VERSION={package_data['version']}\n")
-          EOF
-
       - name: Build wheels
         uses: PyO3/maturin-action@v1.50.1
         with:
@@ -56,8 +40,6 @@ jobs:
           args: >
             --release
             --locked
-            --authors "${{ env.AUTHORS }}"
-            --version "${{ env.VERSION }}"
             --compatibility pypi
 
       # - name: Upload artifacts

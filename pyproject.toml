@@ -4,8 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "stock_trek"
-version = "0.0.0" # placeholder
 description = "Stock Trek time-series analysis python bindings"
-authors = ["stock-trek.com <stock-trek@proton.me>"]
+authors = [{ name = "stock-trek.com", email = "stock-trek@proton.me" }]
 readme = "README.md"
 requires-python = ">=3.8"
