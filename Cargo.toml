@@ -1,0 +1,14 @@
+[package]
+name = "stock-trek"
+version = "0.1.0"
+description = "stock-trek time-series analysis rust bindings"
+authors = ["stock-trek.com <stock-trek@proton.me>"]
+readme = "README.md"
+edition = "2021"
+
+[lib]
+name = "stock-trek"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }

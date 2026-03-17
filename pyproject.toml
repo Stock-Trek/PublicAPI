@@ -1,0 +1,11 @@
+[build-system]
+requires = ["maturin>=1.0,<2"]
+build-backend = "maturin"
+
+[project]
+name = "stock-trek"
+version = "0.0.0" # placeholder
+description = "stock-trek time-series analysis python bindings"
+authors = ["stock-trek.com <stock-trek@proton.me>"]
+readme = "README.md"
+requires-python = ">=3.8"
