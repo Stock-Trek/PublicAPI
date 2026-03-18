@@ -1,3 +1,3 @@
-pub mod stats;
+pub mod data;
 #[cfg(feature = "python")]
 pub mod bindings;

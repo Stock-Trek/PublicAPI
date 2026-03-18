@@ -13,6 +13,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 pyo3 = { version = "0.28.2", optional = true, features = ["extension-module"] }
+rust_decimal = { version = "1.40" }
 
 [features]
 python = ["dep:pyo3"]
