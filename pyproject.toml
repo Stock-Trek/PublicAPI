@@ -10,7 +10,16 @@ readme = "README.md"
 requires-python = ">=3.8"
 
 [tool.maturin]
-module-name = "stock_trek"
+module-name = "stock_trek._stock_trek"
 features = ["python"]
 compatibility = "manylinux_2_28"
 python-interpreter = "python3.12"
+python-source = "python"
+
+include = [
+  { path = "python/stock_trek/py.typed", format = "sdist" },
+  { path = "python/stock_trek/*.py", format = "sdist" },
+  { path = "python/stock_trek/*.pyi", format = "sdist" },
+  { path = "python/stock_trek/data/*.py", format = "sdist" },
+  { path = "python/stock_trek/data/*.pyi", format = "sdist" },
+]
