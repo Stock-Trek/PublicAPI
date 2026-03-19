@@ -1,5 +1,5 @@
 [package]
-name = "stock_trek"
+name = "stock-trek"
 version = "0.1.0"
 description = "Stock Trek time-series analysis rust bindings"
 authors = ["stock-trek.com <stock-trek@proton.me>"]
