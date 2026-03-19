@@ -9,13 +9,9 @@ repository = "https://github.com/Stock-Trek/PublicAPI"
 readme = "README.md"
 categories = ["finance", "mathematics"]
 keywords = [
-  "crypto",
-  "backtesting",
   "indicators",
   "ohlcv",
-  "quant",
   "statistics",
-  "trading",
   "timeseries",
 ]
 
