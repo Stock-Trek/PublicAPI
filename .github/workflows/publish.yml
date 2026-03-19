@@ -65,7 +65,7 @@ jobs:
           merge-multiple: true
       - name: Publish to PyPI
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          MATURIN_PYPI_TOKEN: ${{ secrets.MATURIN_PYPI_TOKEN }}
         run: |
           pip install maturin
           maturin publish --no-sdist --skip-existing \
