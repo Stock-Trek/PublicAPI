@@ -57,4 +57,4 @@ jobs:
       # - twine upload target/wheels/*.whl
       - name: Publish
         run: |
-          cargo publish --dry-run
+          cargo publish
