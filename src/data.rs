@@ -67,3 +67,9 @@ impl TimeSeries {
         self.data.is_empty()
     }
 }
+
+impl Default for TimeSeries {
+    fn default() -> Self {
+        Self::new()
+    }
+}

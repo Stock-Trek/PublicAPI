@@ -1,11 +1,23 @@
 [package]
 name = "stock-trek"
 version = "0.1.0"
-description = "Stock Trek time-series analysis rust bindings"
+edition = "2021"
+description = "Stock Trek time-series analysis"
 authors = ["stock-trek.com <stock-trek@proton.me>"]
 license = "MIT"
+repository = "https://github.com/Stock-Trek/PublicAPI"
 readme = "README.md"
-edition = "2021"
+categories = ["finance", "mathematics"]
+keywords = [
+  "crypto",
+  "backtesting",
+  "indicators",
+  "ohlcv",
+  "quant",
+  "statistics",
+  "trading",
+  "timeseries",
+]
 
 [lib]
 name = "stock_trek"
