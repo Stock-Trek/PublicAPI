@@ -10,5 +10,5 @@ readme = "README.md"
 requires-python = ">=3.8"
 
 [tool.maturin]
-module-name = "stock-trek"
+module-name = "stock_trek"
 features = ["python"]
