@@ -31,6 +31,12 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Sanity Checks
+        run: |
+          cargo fmt
+          cargo clippy
+          cargo test
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1.50.1
         with:
@@ -49,4 +55,6 @@ jobs:
       #     path: target/wheels/
 
       # - twine upload target/wheels/*.whl
-      # - cargo publish
+      - name: Publish
+        run: |
+          cargo publish --dry-run
