@@ -3,12 +3,12 @@ requires = ["maturin>=1,<2"]
 build-backend = "maturin"
 
 [project]
-name = "stock_trek"
+name = "stock-trek"
 description = "Stock Trek time-series analysis python bindings"
 authors = [{ name = "stock-trek.com", email = "stock-trek@proton.me" }]
 readme = "README.md"
 requires-python = ">=3.8"
 
 [tool.maturin]
-module-name = "stock_trek"
+module-name = "stock-trek"
 features = ["python"]
