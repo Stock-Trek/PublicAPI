@@ -12,3 +12,5 @@ requires-python = ">=3.8"
 [tool.maturin]
 module-name = "stock_trek"
 features = ["python"]
+compatibility = "manylinux_2_28"
+python-interpreter = "python3.12"

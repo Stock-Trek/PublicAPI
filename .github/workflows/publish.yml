@@ -13,10 +13,20 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             manylinux: 2014
+            compatibility: manylinux_2_28
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            manylinux: 2014
+            compatibility: manylinux_2_28
           - target: x86_64-apple-darwin
             os: macos-latest
+            compatibility: universal2
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            compatibility: universal2
           - target: x86_64-pc-windows-msvc
             os: windows-latest
+            compatibility: pypi
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -26,7 +36,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Build wheels
         uses: PyO3/maturin-action@v1.50.1
         with:
@@ -36,7 +46,7 @@ jobs:
           args: >
             --release
             --locked
-            --compatibility pypi
+            --compatibility ${{ matrix.compatibility || 'pypi' }}
             --out dist
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -71,4 +81,5 @@ jobs:
           maturin upload \
             --skip-existing \
             --repository pypi \
+            --username __token__ \
             dist/*.whl
