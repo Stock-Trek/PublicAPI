@@ -56,5 +56,7 @@ jobs:
 
       # - twine upload target/wheels/*.whl
       - name: Publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
           cargo publish
