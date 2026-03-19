@@ -68,7 +68,8 @@ jobs:
           MATURIN_PYPI_TOKEN: ${{ secrets.MATURIN_PYPI_TOKEN }}
         run: |
           pip install maturin
-          maturin publish --no-sdist --skip-existing \
+          maturin publish \
+            --no-sdist \
+            --skip-existing \
             -r pypi \
-            --token "$MATURIN_PYPI_TOKEN" \
             dist/*.whl
