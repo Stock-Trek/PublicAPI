@@ -146,10 +146,9 @@ impl TimeSeries {
 }
 
 #[cfg(feature = "python")]
-pub fn add_submodule(py: Python, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
-    let data = PyModule::new(py, "data")?;
-    data.add_class::<Datum>()?;
-    data.add_class::<TimeSeries>()?;
-    parent_module.add_submodule(&data)?;
-    Ok(())
+pub fn create_module(py: Python) -> PyResult<Bound<PyModule>> {
+    let module = PyModule::new(py, "data")?;
+    module.add_class::<Datum>()?;
+    module.add_class::<TimeSeries>()?;
+    Ok(module)
 }

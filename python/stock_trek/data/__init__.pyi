@@ -1,8 +1,5 @@
 """Data structures for time-series analysis."""
 
-from .._stock_trek import Datum, TimeSeries
+from .._stock_trek.data import Datum, TimeSeries
 
-__all__ = [
-    "Datum",
-    "TimeSeries",
-]
+__all__ = ["Datum", "TimeSeries"]

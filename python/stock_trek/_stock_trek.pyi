@@ -64,5 +64,3 @@ class TimeSeries:
     def is_empty(self) -> bool:
         """Return True if the series contains no data points."""
         ...
-
-__version__: str
