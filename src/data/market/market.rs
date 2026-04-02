@@ -1,0 +1,55 @@
+use crate::data::market::{
+    market_aligned_window::MarketAlignedWindow, market_order_book::MarketOrderBook,
+    market_rolling_window::MarketRollingWindow, market_ticks::MarketTicks,
+    raw_market_dto::RawMarketDto,
+};
+use rust_decimal::Decimal;
+
+#[derive(Debug, Clone)]
+pub struct Market {
+    base_increment: Decimal,
+    quote_increment: Decimal,
+    ticks: MarketTicks,
+    rolling: MarketRollingWindow,
+    aligned: MarketAlignedWindow,
+    order_book: MarketOrderBook,
+}
+
+impl Market {
+    pub fn new(raw_market: RawMarketDto) -> Self {
+        let RawMarketDto {
+            base_increment,
+            quote_increment,
+            ticks,
+            rolling,
+            aligned,
+            order_book,
+        } = raw_market;
+        Self {
+            base_increment,
+            quote_increment,
+            ticks: MarketTicks::new(ticks),
+            rolling: MarketRollingWindow::new(rolling),
+            aligned: MarketAlignedWindow::new(aligned),
+            order_book: MarketOrderBook::new(order_book),
+        }
+    }
+    pub fn base_increment(&self) -> Decimal {
+        self.base_increment
+    }
+    pub fn quote_increment(&self) -> Decimal {
+        self.quote_increment
+    }
+    pub fn ticks(&self) -> &MarketTicks {
+        &self.ticks
+    }
+    pub fn rolling(&self) -> &MarketRollingWindow {
+        &self.rolling
+    }
+    pub fn aligned(&self) -> &MarketAlignedWindow {
+        &self.aligned
+    }
+    pub fn order_book(&self) -> &MarketOrderBook {
+        &self.order_book
+    }
+}
