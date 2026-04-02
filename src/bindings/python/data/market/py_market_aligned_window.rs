@@ -5,7 +5,7 @@ use {
             convert::vec_to_list, py_market_window::PyAlignedWindow,
             py_raw_market_candle::PyRawMarketCandle,
         },
-        data::market::market_aligned_window::MarketAlignedWindow,
+        data::market_data::market_aligned_window::MarketAlignedWindow,
     },
     pyo3::{
         prelude::*,

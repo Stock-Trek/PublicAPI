@@ -2,7 +2,7 @@
 use {
     crate::{
         bindings::python::data::market::py_raw_market_tick::PyRawMarketTick,
-        data::market::market_ticks::MarketTicks,
+        data::market_data::market_ticks::MarketTicks,
     },
     pyo3::{prelude::*, pyclass, pymethods, types::PyList, Python},
 };

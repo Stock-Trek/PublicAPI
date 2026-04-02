@@ -1,4 +1,4 @@
-use crate::validate::{
+use crate::validation::{
     node::RustNode,
     validator::{ValidationError, Validator},
 };
@@ -155,7 +155,7 @@ pub fn validate(code: &str) -> Result<(), ValidationError> {
         .allow_path_prefix("std::collections::")
         .allow_path_prefix("stock_trek::");
 
-    return validator.validate(code);
+    validator.validate(code)
 
     // .allow_node(RustNode::Abi)
     // .allow_node(RustNode::AttrStyle)

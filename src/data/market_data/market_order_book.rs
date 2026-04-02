@@ -1,4 +1,6 @@
-use crate::data::market::{extract::vec_quote_to_f64, raw_market_order_book::RawMarketOrderBook};
+use crate::data::market_data::{
+    extract::vec_quote_to_f64, raw_market_order_book::RawMarketOrderBook,
+};
 use std::sync::OnceLock;
 
 #[derive(Debug, Clone)]
@@ -20,13 +22,11 @@ impl MarketOrderBook {
         &self.exact
     }
     pub fn bids(&self) -> &Vec<(f64, f64)> {
-        &self
-            .bids
+        self.bids
             .get_or_init(|| vec_quote_to_f64(self.exact.bids()))
     }
     pub fn asks(&self) -> &Vec<(f64, f64)> {
-        &self
-            .asks
+        self.asks
             .get_or_init(|| vec_quote_to_f64(self.exact.asks()))
     }
 }

@@ -4,7 +4,7 @@ use {
         bindings::python::data::market::{
             convert::vec_to_list, py_raw_market_order_book::PyRawMarketOrderBook,
         },
-        data::market::market_order_book::MarketOrderBook,
+        data::market_data::market_order_book::MarketOrderBook,
     },
     pyo3::{prelude::*, pyclass, pymethods, types::PyList, Python},
 };

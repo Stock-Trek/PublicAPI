@@ -1,4 +1,4 @@
-use crate::data::{market::raw_market_ohlcv::RawMarketOhlcv, timestamp::TimestampMillis};
+use crate::data::{market_data::raw_market_ohlcv::RawMarketOhlcv, timestamp::TimestampMillis};
 
 #[derive(Debug, Clone)]
 pub struct RawMarketCandle {

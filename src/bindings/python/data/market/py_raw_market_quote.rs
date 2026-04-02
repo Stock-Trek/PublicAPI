@@ -3,7 +3,7 @@ use pyo3::{prelude::*, pyclass, pymethods};
 
 #[cfg(feature = "python")]
 use crate::bindings::python::data::market::convert::rust_decimal_to_py;
-use crate::data::market::raw_market_quote::RawMarketQuote;
+use crate::data::market_data::raw_market_quote::RawMarketQuote;
 
 #[cfg(feature = "python")]
 #[pyclass(name = "RawMarketQuote")]

@@ -4,4 +4,4 @@ pub mod data;
 pub mod errors;
 pub mod schemas;
 pub mod statistics;
-pub mod validate;
+pub mod validation;

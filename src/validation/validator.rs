@@ -1,4 +1,4 @@
-use crate::validate::node::RustNode;
+use crate::validation::node::RustNode;
 use quote::ToTokens;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 use syn::{
@@ -88,13 +88,13 @@ impl Validator {
                 if invalid_node_locations.is_empty() && invalid_path_locations.is_empty() {
                     return Ok(());
                 }
-                return Err(ValidationError::Invalid(InvalidError {
+                Err(ValidationError::Invalid(InvalidError {
                     invalid_node_locations,
                     invalid_path_locations,
-                }));
+                }))
             }
-            Err(e) => return Err(ValidationError::Parse(e)),
-        };
+            Err(e) => Err(ValidationError::Parse(e)),
+        }
     }
 
     fn check_node(&mut self, node: RustNode, span: impl Spanned) {
@@ -191,6 +191,12 @@ impl Validator {
                 paths.insert(full);
             }
         }
+    }
+}
+
+impl Default for Validator {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

@@ -1,7 +1,7 @@
 use std::sync::OnceLock;
 
 use crate::data::{
-    market::{
+    market_data::{
         extract::dec_to_f64, raw_market_quote::RawMarketQuote, raw_market_tick::RawMarketTick,
     },
     timestamp::TimestampMillis,
@@ -28,13 +28,13 @@ impl MarketTicks {
         &self.exact
     }
     pub fn bids(&self) -> &Vec<(TimestampMillis, f64, f64)> {
-        &self.bids.get_or_init(|| self.values(|tick| tick.bid()))
+        self.bids.get_or_init(|| self.values(|tick| tick.bid()))
     }
     pub fn asks(&self) -> &Vec<(TimestampMillis, f64, f64)> {
-        &self.asks.get_or_init(|| self.values(|tick| tick.ask()))
+        self.asks.get_or_init(|| self.values(|tick| tick.ask()))
     }
     pub fn lasts(&self) -> &Vec<(TimestampMillis, f64, f64)> {
-        &self.lasts.get_or_init(|| self.values(|tick| tick.last()))
+        self.lasts.get_or_init(|| self.values(|tick| tick.last()))
     }
 
     fn values(

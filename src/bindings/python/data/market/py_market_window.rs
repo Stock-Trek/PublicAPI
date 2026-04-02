@@ -1,6 +1,6 @@
 #[cfg(feature = "python")]
 use {
-    crate::data::market::market_window::{AlignedWindow, RollingWindow},
+    crate::data::market_data::market_window::{AlignedWindow, RollingWindow},
     pyo3::{pyclass, pymethods},
 };
 

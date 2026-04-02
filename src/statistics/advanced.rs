@@ -63,7 +63,8 @@ pub fn sample_entropy(
     if count_m == 0.0 || count_m1 == 0.0 {
         return Err(StockTrekError::Stats(StatsError::DivisionByZero));
     }
-    Ok((-(count_m1 / count_m) as f64).ln())
+    let div: f64 = -(count_m1 / count_m);
+    Ok(div.ln())
 }
 
 pub fn hurst_exponent(time_series_values: &[f64]) -> Result<f64, StockTrekError> {

@@ -1,4 +1,4 @@
-use crate::data::market::raw_market_quote::RawMarketQuote;
+use crate::data::market_data::raw_market_quote::RawMarketQuote;
 
 #[derive(Debug, Clone)]
 pub struct RawMarketOrderBook {

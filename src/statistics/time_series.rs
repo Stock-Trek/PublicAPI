@@ -38,10 +38,9 @@ pub fn partial_autocorrelation(values: &[f64], max_lag: usize) -> Result<Vec<f64
         return Err(StockTrekError::Stats(StatsError::InvalidLag));
     }
     // Precompute ACF
-    let mut acf = vec![0.0; max_lag + 1];
-    for k in 0..=max_lag {
-        acf[k] = autocorrelation(values, k)?;
-    }
+    let acf = (0..=max_lag)
+        .map(|k| autocorrelation(values, k))
+        .collect::<Result<Vec<f64>, _>>()?;
     // Durbin–Levinson recursion
     let mut pacf = vec![0.0; max_lag + 1];
     let mut phi = vec![vec![0.0; max_lag + 1]; max_lag + 1];

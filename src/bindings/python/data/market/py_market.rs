@@ -6,7 +6,7 @@ use {
             py_market_order_book::PyMarketOrderBook,
             py_market_rolling_window::PyMarketRollingWindow, py_market_ticks::PyMarketTicks,
         },
-        data::market::market::Market,
+        data::market_data::market::Market,
     },
     pyo3::{prelude::*, pyclass, pymethods},
 };
