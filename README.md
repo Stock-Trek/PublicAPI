@@ -52,7 +52,7 @@ cargo install stock-trek
 then run the verify command with
 
 ```sh
-cargo stock-trek verify --file ./path/to/my/code/file.rs
+stock-trek verify --file ./path/to/my/code/file.rs
 ```
 
 ## Roadmap
