@@ -172,8 +172,18 @@ fn create_syntax_verifier() -> SyntaxVerifier {
         .allow::<rust_node::VisRestricted>()
         .allow::<rust_node::Visibility>()
         .allow::<rust_node::WhereClause>()
-        .allow::<rust_node::WherePredicate>()
-        //
+        .allow::<rust_node::WherePredicate>();
+    //
+
+    fn verify_node_path<N: syn::spanned::Spanned>(node: &N, path: &str) -> SyntaxPolicy {
+        if allowed_by_prefix(path) || !path.contains("::") {
+            SyntaxPolicy::Allowed
+        } else {
+            blocked_node_policy(node)
+        }
+    }
+
+    verifiers
         .scope::<rust_node::Attribute>(|node| {
             let is_allowed = match &node.meta {
                 syn::Meta::Path(path) => ALLOWED_ATTRIBUTE_PATH == path_string(path),
@@ -187,23 +197,11 @@ fn create_syntax_verifier() -> SyntaxVerifier {
         })
         .scope::<rust_node::ExprPath>(|node| {
             let expr_path_str = &path_string(&node.path);
-            if allowed_by_prefix(expr_path_str) {
-                SyntaxPolicy::Allowed
-            } else if !expr_path_str.contains("::") {
-                SyntaxPolicy::Allowed
-            } else {
-                blocked_node_policy(node)
-            }
+            verify_node_path(node, expr_path_str)
         })
         .scope::<rust_node::Path>(|node| {
             let path_str = &path_string(node);
-            if allowed_by_prefix(path_str) {
-                SyntaxPolicy::Allowed
-            } else if !path_str.contains("::") {
-                SyntaxPolicy::Allowed
-            } else {
-                blocked_node_policy(node)
-            }
+            verify_node_path(node, path_str)
         })
         .scope::<rust_node::ItemUse>(|node| {
             let locations: Vec<NodeLocation> = collate(&node.tree)
@@ -216,8 +214,9 @@ fn create_syntax_verifier() -> SyntaxVerifier {
             } else {
                 SyntaxPolicy::Blocked(BlockedLocations { locations })
             }
-        })
-        //
+        });
+    //
+    verifiers
         .block::<rust_node::Abi>()
         .block::<rust_node::BareFnArg>()
         .block::<rust_node::BareVariadic>()
