@@ -9,7 +9,6 @@ use stock_trek::verification::verify::verify;
     arg_required_else_help = true,
     about = "Stock-Trek SDK for writing code to use on https://stock-trek.com"
 )]
-
 struct Cli {
     #[command(subcommand)]
     command: Commands,

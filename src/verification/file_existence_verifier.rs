@@ -16,3 +16,9 @@ impl FileExistenceVerifier {
         }
     }
 }
+
+impl Default for FileExistenceVerifier {
+    fn default() -> Self {
+        FileExistenceVerifier::new()
+    }
+}
