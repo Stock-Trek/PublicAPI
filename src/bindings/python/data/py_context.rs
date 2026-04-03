@@ -8,7 +8,8 @@ use {
 };
 
 #[cfg(feature = "python")]
-#[pyclass(name = "StockTrekContext")]
+#[pyclass(name = "StockTrekContext", from_py_object)]
+#[derive(Clone)]
 pub struct PyStockTrekContext {
     inner: StockTrekContext,
 }

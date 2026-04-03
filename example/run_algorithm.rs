@@ -1,4 +1,5 @@
 use crate::{
+    algorithm::StockTrekAlgorithm,
     data::context::StockTrekContext,
     schemas::signal::{
         ConfidencePercentageChanges, HorizonConfidencesByMillis, Instrument, MarketContext,
@@ -9,19 +10,14 @@ use crate::{
     },
 };
 
-pub struct Algorithm {}
+pub struct MyAlgo {}
 
-impl Default for Algorithm {
-    fn default() -> Self {
-        Self {}
-    }
-}
-
-impl Algorithm {
-    pub fn create_signal(&self, _context: StockTrekContext) -> StockTrekSignal {
+#[traitreg::register]
+impl StockTrekAlgorithm for MyAlgo {
+    fn create_signal(&self, _context: StockTrekContext) -> StockTrekSignal {
         StockTrekSignal {
             instrument: Instrument {
-                product: crate::generated::signal::InstrumentProduct::Spot,
+                product: crate::schemas::signal::InstrumentProduct::Spot,
                 base: "BTC".into(),
                 quote: "USDT".into(),
             },

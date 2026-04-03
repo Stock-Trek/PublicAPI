@@ -1,12 +1,23 @@
-use crate::validation::{
-    node::RustNode,
-    validator::{ValidationError, Validator},
+use crate::verification::{
+    file_existence_verifier::FileExistenceVerifier, node::RustNode,
+    syntax_verifier::SyntaxVerifier, verification_error::VerificationError,
 };
 
-pub fn validate(code: &str) -> Result<(), ValidationError> {
-    let mut validator = Validator::new();
+pub fn verify(path: String) -> Result<(), VerificationError> {
+    let file_existence_verifier = FileExistenceVerifier::new();
+    match file_existence_verifier.verify(path) {
+        Err(e) => Err(e),
+        Ok(contents) => {
+            let mut syntax_verifier = create_syntax_verifier();
+            syntax_verifier.verify(&contents)
+        }
+    }
+}
 
-    validator
+fn create_syntax_verifier() -> SyntaxVerifier {
+    let mut syntax_verifier = SyntaxVerifier::new();
+
+    syntax_verifier
         .allow_node(RustNode::AngleBracketedGenericArguments)
         .allow_node(RustNode::Arm)
         .allow_node(RustNode::AssocConst)
@@ -155,7 +166,7 @@ pub fn validate(code: &str) -> Result<(), ValidationError> {
         .allow_path_prefix("std::collections::")
         .allow_path_prefix("stock_trek::");
 
-    validator.validate(code)
+    syntax_verifier
 
     // .allow_node(RustNode::Abi)
     // .allow_node(RustNode::AttrStyle)

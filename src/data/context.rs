@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::data::{market_data::market::Market, trading_pair::TradingPair};
 
+#[derive(Clone)]
 pub struct StockTrekContext {
     markets: HashMap<TradingPair, Market>,
 }

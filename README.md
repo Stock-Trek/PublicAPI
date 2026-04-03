@@ -4,18 +4,12 @@ A lightweight, composable time series and statistical toolkit designed for runni
 
 ## Overview
 
-stock-trek provides core abstractions and utilities for working with price data, including:
+stock-trek provides core abstractions and utilities for working with market data, including:
 
-- Strongly-typed Datum representation
-- Efficient TimeSeries container
+- Order books
+- Aligned/Rolling windows
+- Ticks
 - Statistical and analytical functions
-- Functional-style transformations and mappings
-
-It is built with a focus on:
-
-- Performance (zero-cost abstractions where possible)
-- Ergonomics (clean, composable APIs)
-- Extensibility (designed to grow into simulation/backtesting)
 
 ## Installation
 
@@ -23,7 +17,7 @@ Add to your Cargo.toml:
 
 ```rs
 [dependencies]
-stock-trek = "0.1.0"
+stock-trek = "0.2.1"
 ```
 
 ## Python Bindings
@@ -32,13 +26,41 @@ stock-trek also provides Python bindings which can be installed via
 
 `pip install stock-trek`
 
+## Usage
+
+Implement the ```StockTrekAlgorithm``` trait and register it with the annotation `#[traitreg::register]`:
+
+```rs
+use stock_trek::StockTrekAlgorithm;
+
+pub struct MyAlgo {}
+
+#[traitreg::register]
+impl StockTrekAlgorithm for MyAlgo {
+    fn create_signal(&self, context: StockTrekContext) -> StockTrekSignal {
+      ...
+    }
+}
+```
+
+Stock-Trek verifies code before running it and disallows certain syntax elements. To verify code locally, install it with
+
+```sh
+cargo install stock-trek
+```
+
+then run the verify command with
+
+```sh
+cargo stock-trek verify --file ./path/to/my/code/file.rs
+```
+
 ## Roadmap
 
 Planned features include:
 
 - Technical indicators (EMA, RSI, MACD, etc.)
 - Backtesting and simulation utilities
-- OHLCV-native data structures
 
 ## Status
 

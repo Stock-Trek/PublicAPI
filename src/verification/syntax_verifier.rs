@@ -1,6 +1,14 @@
-use crate::validation::node::RustNode;
+use crate::verification::{
+    node::RustNode,
+    verification_error::{
+        VerificationError, PARSE_ERROR, UNSUPPORTED_PATH_ERROR, UNSUPPORTED_SYNTAX_ERROR,
+    },
+};
 use quote::ToTokens;
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::{
+    collections::{BTreeMap, BTreeSet, HashSet},
+    fmt::Display,
+};
 use syn::{
     parse_file,
     spanned::Spanned,
@@ -20,28 +28,18 @@ impl std::fmt::Display for Location {
     }
 }
 
-pub enum ValidationError {
-    Parse(syn::Error),
-    Invalid(InvalidError),
-}
-
-pub struct InvalidError {
-    pub invalid_node_locations: BTreeMap<RustNode, BTreeSet<Location>>,
-    pub invalid_path_locations: BTreeMap<String, BTreeSet<Location>>,
-}
-
-pub struct Validator {
+pub struct SyntaxVerifier {
     whitelist_nodes: HashSet<RustNode>,
     whitelist_path_prefix: HashSet<String>,
     whitelist_path_prefix_crate: bool,
     whitelist_path_prefix_super: bool,
     whitelist_path_prefix_self: bool,
     whitelist_path_prefix_simple: bool,
-    invalid_node_locations: BTreeMap<RustNode, BTreeSet<Location>>,
-    invalid_path_locations: BTreeMap<String, BTreeSet<Location>>,
+    unsupported_node_locations: BTreeMap<RustNode, BTreeSet<Location>>,
+    unsupported_path_locations: BTreeMap<String, BTreeSet<Location>>,
 }
 
-impl Validator {
+impl SyntaxVerifier {
     pub fn new() -> Self {
         Self {
             whitelist_nodes: HashSet::new(),
@@ -50,8 +48,8 @@ impl Validator {
             whitelist_path_prefix_self: false,
             whitelist_path_prefix_super: false,
             whitelist_path_prefix_simple: false,
-            invalid_node_locations: BTreeMap::new(),
-            invalid_path_locations: BTreeMap::new(),
+            unsupported_node_locations: BTreeMap::new(),
+            unsupported_path_locations: BTreeMap::new(),
         }
     }
     pub fn allow_node(&mut self, syntax: RustNode) -> &mut Self {
@@ -78,25 +76,55 @@ impl Validator {
         self.whitelist_path_prefix_simple = true;
         self
     }
-    pub fn validate(&mut self, code: &str) -> Result<(), ValidationError> {
+    pub fn verify(&mut self, code: &str) -> Result<(), VerificationError> {
         match parse_file(code) {
+            Err(e) => Err(VerificationError {
+                exit_code: PARSE_ERROR,
+                errors: vec![e.to_string()],
+            }),
             Ok(ast) => {
-                self.invalid_node_locations.clear();
+                self.unsupported_node_locations.clear();
+                self.unsupported_path_locations.clear();
                 self.visit_file(&ast);
-                let invalid_node_locations = std::mem::take(&mut self.invalid_node_locations);
-                let invalid_path_locations = std::mem::take(&mut self.invalid_path_locations);
-                if invalid_node_locations.is_empty() && invalid_path_locations.is_empty() {
-                    return Ok(());
+                if !self.unsupported_node_locations.is_empty() {
+                    Err(VerificationError {
+                        exit_code: UNSUPPORTED_SYNTAX_ERROR,
+                        errors: self.collect_errors(&self.unsupported_node_locations),
+                    })
+                } else if !self.unsupported_path_locations.is_empty() {
+                    Err(VerificationError {
+                        exit_code: UNSUPPORTED_PATH_ERROR,
+                        errors: self.collect_errors(&self.unsupported_path_locations),
+                    })
+                } else {
+                    Ok(())
                 }
-                Err(ValidationError::Invalid(InvalidError {
-                    invalid_node_locations,
-                    invalid_path_locations,
-                }))
             }
-            Err(e) => Err(ValidationError::Parse(e)),
         }
     }
 
+    fn collect_errors<T: Display>(
+        &self,
+        error_locations: &BTreeMap<T, BTreeSet<Location>>,
+    ) -> Vec<String> {
+        error_locations
+            .iter()
+            .map(|(key, key_locations)| {
+                let error_locations_string = key_locations
+                    .iter()
+                    .map(|location| location.to_string())
+                    .collect::<Vec<_>>()
+                    .join(",")
+                    .to_string();
+                format!(
+                    "{} at {} locations: {}",
+                    key,
+                    key_locations.len(),
+                    error_locations_string
+                )
+            })
+            .collect()
+    }
     fn check_node(&mut self, node: RustNode, span: impl Spanned) {
         if !self.whitelist_nodes.contains(&node) {
             let start = span.span().start();
@@ -104,7 +132,7 @@ impl Validator {
                 line: start.line,
                 column: start.column,
             };
-            self.invalid_node_locations
+            self.unsupported_node_locations
                 .entry(node)
                 .or_default()
                 .insert(location);
@@ -135,7 +163,7 @@ impl Validator {
                 line: start.line,
                 column: start.column,
             };
-            self.invalid_path_locations
+            self.unsupported_path_locations
                 .entry(path.to_string())
                 .or_default()
                 .insert(location);
@@ -194,13 +222,13 @@ impl Validator {
     }
 }
 
-impl Default for Validator {
+impl Default for SyntaxVerifier {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl syn::visit::Visit<'_> for Validator {
+impl syn::visit::Visit<'_> for SyntaxVerifier {
     fn visit_abi(&mut self, node: &syn::Abi) {
         self.check_node(RustNode::Abi, node.span());
         visit::visit_abi(self, node);
