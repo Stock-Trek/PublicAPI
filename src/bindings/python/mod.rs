@@ -3,6 +3,8 @@ pub mod data;
 #[cfg(feature = "python")]
 pub mod py_algorithm;
 #[cfg(feature = "python")]
+pub mod py_context;
+#[cfg(feature = "python")]
 pub mod python;
 #[cfg(feature = "python")]
 pub mod schemas;

@@ -1,6 +1,6 @@
 use crate::{
     algorithm::StockTrekAlgorithm,
-    data::context::StockTrekContext,
+    context::StockTrekContext,
     schemas::signal::{Event, Generator, Metadata, Provenance, StockTrekEvent},
 };
 use std::collections::HashMap;

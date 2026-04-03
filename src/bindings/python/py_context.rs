@@ -2,7 +2,7 @@
 use {
     crate::{
         bindings::python::data::{market::py_market::PyMarket, py_trading_pair::PyTradingPair},
-        data::context::StockTrekContext,
+        context::StockTrekContext,
     },
     pyo3::{prelude::*, types::PyDict},
 };

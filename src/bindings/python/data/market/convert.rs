@@ -1,12 +1,18 @@
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList, PyModule};
-use pyo3::IntoPyObject;
-use rust_decimal::Decimal;
-use std::collections::HashMap;
-use std::sync::OnceLock;
+#[cfg(feature = "python")]
+use {
+    pyo3::{
+        prelude::*,
+        types::{PyDict, PyList, PyModule},
+        IntoPyObject,
+    },
+    rust_decimal::Decimal,
+    std::{collections::HashMap, sync::OnceLock},
+};
 
+#[cfg(feature = "python")]
 static DECIMAL_CLS: OnceLock<Py<PyAny>> = OnceLock::new();
 
+#[cfg(feature = "python")]
 pub fn hashmap_to_dict<K, V>(py: Python<'_>, map: &HashMap<K, V>) -> Py<PyDict>
 where
     K: for<'py> IntoPyObject<'py> + Clone + Sync,
@@ -19,6 +25,7 @@ where
     dict.into()
 }
 
+#[cfg(feature = "python")]
 pub fn vec_to_list<V>(py: Python<'_>, vec: &Vec<V>) -> Py<PyList>
 where
     V: for<'py> IntoPyObject<'py> + Clone + Sync,
@@ -30,6 +37,7 @@ where
     list.into()
 }
 
+#[cfg(feature = "python")]
 pub fn rust_decimal_to_py(py: Python<'_>, val: Decimal) -> PyResult<Py<PyAny>> {
     let s = val.to_string();
     let cls = get_decimal_cls(py).bind(py);
@@ -37,6 +45,7 @@ pub fn rust_decimal_to_py(py: Python<'_>, val: Decimal) -> PyResult<Py<PyAny>> {
     Ok(obj.unbind())
 }
 
+#[cfg(feature = "python")]
 fn get_decimal_cls(py: Python<'_>) -> &Py<PyAny> {
     DECIMAL_CLS.get_or_init(|| {
         let module = PyModule::import(py, "decimal").unwrap();

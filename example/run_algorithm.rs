@@ -1,16 +1,6 @@
-use crate::{
-    algorithm::StockTrekAlgorithm,
-    data::context::StockTrekContext,
-    schemas::signal::{
-        ConfidencePercentageChanges, HorizonConfidencesByMillis, Instrument, MarketContext,
-        MarketRegime, MarketRegimeClassifications, MarketRegimeCycle, MarketRegimeTrend,
-        MarketRegimeVolatility, MarketRegimeVolatilitySnapshot, MarketRegimeVolatilityTrend,
-        Prediction, PredictionRisk, PredictionRiskPercentageRisks, RegimePersistence,
-        StockTrekSignal,
-    },
-};
+use crate::{algorithm::StockTrekAlgorithm, context::StockTrekContext, schemas::signal::*};
 
-pub struct MyAlgo {}
+pub struct MyAlgo;
 
 #[traitreg::register]
 impl StockTrekAlgorithm for MyAlgo {
