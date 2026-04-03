@@ -20,7 +20,7 @@ name = "stock_trek"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-clap = { version = "4.6.0", features = ["derive"] }
+larpa = "0.1.1"
 num-complex = "0.4.6"
 proc-macro2 = { version = "1.0.106", features = ["span-locations"] }
 pyo3 = { version = "0.28.2", optional = true, features = ["extension-module", "abi3-py38"] }

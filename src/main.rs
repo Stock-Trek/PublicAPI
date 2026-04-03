@@ -1,30 +1,30 @@
-use clap::{Parser, Subcommand};
+use larpa::Command;
 use std::process::ExitCode;
 use stock_trek::verification::verify::verify;
 
-#[derive(Debug, Parser)]
-#[command(
+#[derive(Command)]
+#[larpa(
     name = "stock-trek",
     version = "1.0",
-    arg_required_else_help = true,
-    about = "Stock-Trek SDK for writing code to use on https://stock-trek.com"
+    homepage = "https://github.com/Stock-Trek/PublicAPI",
+    license = "MIT",
+    repository = "https://github.com/Stock-Trek/PublicAPI"
 )]
 struct Cli {
-    #[command(subcommand)]
+    #[larpa(subcommand)]
     command: Commands,
 }
 
-#[derive(Debug, Subcommand)]
+#[derive(Command)]
 enum Commands {
-    #[command(about = "Verify a file is runnable on https://stock-trek.com")]
     Verify {
-        #[arg(short, long)]
+        #[larpa(name = ["-f", "--file"])]
         file: String,
     },
 }
 
 fn main() -> ExitCode {
-    let cli = Cli::parse();
+    let cli = Cli::from_args();
     match cli.command {
         Commands::Verify { file } => match verify(file) {
             Err(e) => {
