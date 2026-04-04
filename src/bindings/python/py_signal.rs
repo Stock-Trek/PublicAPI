@@ -154,7 +154,7 @@ impl From<Event> for PyEvent {
         Self {
             event_id: e.event_id.to_string(),
             generated_timestamp_ms: e.generated_timestamp_ms,
-            generated_timezone: e.generated_timezone,
+            generated_timezone: e.generated_timezone.into(),
         }
     }
 }
@@ -177,10 +177,10 @@ pub struct PyGenerator {
 impl From<Generator> for PyGenerator {
     fn from(g: Generator) -> Self {
         Self {
-            creator: g.creator,
+            creator: g.creator.into(),
             generator_id: g.generator_id.to_string(),
-            name: g.name,
-            version: g.version,
+            name: g.name.into(),
+            version: g.version.into(),
         }
     }
 }
@@ -196,7 +196,9 @@ pub struct PyHorizonConfidencesByMillis {
 #[cfg(feature = "python")]
 impl From<HorizonConfidencesByMillis> for PyHorizonConfidencesByMillis {
     fn from(h: HorizonConfidencesByMillis) -> Self {
-        Self { confidences: h.0 }
+        Self {
+            confidences: h.into(),
+        }
     }
 }
 
@@ -223,9 +225,9 @@ pub struct PyInstrument {
 impl From<Instrument> for PyInstrument {
     fn from(i: Instrument) -> Self {
         Self {
-            base: i.base,
+            base: i.base.into(),
             product: i.product.to_string(),
-            quote: i.quote,
+            quote: i.quote.into(),
         }
     }
 }
@@ -295,7 +297,7 @@ impl From<MarketRegimeClassifications> for PyMarketRegimeClassifications {
     fn from(mrc: MarketRegimeClassifications) -> Self {
         Self {
             confidence: mrc.confidence,
-            dominant: mrc.dominant,
+            dominant: mrc.dominant.into(),
             top_alternatives: mrc.top_alternatives,
             unclassified: mrc.unclassified,
         }
@@ -537,8 +539,8 @@ pub struct PyProvenance {
 impl From<Provenance> for PyProvenance {
     fn from(p: Provenance) -> Self {
         Self {
-            description: p.description,
-            methodology: p.methodology,
+            description: p.description.into(),
+            methodology: p.methodology.into(),
             references: p.references,
         }
     }
