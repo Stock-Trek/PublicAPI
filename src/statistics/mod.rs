@@ -1,12 +1,12 @@
 pub mod advanced;
-pub mod core;
 pub mod decompose;
 pub mod evaluation;
 pub mod exponential_smoothing;
-pub mod filters;
+pub mod filter;
 pub mod frequency;
 pub mod hypothesis;
-pub mod moving_averages;
+pub mod moving_average;
+pub mod stats;
 pub mod time_series;
-pub mod transformations;
-pub mod wavelets;
+pub mod transformation;
+pub mod wavelet;

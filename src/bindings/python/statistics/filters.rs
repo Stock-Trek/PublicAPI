@@ -4,11 +4,11 @@ use pyo3::pyfunction;
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn wiener_filter(time_series_values: Vec<f64>, window_size: usize) -> Vec<f64> {
-    crate::statistics::filters::wiener_filter(&time_series_values, window_size)
+    crate::statistics::filter::wiener_filter(&time_series_values, window_size)
 }
 
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn hodrick_prescott_filter(time_series_values: Vec<f64>, lambda: f64) -> (Vec<f64>, Vec<f64>) {
-    crate::statistics::filters::hodrick_prescott_filter(&time_series_values, lambda)
+    crate::statistics::filter::hodrick_prescott_filter(&time_series_values, lambda)
 }

@@ -1,6 +1,7 @@
-use crate::data::market_data::{
-    extract::dec_to_f64, market_window::AlignedWindow, raw_market_candle::RawMarketCandle,
-    raw_market_ohlcv::RawMarketOhlcv,
+use crate::{
+    aligned_window::AlignedWindow,
+    dto::{raw_market_candle::RawMarketCandle, raw_market_ohlcv::RawMarketOhlcv},
+    market_data::extract::dec_to_f64,
 };
 use rust_decimal::Decimal;
 use std::{collections::HashMap, sync::OnceLock};

@@ -1,5 +1,5 @@
-use crate::data::market_data::{
-    extract::vec_quote_to_f64, raw_market_order_book::RawMarketOrderBook,
+use crate::{
+    dto::raw_market_order_book::RawMarketOrderBook, market_data::extract::vec_quote_to_f64,
 };
 use std::sync::OnceLock;
 

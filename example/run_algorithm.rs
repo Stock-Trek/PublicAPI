@@ -1,13 +1,14 @@
-use crate::{algorithm::StockTrekAlgorithm, context::StockTrekContext, schemas::signal::*};
+use crate::prelude::*;
+use crate::signal::*;
 
 pub struct MyAlgo;
 
-#[traitreg::register]
+#[register_algorithm]
 impl StockTrekAlgorithm for MyAlgo {
     fn create_signal(&self, _context: StockTrekContext) -> StockTrekSignal {
         StockTrekSignal {
             instrument: Instrument {
-                product: crate::schemas::signal::InstrumentProduct::Spot,
+                product: crate::signal::InstrumentProduct::Spot,
                 base: "BTC".into(),
                 quote: "USDT".into(),
             },

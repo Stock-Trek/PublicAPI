@@ -1,9 +1,33 @@
 pub mod algorithm;
-#[cfg(feature = "python")]
-pub mod bindings;
+pub mod aligned_window;
+// #[cfg(feature = "python")]
+// pub mod bindings;
 pub mod context;
-pub mod data;
+pub mod dto;
 pub mod errors;
-pub mod schemas;
+pub mod exchange;
+pub mod market_data;
+pub mod rolling_window;
+pub mod signal;
 pub mod statistics;
+pub mod trading_pair;
 pub mod verification;
+
+pub mod window {
+    pub use crate::aligned_window::AlignedWindow;
+    pub use crate::rolling_window::RollingWindow;
+}
+
+pub mod prelude {
+    pub use crate::algorithm::StockTrekAlgorithm;
+    pub use crate::context::StockTrekContext;
+    pub use crate::errors::StockTrekError;
+    pub use crate::exchange::Exchange;
+    pub use crate::signal::StockTrekSignal;
+    pub use crate::trading_pair::TradingPair;
+    pub use crate::window;
+
+    pub use traitreg::register as register_algorithm;
+
+    pub type TimestampMillis = u64;
+}

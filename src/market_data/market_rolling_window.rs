@@ -1,5 +1,6 @@
-use crate::data::market_data::{
-    extract::dec_to_f64, market_window::RollingWindow, raw_market_candle::RawMarketCandle,
+use crate::{
+    dto::raw_market_candle::RawMarketCandle, market_data::extract::dec_to_f64,
+    rolling_window::RollingWindow,
 };
 use std::{collections::HashMap, sync::OnceLock};
 use strum::IntoEnumIterator;

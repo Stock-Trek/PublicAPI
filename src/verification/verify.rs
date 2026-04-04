@@ -19,7 +19,7 @@ pub fn verify(path: String) -> Result<(), VerificationError> {
     }
 }
 
-const ALLOWED_ATTRIBUTE_PATH: &str = "traitreg::register";
+const ALLOWED_ATTRIBUTE_PATH: &str = "register_algorithm";
 const ALLOWED_PATH_PREFIXES: &[&str] = &[
     ALLOWED_ATTRIBUTE_PATH,
     "crate::",

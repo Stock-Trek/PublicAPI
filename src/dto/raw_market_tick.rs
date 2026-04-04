@@ -1,4 +1,5 @@
-use crate::data::{market_data::raw_market_quote::RawMarketQuote, timestamp::TimestampMillis};
+use crate::dto::raw_market_quote::RawMarketQuote;
+use crate::prelude::TimestampMillis;
 
 #[derive(Debug, Clone)]
 pub struct RawMarketTick {

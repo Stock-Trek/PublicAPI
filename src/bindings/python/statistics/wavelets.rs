@@ -7,7 +7,7 @@ pub fn discrete_wavelet_transform(
     time_series_values: Vec<f64>,
     wavelet_name: String,
 ) -> (Vec<f64>, Vec<f64>) {
-    crate::statistics::wavelets::discrete_wavelet_transform(&time_series_values, &wavelet_name)
+    crate::statistics::wavelet::discrete_wavelet_transform(&time_series_values, &wavelet_name)
 }
 
 #[cfg(feature = "python")]
@@ -17,7 +17,7 @@ pub fn continuous_wavelet_transform(
     scale_values: Vec<f64>,
     wavelet_name: String,
 ) -> Vec<Vec<f64>> {
-    crate::statistics::wavelets::continuous_wavelet_transform(
+    crate::statistics::wavelet::continuous_wavelet_transform(
         &time_series_values,
         &scale_values,
         &wavelet_name,

@@ -1,6 +1,6 @@
 use rust_decimal::{prelude::ToPrimitive, Decimal};
 
-use crate::data::market_data::raw_market_quote::RawMarketQuote;
+use crate::dto::raw_market_quote::RawMarketQuote;
 
 pub fn dec_to_f64(dec: Decimal) -> f64 {
     dec.to_f64().unwrap()

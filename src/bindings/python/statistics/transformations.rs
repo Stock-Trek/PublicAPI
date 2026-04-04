@@ -4,7 +4,7 @@ use pyo3::{exceptions::PyRuntimeError, pyfunction, PyResult};
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn lag(values: Vec<f64>, lag: usize) -> PyResult<Vec<Option<f64>>> {
-    let result = crate::statistics::transformations::lag(&values, lag)
+    let result = crate::statistics::transformation::lag(&values, lag)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -12,7 +12,7 @@ pub fn lag(values: Vec<f64>, lag: usize) -> PyResult<Vec<Option<f64>>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn difference(values: Vec<f64>, order: usize) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::difference(&values, order)
+    let result = crate::statistics::transformation::difference(&values, order)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -20,7 +20,7 @@ pub fn difference(values: Vec<f64>, order: usize) -> PyResult<Vec<f64>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn seasonal_difference(values: Vec<f64>, period: usize) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::seasonal_difference(&values, period)
+    let result = crate::statistics::transformation::seasonal_difference(&values, period)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -28,7 +28,7 @@ pub fn seasonal_difference(values: Vec<f64>, period: usize) -> PyResult<Vec<f64>
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn logarithm(values: Vec<f64>) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::logarithm(&values)
+    let result = crate::statistics::transformation::logarithm(&values)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -36,7 +36,7 @@ pub fn logarithm(values: Vec<f64>) -> PyResult<Vec<f64>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn box_cox(values: Vec<f64>, lambda: f64) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::box_cox(&values, lambda)
+    let result = crate::statistics::transformation::box_cox(&values, lambda)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -44,7 +44,7 @@ pub fn box_cox(values: Vec<f64>, lambda: f64) -> PyResult<Vec<f64>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn detrend_linear(values: Vec<f64>) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::detrend_linear(&values)
+    let result = crate::statistics::transformation::detrend_linear(&values)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -52,7 +52,7 @@ pub fn detrend_linear(values: Vec<f64>) -> PyResult<Vec<f64>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn rolling_mean(values: Vec<f64>, window: usize) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::rolling_mean(&values, window)
+    let result = crate::statistics::transformation::rolling_mean(&values, window)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }
@@ -60,7 +60,7 @@ pub fn rolling_mean(values: Vec<f64>, window: usize) -> PyResult<Vec<f64>> {
 #[cfg(feature = "python")]
 #[pyfunction]
 pub fn rolling_standard_deviation(values: Vec<f64>, window: usize) -> PyResult<Vec<f64>> {
-    let result = crate::statistics::transformations::rolling_standard_deviation(&values, window)
+    let result = crate::statistics::transformation::rolling_standard_deviation(&values, window)
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     Ok(result)
 }

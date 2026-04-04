@@ -2,6 +2,7 @@ use rust_decimal::Decimal;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
+#[non_exhaustive]
 #[repr(u8)]
 pub enum StockTrekError {
     #[error("Validation error: {0}")]
@@ -11,6 +12,7 @@ pub enum StockTrekError {
 }
 
 #[derive(Error, Debug)]
+#[non_exhaustive]
 #[repr(u8)]
 pub enum ValidationError {
     #[error("{} must be not be empty", name)]
@@ -37,6 +39,7 @@ pub enum ValidationError {
 }
 
 #[derive(Error, Debug)]
+#[non_exhaustive]
 #[repr(u8)]
 pub enum StatsError {
     #[error("")]

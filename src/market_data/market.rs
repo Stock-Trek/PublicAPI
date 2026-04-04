@@ -1,7 +1,9 @@
-use crate::data::market_data::{
-    market_aligned_window::MarketAlignedWindow, market_order_book::MarketOrderBook,
-    market_rolling_window::MarketRollingWindow, market_ticks::MarketTicks,
-    raw_market_dto::RawMarketDto,
+use crate::{
+    dto::raw_market_dto::RawMarketDto,
+    market_data::{
+        market_aligned_window::MarketAlignedWindow, market_order_book::MarketOrderBook,
+        market_rolling_window::MarketRollingWindow, market_ticks::MarketTicks,
+    },
 };
 use rust_decimal::Decimal;
 
@@ -9,6 +11,7 @@ use rust_decimal::Decimal;
 pub struct Market {
     base_increment: Decimal,
     quote_increment: Decimal,
+    minimum_notional: Decimal,
     ticks: MarketTicks,
     rolling: MarketRollingWindow,
     aligned: MarketAlignedWindow,
@@ -20,6 +23,7 @@ impl Market {
         let RawMarketDto {
             base_increment,
             quote_increment,
+            minimum_notional,
             ticks,
             rolling,
             aligned,
@@ -28,6 +32,7 @@ impl Market {
         Self {
             base_increment,
             quote_increment,
+            minimum_notional,
             ticks: MarketTicks::new(ticks),
             rolling: MarketRollingWindow::new(rolling),
             aligned: MarketAlignedWindow::new(aligned),
@@ -39,6 +44,9 @@ impl Market {
     }
     pub fn quote_increment(&self) -> Decimal {
         self.quote_increment
+    }
+    pub fn minimum_notional(&self) -> Decimal {
+        self.minimum_notional
     }
     pub fn ticks(&self) -> &MarketTicks {
         &self.ticks

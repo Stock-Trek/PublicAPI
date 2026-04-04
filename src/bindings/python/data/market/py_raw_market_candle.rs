@@ -2,7 +2,7 @@
 use {
     crate::{
         bindings::python::data::market::py_raw_market_ohlcv::PyRawMarketOhlcv,
-        data::{market_data::raw_market_candle::RawMarketCandle, timestamp::TimestampMillis},
+        dto::raw_market_candle::RawMarketCandle, prelude::TimestampMillis,
     },
     pyo3::{prelude::*, pyclass, pymethods, Python},
 };

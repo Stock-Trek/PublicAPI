@@ -1,11 +1,9 @@
-use std::sync::OnceLock;
-
-use crate::data::{
-    market_data::{
-        extract::dec_to_f64, raw_market_quote::RawMarketQuote, raw_market_tick::RawMarketTick,
-    },
-    timestamp::TimestampMillis,
+use crate::{
+    dto::{raw_market_quote::RawMarketQuote, raw_market_tick::RawMarketTick},
+    market_data::extract::dec_to_f64,
+    prelude::TimestampMillis,
 };
+use std::sync::OnceLock;
 
 #[derive(Debug, Clone)]
 pub struct MarketTicks {

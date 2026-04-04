@@ -2,7 +2,7 @@
 use {
     crate::{
         bindings::python::data::market::convert::rust_decimal_to_py,
-        data::market_data::raw_market_quote::RawMarketQuote,
+        dto::raw_market_quote::RawMarketQuote,
     },
     pyo3::{prelude::*, pyclass, pymethods},
 };
