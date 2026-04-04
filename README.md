@@ -42,7 +42,7 @@ impl StockTrekAlgorithm for MyAlgo {
         StockTrekSignal::builder()
             .instrument(
                 Instrument::builder()
-                    .product(crate::signal::InstrumentProduct::Spot)
+                    .product(InstrumentProduct::Spot)
                     .base("BTC")
                     .quote("USDT"),
             )
