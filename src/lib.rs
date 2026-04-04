@@ -18,8 +18,6 @@ pub mod window {
     pub use crate::rolling_window::RollingWindow;
 }
 
-pub use traitreg;
-
 pub mod prelude {
     pub use crate::algorithm::StockTrekAlgorithm;
     pub use crate::context::StockTrekContext;
@@ -29,6 +27,7 @@ pub mod prelude {
     pub use crate::trading_pair::TradingPair;
     pub use crate::window;
 
+    pub use traitreg;
     pub use traitreg::register as register_algorithm;
 
     pub type TimestampMillis = u64;
