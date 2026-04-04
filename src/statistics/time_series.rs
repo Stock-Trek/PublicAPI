@@ -1,7 +1,44 @@
 use crate::{
     errors::{StatsError, StockTrekError},
-    statistics,
+    statistics::{stats, time_series},
 };
+
+#[derive(Clone, Default)]
+pub struct TimeSeries;
+
+impl TimeSeries {
+    pub fn autocorrelation(&self, values: &[f64], lag: usize) -> Result<f64, StockTrekError> {
+        time_series::autocorrelation(values, lag)
+    }
+    pub fn autocovariance(&self, values: &[f64], lag: usize) -> Result<f64, StockTrekError> {
+        time_series::autocovariance(values, lag)
+    }
+    pub fn cross_correlation(
+        &self,
+        first: &[f64],
+        second: &[f64],
+        lag: isize,
+    ) -> Result<f64, StockTrekError> {
+        time_series::cross_correlation(first, second, lag)
+    }
+    pub fn partial_autocorrelation(
+        &self,
+        values: &[f64],
+        max_lag: usize,
+    ) -> Result<Vec<f64>, StockTrekError> {
+        time_series::partial_autocorrelation(values, max_lag)
+    }
+}
+
+pub fn autocorrelation(values: &[f64], lag: usize) -> Result<f64, StockTrekError> {
+    let gamma_0 = time_series::autocovariance(values, 0)?;
+    if gamma_0 == 0.0 {
+        return Err(StockTrekError::Stats(StatsError::ZeroVariance));
+    }
+    let gamma_k = time_series::autocovariance(values, lag)?;
+    let autocorrelation = gamma_k / gamma_0;
+    Ok(autocorrelation)
+}
 
 pub fn autocovariance(values: &[f64], lag: usize) -> Result<f64, StockTrekError> {
     let n = values.len();
@@ -11,7 +48,7 @@ pub fn autocovariance(values: &[f64], lag: usize) -> Result<f64, StockTrekError>
     if lag >= n {
         return Err(StockTrekError::Stats(StatsError::InvalidLag));
     }
-    let mu = statistics::core::mean(values)?;
+    let mu = stats::mean(values)?;
     let sum: f64 = (lag..n)
         .map(|t| (values[t] - mu) * (values[t - lag] - mu))
         .sum();
@@ -19,14 +56,30 @@ pub fn autocovariance(values: &[f64], lag: usize) -> Result<f64, StockTrekError>
     Ok(autocovariance)
 }
 
-pub fn autocorrelation(values: &[f64], lag: usize) -> Result<f64, StockTrekError> {
-    let gamma_0 = autocovariance(values, 0)?;
-    if gamma_0 == 0.0 {
-        return Err(StockTrekError::Stats(StatsError::ZeroVariance));
+pub fn cross_correlation(first: &[f64], second: &[f64], lag: isize) -> Result<f64, StockTrekError> {
+    let n = first.len();
+    if n == 0 {
+        return Err(StockTrekError::Stats(StatsError::EmptyInput));
     }
-    let gamma_k = autocovariance(values, lag)?;
-    let autocorrelation = gamma_k / gamma_0;
-    Ok(autocorrelation)
+    if n != second.len() {
+        return Err(StockTrekError::Stats(StatsError::MismatchedLengths));
+    }
+    let mean_x = stats::mean(first)?;
+    let mean_y = stats::mean(second)?;
+    let numerator: f64 = (0..n)
+        .filter_map(|t| {
+            let j = t as isize - lag;
+            if j >= 0 && (j as usize) < n {
+                Some((first[t] - mean_x) * (second[j as usize] - mean_y))
+            } else {
+                None
+            }
+        })
+        .sum();
+    let var_x = stats::variance(first, 0)?;
+    let var_y = stats::variance(second, 0)?;
+    let cross_correlation = numerator / (n as f64 * (var_x.sqrt() * var_y.sqrt()));
+    Ok(cross_correlation)
 }
 
 pub fn partial_autocorrelation(values: &[f64], max_lag: usize) -> Result<Vec<f64>, StockTrekError> {
@@ -39,7 +92,7 @@ pub fn partial_autocorrelation(values: &[f64], max_lag: usize) -> Result<Vec<f64
     }
     // Precompute ACF
     let acf = (0..=max_lag)
-        .map(|k| autocorrelation(values, k))
+        .map(|k| time_series::autocorrelation(values, k))
         .collect::<Result<Vec<f64>, _>>()?;
     // Durbin–Levinson recursion
     let mut pacf = vec![0.0; max_lag + 1];
@@ -63,30 +116,4 @@ pub fn partial_autocorrelation(values: &[f64], max_lag: usize) -> Result<Vec<f64
         pacf[k] = phi_kk;
     }
     Ok(pacf)
-}
-
-pub fn cross_correlation(first: &[f64], second: &[f64], lag: isize) -> Result<f64, StockTrekError> {
-    let n = first.len();
-    if n == 0 {
-        return Err(StockTrekError::Stats(StatsError::EmptyInput));
-    }
-    if n != second.len() {
-        return Err(StockTrekError::Stats(StatsError::MismatchedLengths));
-    }
-    let mean_x = statistics::core::mean(first)?;
-    let mean_y = statistics::core::mean(second)?;
-    let numerator: f64 = (0..n)
-        .filter_map(|t| {
-            let j = t as isize - lag;
-            if j >= 0 && (j as usize) < n {
-                Some((first[t] - mean_x) * (second[j as usize] - mean_y))
-            } else {
-                None
-            }
-        })
-        .sum();
-    let var_x = statistics::core::variance(first, 0)?;
-    let var_y = statistics::core::variance(second, 0)?;
-    let cross_correlation = numerator / (n as f64 * (var_x.sqrt() * var_y.sqrt()));
-    Ok(cross_correlation)
 }

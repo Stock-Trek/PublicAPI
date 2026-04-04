@@ -1,6 +1,29 @@
 use num_complex::Complex;
 use std::f64::consts::PI;
 
+use crate::statistics::frequency;
+
+#[derive(Clone, Default)]
+pub struct Frequency;
+
+impl Frequency {
+    pub fn discrete_fourier_transform(&self, time_series_values: &[f64]) -> Vec<Complex<f64>> {
+        frequency::discrete_fourier_transform(time_series_values)
+    }
+    pub fn inverse_discrete_fourier_transform(
+        &self,
+        frequency_domain_values: &[Complex<f64>],
+    ) -> Vec<f64> {
+        frequency::inverse_discrete_fourier_transform(frequency_domain_values)
+    }
+    pub fn periodogram(&self, time_series_values: &[f64], sampling_frequency: f64) -> Vec<f64> {
+        frequency::periodogram(time_series_values, sampling_frequency)
+    }
+    pub fn spectral_density(&self, time_series_values: &[f64]) -> Vec<f64> {
+        frequency::spectral_density(time_series_values)
+    }
+}
+
 pub fn discrete_fourier_transform(time_series_values: &[f64]) -> Vec<Complex<f64>> {
     let n = time_series_values.len();
     let mut result = Vec::with_capacity(n);
@@ -33,7 +56,7 @@ pub fn inverse_discrete_fourier_transform(frequency_domain_values: &[Complex<f64
 
 pub fn periodogram(time_series_values: &[f64], sampling_frequency: f64) -> Vec<f64> {
     let n = time_series_values.len();
-    let dft = discrete_fourier_transform(time_series_values);
+    let dft = frequency::discrete_fourier_transform(time_series_values);
     dft.iter()
         .map(|xk| (xk.norm_sqr() / n as f64) * sampling_frequency)
         .collect()
@@ -41,6 +64,6 @@ pub fn periodogram(time_series_values: &[f64], sampling_frequency: f64) -> Vec<f
 
 pub fn spectral_density(time_series_values: &[f64]) -> Vec<f64> {
     let n = time_series_values.len();
-    let dft = discrete_fourier_transform(time_series_values);
+    let dft = frequency::discrete_fourier_transform(time_series_values);
     dft.iter().map(|xk| xk.norm_sqr() / n as f64).collect()
 }

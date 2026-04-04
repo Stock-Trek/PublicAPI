@@ -1,70 +1,33 @@
 use crate::{
     errors::{StatsError, StockTrekError},
-    statistics,
+    statistics::{advanced, stats},
 };
 
-pub fn shannon_entropy(probability_distribution: &[f64]) -> Result<f64, StockTrekError> {
-    if probability_distribution.is_empty() {
-        return Err(StockTrekError::Stats(StatsError::EmptyInput));
-    }
-    let mut entropy = 0.0;
-    for &p in probability_distribution {
-        if p < 0.0 {
-            return Err(StockTrekError::Stats(StatsError::InvalidParameters));
-        }
-        if p > 0.0 {
-            entropy -= p * p.ln();
-        }
-    }
-    Ok(entropy)
-}
+#[derive(Clone, Default)]
+pub struct Advanced;
 
-pub fn sample_entropy(
-    time_series_values: &[f64],
-    embedding_dimension: usize,
-    tolerance: f64,
-) -> Result<f64, StockTrekError> {
-    let n = time_series_values.len();
-    if n <= embedding_dimension + 1 || tolerance <= 0.0 {
-        return Err(StockTrekError::Stats(StatsError::InvalidParameters));
+impl Advanced {
+    pub fn hurst_exponent(&self, time_series_values: &[f64]) -> Result<f64, StockTrekError> {
+        advanced::hurst_exponent(time_series_values)
     }
-    let mut count_m = 0.0;
-    let mut count_m1 = 0.0;
-    for i in 0..(n - embedding_dimension) {
-        for j in (i + 1)..(n - embedding_dimension) {
-            let mut match_m = true;
-            let mut match_m1 = true;
-            for k in 0..embedding_dimension {
-                if (time_series_values[i + k] - time_series_values[j + k]).abs() > tolerance {
-                    match_m = false;
-                    break;
-                }
-            }
-            if match_m {
-                count_m += 1.0;
-                if (time_series_values[i + embedding_dimension]
-                    - time_series_values[j + embedding_dimension])
-                    .abs()
-                    <= tolerance
-                {
-                    count_m1 += 1.0;
-                } else {
-                    match_m1 = false;
-                }
-            }
-            if !match_m {
-                continue;
-            }
-            if !match_m1 {
-                continue;
-            }
-        }
+    pub fn mutual_information(
+        &self,
+        first_series: &[f64],
+        second_series: &[f64],
+    ) -> Result<f64, StockTrekError> {
+        advanced::mutual_information(first_series, second_series)
     }
-    if count_m == 0.0 || count_m1 == 0.0 {
-        return Err(StockTrekError::Stats(StatsError::DivisionByZero));
+    pub fn sample_entropy(
+        &self,
+        time_series_values: &[f64],
+        embedding_dimension: usize,
+        tolerance: f64,
+    ) -> Result<f64, StockTrekError> {
+        advanced::sample_entropy(time_series_values, embedding_dimension, tolerance)
     }
-    let div: f64 = -(count_m1 / count_m);
-    Ok(div.ln())
+    pub fn shannon_entropy(&self, probability_distribution: &[f64]) -> Result<f64, StockTrekError> {
+        advanced::shannon_entropy(probability_distribution)
+    }
 }
 
 pub fn hurst_exponent(time_series_values: &[f64]) -> Result<f64, StockTrekError> {
@@ -72,7 +35,7 @@ pub fn hurst_exponent(time_series_values: &[f64]) -> Result<f64, StockTrekError>
     if n < 20 {
         return Err(StockTrekError::Stats(StatsError::InvalidParameters));
     }
-    let mean = statistics::core::mean(time_series_values)?;
+    let mean = stats::mean(time_series_values)?;
     let mut cumulative = Vec::with_capacity(n);
     let mut sum = 0.0;
     for &x in time_series_values {
@@ -82,7 +45,7 @@ pub fn hurst_exponent(time_series_values: &[f64]) -> Result<f64, StockTrekError>
     let min = cumulative.iter().cloned().fold(f64::INFINITY, f64::min);
     let max = cumulative.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
     let range = max - min;
-    let std = statistics::core::standard_deviation(time_series_values, 0)?;
+    let std = stats::standard_deviation(time_series_values, 0)?;
     if std == 0.0 {
         return Err(StockTrekError::Stats(StatsError::DivisionByZero));
     }
@@ -143,4 +106,68 @@ pub fn mutual_information(
         }
     }
     Ok(mi)
+}
+
+pub fn sample_entropy(
+    time_series_values: &[f64],
+    embedding_dimension: usize,
+    tolerance: f64,
+) -> Result<f64, StockTrekError> {
+    let n = time_series_values.len();
+    if n <= embedding_dimension + 1 || tolerance <= 0.0 {
+        return Err(StockTrekError::Stats(StatsError::InvalidParameters));
+    }
+    let mut count_m = 0.0;
+    let mut count_m1 = 0.0;
+    for i in 0..(n - embedding_dimension) {
+        for j in (i + 1)..(n - embedding_dimension) {
+            let mut match_m = true;
+            let mut match_m1 = true;
+            for k in 0..embedding_dimension {
+                if (time_series_values[i + k] - time_series_values[j + k]).abs() > tolerance {
+                    match_m = false;
+                    break;
+                }
+            }
+            if match_m {
+                count_m += 1.0;
+                if (time_series_values[i + embedding_dimension]
+                    - time_series_values[j + embedding_dimension])
+                    .abs()
+                    <= tolerance
+                {
+                    count_m1 += 1.0;
+                } else {
+                    match_m1 = false;
+                }
+            }
+            if !match_m {
+                continue;
+            }
+            if !match_m1 {
+                continue;
+            }
+        }
+    }
+    if count_m == 0.0 || count_m1 == 0.0 {
+        return Err(StockTrekError::Stats(StatsError::DivisionByZero));
+    }
+    let div: f64 = -(count_m1 / count_m);
+    Ok(div.ln())
+}
+
+pub fn shannon_entropy(probability_distribution: &[f64]) -> Result<f64, StockTrekError> {
+    if probability_distribution.is_empty() {
+        return Err(StockTrekError::Stats(StatsError::EmptyInput));
+    }
+    let mut entropy = 0.0;
+    for &p in probability_distribution {
+        if p < 0.0 {
+            return Err(StockTrekError::Stats(StatsError::InvalidParameters));
+        }
+        if p > 0.0 {
+            entropy -= p * p.ln();
+        }
+    }
+    Ok(entropy)
 }

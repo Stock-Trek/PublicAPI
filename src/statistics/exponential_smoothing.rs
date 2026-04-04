@@ -1,14 +1,33 @@
-pub fn simple_exponential_smoothing(time_series_values: &[f64], alpha: f64) -> Vec<f64> {
-    let mut result = Vec::with_capacity(time_series_values.len());
-    if let Some(&first) = time_series_values.first() {
-        let mut level = first;
-        result.push(level);
-        for &x in &time_series_values[1..] {
-            level = alpha * x + (1.0 - alpha) * level;
-            result.push(level);
-        }
+use crate::statistics::exponential_smoothing;
+
+#[derive(Clone, Default)]
+pub struct ExponentialSmoothing;
+
+impl ExponentialSmoothing {
+    pub fn holt_linear_trend(&self, time_series_values: &[f64], alpha: f64, beta: f64) -> Vec<f64> {
+        exponential_smoothing::holt_linear_trend(time_series_values, alpha, beta)
     }
-    result
+    pub fn holt_winters(
+        &self,
+        time_series_values: &[f64],
+        alpha: f64,
+        beta: f64,
+        gamma: f64,
+        season_len: usize,
+        multiplicative: bool,
+    ) -> Vec<f64> {
+        exponential_smoothing::holt_winters(
+            time_series_values,
+            alpha,
+            beta,
+            gamma,
+            season_len,
+            multiplicative,
+        )
+    }
+    pub fn simple_exponential_smoothing(&self, time_series_values: &[f64], alpha: f64) -> Vec<f64> {
+        exponential_smoothing::simple_exponential_smoothing(time_series_values, alpha)
+    }
 }
 
 pub fn holt_linear_trend(time_series_values: &[f64], alpha: f64, beta: f64) -> Vec<f64> {
@@ -80,6 +99,19 @@ pub fn holt_winters(
             trend = beta * (level - prev_level) + (1.0 - beta) * trend;
             seasonals[i % season_len] = gamma * (x - level) + (1.0 - gamma) * season;
             result.push(level + trend + seasonals[i % season_len]);
+        }
+    }
+    result
+}
+
+pub fn simple_exponential_smoothing(time_series_values: &[f64], alpha: f64) -> Vec<f64> {
+    let mut result = Vec::with_capacity(time_series_values.len());
+    if let Some(&first) = time_series_values.first() {
+        let mut level = first;
+        result.push(level);
+        for &x in &time_series_values[1..] {
+            level = alpha * x + (1.0 - alpha) * level;
+            result.push(level);
         }
     }
     result

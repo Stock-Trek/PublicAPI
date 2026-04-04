@@ -1,3 +1,31 @@
+use crate::statistics::decompose;
+
+#[derive(Clone, Default)]
+pub struct Decompose;
+
+impl Decompose {
+    pub fn loess_smooth(&self, values: &[f64], span: usize) -> Vec<f64> {
+        decompose::loess_smooth(values, span)
+    }
+    pub fn seasonal_decompose(
+        &self,
+        time_series_values: &[f64],
+        seasonal_period_length: usize,
+    ) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
+        decompose::seasonal_decompose(time_series_values, seasonal_period_length)
+    }
+    pub fn seasonal_trend_decomposition_using_loess(
+        &self,
+        time_series_values: &[f64],
+        seasonal_period_length: usize,
+    ) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
+        decompose::seasonal_trend_decomposition_using_loess(
+            time_series_values,
+            seasonal_period_length,
+        )
+    }
+}
+
 pub fn seasonal_decompose(
     time_series_values: &[f64],
     seasonal_period_length: usize,
@@ -48,29 +76,6 @@ pub fn seasonal_decompose(
     (trend, seasonal, residual)
 }
 
-pub fn loess_smooth(values: &[f64], span: usize) -> Vec<f64> {
-    let n = values.len();
-    let mut result = vec![0.0; n];
-    for i in 0..n {
-        let start = i.saturating_sub(span);
-        let end = usize::min(n, i + span + 1);
-        let mut weighted_sum = 0.0;
-        let mut weight_total = 0.0;
-        for (j, j_value) in values.iter().enumerate().take(end).skip(start) {
-            let dist = (i as isize - j as isize).abs() as f64;
-            let w = (1.0 - (dist / span as f64).powi(3)).powi(3).max(0.0);
-            weighted_sum += w * j_value;
-            weight_total += w;
-        }
-        result[i] = if weight_total > 0.0 {
-            weighted_sum / weight_total
-        } else {
-            values[i]
-        };
-    }
-    result
-}
-
 pub fn seasonal_trend_decomposition_using_loess(
     time_series_values: &[f64],
     seasonal_period_length: usize,
@@ -80,7 +85,7 @@ pub fn seasonal_trend_decomposition_using_loess(
         return (vec![], vec![], vec![]);
     }
     // Trend via LOESS
-    let trend = loess_smooth(time_series_values, seasonal_period_length);
+    let trend = decompose::loess_smooth(time_series_values, seasonal_period_length);
     // Detrended
     let detrended: Vec<f64> = time_series_values
         .iter()
@@ -112,4 +117,27 @@ pub fn seasonal_trend_decomposition_using_loess(
         .map(|((x, t), s)| x - t - s)
         .collect();
     (trend, seasonal, residual)
+}
+
+pub fn loess_smooth(values: &[f64], span: usize) -> Vec<f64> {
+    let n = values.len();
+    let mut result = vec![0.0; n];
+    for i in 0..n {
+        let start = i.saturating_sub(span);
+        let end = usize::min(n, i + span + 1);
+        let mut weighted_sum = 0.0;
+        let mut weight_total = 0.0;
+        for (j, j_value) in values.iter().enumerate().take(end).skip(start) {
+            let dist = (i as isize - j as isize).abs() as f64;
+            let w = (1.0 - (dist / span as f64).powi(3)).powi(3).max(0.0);
+            weighted_sum += w * j_value;
+            weight_total += w;
+        }
+        result[i] = if weight_total > 0.0 {
+            weighted_sum / weight_total
+        } else {
+            values[i]
+        };
+    }
+    result
 }
