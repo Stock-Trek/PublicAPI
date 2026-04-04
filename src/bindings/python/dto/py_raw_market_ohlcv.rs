@@ -1,8 +1,7 @@
 #[cfg(feature = "python")]
 use {
     crate::{
-        bindings::python::data::market::convert::rust_decimal_to_py,
-        dto::raw_market_ohlcv::RawMarketOhlcv,
+        bindings::python::dto::convert::rust_decimal_to_py, dto::raw_market_ohlcv::RawMarketOhlcv,
     },
     pyo3::{prelude::*, pyclass, pymethods, PyResult, Python},
 };

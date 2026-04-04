@@ -1,6 +1,4 @@
 #[cfg(feature = "python")]
-pub mod convert;
-#[cfg(feature = "python")]
 pub mod py_market;
 #[cfg(feature = "python")]
 pub mod py_market_aligned_window;
@@ -12,15 +10,5 @@ pub mod py_market_rolling_window;
 pub mod py_market_ticks;
 #[cfg(feature = "python")]
 pub mod py_market_window;
-#[cfg(feature = "python")]
-pub mod py_raw_market_candle;
-#[cfg(feature = "python")]
-pub mod py_raw_market_ohlcv;
-#[cfg(feature = "python")]
-pub mod py_raw_market_order_book;
-#[cfg(feature = "python")]
-pub mod py_raw_market_quote;
-#[cfg(feature = "python")]
-pub mod py_raw_market_tick;
 #[cfg(feature = "python")]
 pub mod python;

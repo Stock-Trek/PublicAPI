@@ -19,4 +19,7 @@ impl Exchange {
     pub fn new(markets: HashMap<TradingPair, Market>) -> Self {
         Self { markets }
     }
+    pub fn markets(&self) -> &HashMap<TradingPair, Market> {
+        &self.markets
+    }
 }

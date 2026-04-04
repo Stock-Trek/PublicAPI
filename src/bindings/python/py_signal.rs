@@ -1,5 +1,5 @@
 #[cfg(feature = "python")]
-use {crate::schemas::signal::*, pyo3::prelude::*, std::collections::HashMap};
+use {crate::signal::*, pyo3::prelude::*, std::collections::HashMap};
 
 #[cfg(feature = "python")]
 #[pyclass(from_py_object)]

@@ -1,10 +1,10 @@
 #[cfg(feature = "python")]
 use {
     crate::{
-        bindings::python::data::market::{
+        bindings::python::dto::{
             convert::vec_to_list, py_raw_market_order_book::PyRawMarketOrderBook,
         },
-        data::market_data::market_order_book::MarketOrderBook,
+        market_data::market_order_book::MarketOrderBook,
     },
     pyo3::{prelude::*, pyclass, pymethods, types::PyList, Python},
 };

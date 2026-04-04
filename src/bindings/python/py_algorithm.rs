@@ -1,8 +1,6 @@
 #[cfg(feature = "python")]
 use {
-    crate::bindings::python::{
-        py_context::PyStockTrekContext, schemas::py_signal::PyStockTrekSignal,
-    },
+    crate::bindings::python::{py_context::PyStockTrekContext, py_signal::PyStockTrekSignal},
     pyo3::prelude::*,
 };
 

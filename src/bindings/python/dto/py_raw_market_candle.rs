@@ -1,7 +1,7 @@
 #[cfg(feature = "python")]
 use {
     crate::{
-        bindings::python::data::market::py_raw_market_ohlcv::PyRawMarketOhlcv,
+        bindings::python::dto::py_raw_market_ohlcv::PyRawMarketOhlcv,
         dto::raw_market_candle::RawMarketCandle, prelude::TimestampMillis,
     },
     pyo3::{prelude::*, pyclass, pymethods, Python},

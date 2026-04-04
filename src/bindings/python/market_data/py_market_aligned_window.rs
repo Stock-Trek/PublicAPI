@@ -1,11 +1,11 @@
 #[cfg(feature = "python")]
 use {
     crate::{
-        bindings::python::data::market::{
-            convert::vec_to_list, py_market_window::PyAlignedWindow,
-            py_raw_market_candle::PyRawMarketCandle,
+        bindings::python::{
+            dto::{convert::vec_to_list, py_raw_market_candle::PyRawMarketCandle},
+            market_data::py_market_window::PyAlignedWindow,
         },
-        data::market_data::market_aligned_window::MarketAlignedWindow,
+        market_data::market_aligned_window::MarketAlignedWindow,
     },
     pyo3::{
         prelude::*,

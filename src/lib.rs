@@ -1,7 +1,7 @@
 pub mod algorithm;
 pub mod aligned_window;
-// #[cfg(feature = "python")]
-// pub mod bindings;
+#[cfg(feature = "python")]
+pub mod bindings;
 pub mod context;
 pub mod dto;
 pub mod errors;
@@ -21,8 +21,8 @@ pub mod window {
 pub mod prelude {
     pub use crate::algorithm::StockTrekAlgorithm;
     pub use crate::context::StockTrekContext;
-    pub use crate::errors::StockTrekError;
     pub use crate::exchange::Exchange;
+    pub use crate::signal::StockTrekEvent;
     pub use crate::signal::StockTrekSignal;
     pub use crate::trading_pair::TradingPair;
     pub use crate::window;

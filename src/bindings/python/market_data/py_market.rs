@@ -1,12 +1,15 @@
 #[cfg(feature = "python")]
 use {
     crate::{
-        bindings::python::data::market::{
-            convert::rust_decimal_to_py, py_market_aligned_window::PyMarketAlignedWindow,
-            py_market_order_book::PyMarketOrderBook,
-            py_market_rolling_window::PyMarketRollingWindow, py_market_ticks::PyMarketTicks,
+        bindings::python::{
+            dto::convert::rust_decimal_to_py,
+            market_data::{
+                py_market_aligned_window::PyMarketAlignedWindow,
+                py_market_order_book::PyMarketOrderBook,
+                py_market_rolling_window::PyMarketRollingWindow, py_market_ticks::PyMarketTicks,
+            },
         },
-        data::market_data::market::Market,
+        market_data::market::Market,
     },
     pyo3::{prelude::*, pyclass, pymethods},
 };

@@ -1,6 +1,6 @@
 #[cfg(feature = "python")]
 use {
-    crate::data::trading_pair::TradingPair,
+    crate::trading_pair::TradingPair,
     pyo3::{class::basic::CompareOp, prelude::*, IntoPyObjectExt},
     std::hash::{DefaultHasher, Hash, Hasher},
 };
