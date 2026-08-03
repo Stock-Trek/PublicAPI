@@ -1,4 +1,4 @@
-use crate::allocations::allocation::{Allocation, AllocationTrait};
+use crate::allocations::allocation::Allocation;
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 
@@ -13,11 +13,24 @@ impl InMemoryAllocation {
     pub fn builder() -> Builder {
         Builder::new()
     }
+    pub fn allocation_for_asset_total(&self, asset_id: &AssetId) -> f64 {
+        self.cex_assets
+            .values()
+            .map(|assets| assets.asset_allocations.get(asset_id).unwrap_or(&0.0))
+            .sum()
+    }
+    pub fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
+        self.cex_assets
+            .get(cex_id)
+            .and_then(|assets| assets.asset_allocations.get(asset_id))
+            .copied()
+            .unwrap_or(0.0)
+    }
 }
 
 impl From<InMemoryAllocation> for Allocation {
     fn from(value: InMemoryAllocation) -> Self {
-        Box::new(value)
+        Allocation::InMemory(value)
     }
 }
 
@@ -28,22 +41,6 @@ pub struct Allocations {
 impl Allocations {
     pub fn new(asset_allocations: HashMap<AssetId, f64>) -> Self {
         Self { asset_allocations }
-    }
-}
-
-impl AllocationTrait for InMemoryAllocation {
-    fn allocation_for_asset_total(&self, asset_id: &AssetId) -> f64 {
-        self.cex_assets
-            .values()
-            .map(|assets| assets.asset_allocations.get(asset_id).unwrap_or(&0.0))
-            .sum()
-    }
-    fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
-        self.cex_assets
-            .get(cex_id)
-            .and_then(|assets| assets.asset_allocations.get(asset_id))
-            .copied()
-            .unwrap_or(0.0)
     }
 }
 
