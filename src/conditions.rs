@@ -13,8 +13,6 @@ use std::cmp::Ordering;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 use strum::Display;
 
-// ---- Condition Enum ----
-
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Condition {
@@ -41,7 +39,9 @@ pub enum Condition {
         quantity_of: QuantityOf,
         conditions: Vec<Condition>,
     },
-    Flag(SignalKey<bool>),
+    Signal {
+        signal: SignalKey<bool>,
+    },
 }
 
 impl Condition {
@@ -103,12 +103,10 @@ impl Condition {
                 };
                 Ok(quantity)
             }
-            Condition::Flag(key) => c.signals.read(key),
+            Condition::Signal { signal } => c.signals.read(signal),
         }
     }
 }
-
-// ---- QuantityOf ----
 
 #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum QuantityOf {
@@ -117,8 +115,6 @@ pub enum QuantityOf {
     None,
     Empty,
 }
-
-// ---- ConditionFactory ----
 
 pub struct ConditionFactory;
 
@@ -155,7 +151,9 @@ impl ConditionFactory {
             conditions,
         }
     }
-    pub fn signal(&self, key: &SignalKey<bool>) -> Condition {
-        Condition::Flag(key.clone())
+    pub fn signal(&self, flag: &SignalKey<bool>) -> Condition {
+        Condition::Signal {
+            signal: flag.clone(),
+        }
     }
 }
