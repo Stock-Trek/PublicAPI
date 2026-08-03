@@ -1,8 +1,8 @@
 use crate::{
     signal::key::SignalKey,
     values::{
-        binary_calculation::BinaryOperator,
-        unary_calculation::UnaryOperator,
+        binary_operator::BinaryOperator,
+        unary_operator::UnaryOperator,
         value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
     },
 };
@@ -59,6 +59,12 @@ impl PortfolioValuesFactory {
 }
 
 impl CalculationValuesFactory {
+    pub fn unary(&self, operator: UnaryOperator, number: NumberValue) -> NumberValue {
+        NumberValue::UnaryCalculation {
+            number: Box::new(number),
+            operator,
+        }
+    }
     pub fn binary(
         &self,
         left: NumberValue,
@@ -69,12 +75,6 @@ impl CalculationValuesFactory {
             left: Box::new(left),
             operator,
             right: Box::new(right),
-        }
-    }
-    pub fn unary(&self, number: NumberValue, operator: UnaryOperator) -> NumberValue {
-        NumberValue::UnaryCalculation {
-            number: Box::new(number),
-            operator,
         }
     }
 }

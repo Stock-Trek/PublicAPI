@@ -2,7 +2,7 @@ use crate::{
     error::result::StockTrekResult,
     resolved_context::ResolvedContext,
     signal::key::SignalKey,
-    values::{binary_calculation::BinaryOperator, unary_calculation::UnaryOperator},
+    values::{binary_operator::BinaryOperator, unary_operator::UnaryOperator},
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
@@ -95,8 +95,8 @@ pub enum NumberValue {
         right: Box<NumberValue>,
     },
     UnaryCalculation {
-        number: Box<NumberValue>,
         operator: UnaryOperator,
+        number: Box<NumberValue>,
     },
 }
 

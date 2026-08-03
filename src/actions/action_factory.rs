@@ -19,7 +19,7 @@ impl ActionFactory {
         RecoverableAction::new(
             Action::SendOrderRequest {
                 cex_id_value,
-                order_request: Box::new(order_request),
+                order_request,
             },
             recovery_policy,
         )

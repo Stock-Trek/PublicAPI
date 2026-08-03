@@ -1,4 +1,4 @@
-pub mod binary_calculation;
-pub mod unary_calculation;
+pub mod binary_operator;
+pub mod unary_operator;
 pub mod value;
 pub mod values_factory;
