@@ -1,4 +1,4 @@
-use crate::portfolios::portfolio::{Builder, Portfolio};
+use crate::portfolios::portfolio::{InMemoryPortfolioBuilder, Portfolio};
 
 pub struct PortfolioFactory;
 
@@ -7,7 +7,7 @@ impl PortfolioFactory {
         Portfolio::Stub
     }
 
-    pub fn in_memory_builder() -> Builder {
-        Builder::new()
+    pub fn in_memory_builder() -> InMemoryPortfolioBuilder {
+        InMemoryPortfolioBuilder::new()
     }
 }

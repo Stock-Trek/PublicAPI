@@ -1,29 +1,10 @@
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
 
-// ---------------------------------------------------------------------------
-// Supporting types
-// ---------------------------------------------------------------------------
-
-#[derive(Debug, Clone, Default)]
-pub struct Assets {
-    asset_counts: HashMap<AssetId, f64>,
-}
-
-impl Assets {
-    pub fn new(asset_counts: HashMap<AssetId, f64>) -> Self {
-        Self { asset_counts }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Unified portfolio enum
-// ---------------------------------------------------------------------------
-
 #[derive(Debug, Clone)]
 pub enum Portfolio {
-    InMemory { cex_assets: HashMap<CexId, Assets> },
     Stub,
+    InMemory { cex_assets: HashMap<CexId, Assets> },
 }
 
 impl Portfolio {
@@ -91,16 +72,23 @@ impl Portfolio {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Builder for InMemory variant
-// ---------------------------------------------------------------------------
+#[derive(Debug, Clone, Default)]
+pub struct Assets {
+    asset_counts: HashMap<AssetId, f64>,
+}
+
+impl Assets {
+    pub fn new(asset_counts: HashMap<AssetId, f64>) -> Self {
+        Self { asset_counts }
+    }
+}
 
 #[derive(Clone, Default)]
-pub struct Builder {
+pub struct InMemoryPortfolioBuilder {
     cex_assets: HashMap<CexId, Assets>,
 }
 
-impl Builder {
+impl InMemoryPortfolioBuilder {
     pub fn new() -> Self {
         Self {
             cex_assets: HashMap::new(),
