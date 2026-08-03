@@ -23,7 +23,7 @@ pub mod prelude {
         actions::recoverable_action::{ErrorCause, ErrorResponse, RecoveryPolicy},
         algorithm::Algorithm,
         allocations::AllocationFactory,
-        commands::command::Command,
+        commands::Command,
         portfolios::PortfolioFactory,
         preferences::Preferences,
         signal::{key::SignalKey, signals::Signals, value::SignalValue},
