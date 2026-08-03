@@ -1,7 +1,9 @@
 use crate::{
     signal::key::SignalKey,
-    values::value::{
-        AssetIdValue, BinaryOperator, CexIdValue, FlagValue, NumberValue, UnaryOperator,
+    values::{
+        binary_calculation::BinaryOperator,
+        unary_calculation::UnaryOperator,
+        value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
     },
 };
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
