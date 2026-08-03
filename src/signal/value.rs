@@ -1,6 +1,13 @@
-use crate::error::{
-    result::{StockTrekError, StockTrekResult},
-    value::ValueError,
+use crate::{
+    error::{
+        result::{StockTrekError, StockTrekResult},
+        value::ValueError,
+    },
+    resolved_context::ResolvedContext,
+    values::value::{
+        AssetIdValue, AssetIdValueTrait, CexIdValue, CexIdValueTrait, FlagValue, FlagValueTrait,
+        NumberValue, NumberValueTrait,
+    },
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
@@ -77,6 +84,46 @@ impl TryFrom<SignalValue> for f64 {
             SignalValue::Flag(_) => err("Number", "Flag"),
             SignalValue::Number(n) => Ok(n),
         }
+    }
+}
+
+#[typetag::serde]
+impl CexIdValueTrait for SignalValue {
+    fn clone_box(&self) -> CexIdValue {
+        Box::new(self.clone())
+    }
+    fn cex_id(&self, _: &ResolvedContext) -> StockTrekResult<CexId> {
+        CexId::try_from(self.clone())
+    }
+}
+
+#[typetag::serde]
+impl AssetIdValueTrait for SignalValue {
+    fn clone_box(&self) -> AssetIdValue {
+        Box::new(self.clone())
+    }
+    fn asset_id(&self, _: &ResolvedContext) -> StockTrekResult<AssetId> {
+        AssetId::try_from(self.clone())
+    }
+}
+
+#[typetag::serde]
+impl FlagValueTrait for SignalValue {
+    fn clone_box(&self) -> FlagValue {
+        Box::new(self.clone())
+    }
+    fn flag(&self, _: &ResolvedContext) -> StockTrekResult<bool> {
+        bool::try_from(self.clone())
+    }
+}
+
+#[typetag::serde]
+impl NumberValueTrait for SignalValue {
+    fn clone_box(&self) -> NumberValue {
+        Box::new(self.clone())
+    }
+    fn number(&self, _: &ResolvedContext) -> StockTrekResult<f64> {
+        f64::try_from(self.clone())
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::{
-    signal::key::SignalKey,
+    signal::{key::SignalKey, value::SignalValue},
     values::{
         active_orders_in_cex_value::ActiveOrdersInCexValue,
         active_orders_in_cex_with_tag_value::ActiveOrdersInCexWithTagValue,
@@ -10,9 +10,6 @@ use crate::{
         asset_in_cex_value::AssetInCexValue,
         asset_total_value::AssetTotalValue,
         binary_calculation_value::{BinaryCalculationValue, BinaryOperator},
-        literal_value::{
-            LiteralAssetIdValue, LiteralCexIdValue, LiteralFlagValue, LiteralNumberValue,
-        },
         unary_calculation_value::{UnaryCalculationValue, UnaryOperator},
         value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
     },
@@ -79,16 +76,16 @@ impl CalculationValuesFactory {
 
 impl LiteralValuesFactory {
     pub fn cex_id(&self, literal: CexId) -> CexIdValue {
-        LiteralCexIdValue::new(literal)
+        Box::new(SignalValue::CexId(literal))
     }
     pub fn asset_id(&self, literal: AssetId) -> AssetIdValue {
-        LiteralAssetIdValue::new(literal)
+        Box::new(SignalValue::AssetId(literal))
     }
     pub fn flag(&self, literal: bool) -> FlagValue {
-        LiteralFlagValue::new(literal)
+        Box::new(SignalValue::Flag(literal))
     }
     pub fn number(&self, literal: f64) -> NumberValue {
-        LiteralNumberValue::new(literal)
+        Box::new(SignalValue::Number(literal))
     }
 }
 
