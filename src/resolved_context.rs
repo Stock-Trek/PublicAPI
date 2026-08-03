@@ -2,7 +2,7 @@ use crate::{
     actions::{recoverable_action::RecoveryPolicy, resolved_action::ResolvedAction},
     allocations::Allocation,
     error::result::StockTrekResult,
-    portfolios::portfolio::Portfolio,
+    portfolios::Portfolio,
     signal::signals::Signals,
 };
 
