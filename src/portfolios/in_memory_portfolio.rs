@@ -1,4 +1,3 @@
-use crate::portfolios::portfolio::{Portfolio, PortfolioTrait};
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
 
@@ -15,12 +14,6 @@ impl InMemoryPortfolio {
     }
 }
 
-impl From<InMemoryPortfolio> for Portfolio {
-    fn from(value: InMemoryPortfolio) -> Self {
-        Box::new(value)
-    }
-}
-
 #[derive(Debug, Clone, Default)]
 pub struct Assets {
     asset_counts: HashMap<AssetId, f64>,
@@ -31,44 +24,44 @@ impl Assets {
     }
 }
 
-impl PortfolioTrait for InMemoryPortfolio {
-    fn has_account_in_cex(&self, cex_id: &CexId) -> bool {
+impl InMemoryPortfolio {
+    pub fn has_account_in_cex(&self, cex_id: &CexId) -> bool {
         self.cex_assets.contains_key(cex_id)
     }
-    fn owns_asset(&self, asset_id: &AssetId) -> bool {
+    pub fn owns_asset(&self, asset_id: &AssetId) -> bool {
         self.cex_assets
             .values()
             .any(|assets| assets.asset_counts.contains_key(asset_id))
     }
-    fn owns_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> bool {
+    pub fn owns_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> bool {
         self.cex_assets
             .get(cex_id)
             .map(|assets| assets.asset_counts.contains_key(asset_id))
             .unwrap_or(false)
     }
-    fn asset_total(&self, asset_id: &AssetId) -> f64 {
+    pub fn asset_total(&self, asset_id: &AssetId) -> f64 {
         self.cex_assets
             .values()
             .map(|assets| assets.asset_counts.get(asset_id).unwrap_or(&0.0))
             .sum()
     }
-    fn asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
+    pub fn asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
         self.cex_assets
             .get(cex_id)
             .and_then(|assets| assets.asset_counts.get(asset_id))
             .copied()
             .unwrap_or(0.0)
     }
-    fn active_orders(&self) -> f64 {
+    pub fn active_orders(&self) -> f64 {
         0.0
     }
-    fn active_orders_with_tag(&self, _tag: &Tag) -> f64 {
+    pub fn active_orders_with_tag(&self, _tag: &Tag) -> f64 {
         0.0
     }
-    fn active_orders_in_cex(&self, _cex_id: &CexId) -> f64 {
+    pub fn active_orders_in_cex(&self, _cex_id: &CexId) -> f64 {
         0.0
     }
-    fn active_orders_in_cex_with_tag(&self, _cex_id: &CexId, _tag: &Tag) -> f64 {
+    pub fn active_orders_in_cex_with_tag(&self, _cex_id: &CexId, _tag: &Tag) -> f64 {
         0.0
     }
 }
