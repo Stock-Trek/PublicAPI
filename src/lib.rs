@@ -22,7 +22,7 @@ pub mod prelude {
     pub use crate::{
         actions::recoverable_action::{ErrorCause, ErrorResponse, RecoveryPolicy},
         algorithm::Algorithm,
-        allocations::allocation_factory::AllocationFactory,
+        allocations::AllocationFactory,
         commands::command::Command,
         portfolios::portfolio_factory::PortfolioFactory,
         preferences::Preferences,

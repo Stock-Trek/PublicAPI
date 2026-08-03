@@ -1,6 +1,6 @@
 use crate::{
     actions::{recoverable_action::RecoveryPolicy, resolved_action::ResolvedAction},
-    allocations::allocation::Allocation,
+    allocations::Allocation,
     error::result::StockTrekResult,
     portfolios::portfolio::Portfolio,
     signal::signals::Signals,
