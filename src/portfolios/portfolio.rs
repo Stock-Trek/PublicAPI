@@ -1,81 +1,142 @@
-use crate::portfolios::{in_memory_portfolio::InMemoryPortfolio, stub_portfolio::StubPortfolio};
+use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
+
+// ---------------------------------------------------------------------------
+// Supporting types
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, Default)]
+pub struct Assets {
+    asset_counts: HashMap<AssetId, f64>,
+}
+
+impl Assets {
+    pub fn new(asset_counts: HashMap<AssetId, f64>) -> Self {
+        Self { asset_counts }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Unified portfolio enum
+// ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone)]
 pub enum Portfolio {
-    InMemory(InMemoryPortfolio),
-    Stub(StubPortfolio),
+    InMemory { cex_assets: HashMap<CexId, Assets> },
+    Stub,
 }
 
 impl Portfolio {
     pub fn has_account_in_cex(&self, cex_id: &CexId) -> bool {
         match self {
-            Portfolio::InMemory(portfolio) => portfolio.has_account_in_cex(cex_id),
-            Portfolio::Stub(portfolio) => portfolio.has_account_in_cex(cex_id),
+            Portfolio::InMemory { cex_assets } => cex_assets.contains_key(cex_id),
+            Portfolio::Stub => true,
         }
     }
+
     pub fn owns_asset(&self, asset_id: &AssetId) -> bool {
         match self {
-            Portfolio::InMemory(portfolio) => portfolio.owns_asset(asset_id),
-            Portfolio::Stub(portfolio) => portfolio.owns_asset(asset_id),
+            Portfolio::InMemory { cex_assets } => cex_assets
+                .values()
+                .any(|assets| assets.asset_counts.contains_key(asset_id)),
+            Portfolio::Stub => true,
         }
     }
+
     pub fn owns_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> bool {
         match self {
-            Portfolio::InMemory(portfolio) => portfolio.owns_asset_in_cex(asset_id, cex_id),
-            Portfolio::Stub(portfolio) => portfolio.owns_asset_in_cex(asset_id, cex_id),
+            Portfolio::InMemory { cex_assets } => cex_assets
+                .get(cex_id)
+                .map(|assets| assets.asset_counts.contains_key(asset_id))
+                .unwrap_or(false),
+            Portfolio::Stub => true,
         }
     }
+
     pub fn asset_total(&self, asset_id: &AssetId) -> f64 {
         match self {
-            Portfolio::InMemory(portfolio) => portfolio.asset_total(asset_id),
-            Portfolio::Stub(portfolio) => portfolio.asset_total(asset_id),
+            Portfolio::InMemory { cex_assets } => cex_assets
+                .values()
+                .map(|assets| assets.asset_counts.get(asset_id).unwrap_or(&0.0))
+                .sum(),
+            Portfolio::Stub => 1_000_000.0,
         }
     }
+
     pub fn asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
         match self {
-            Portfolio::InMemory(portfolio) => portfolio.asset_in_cex(asset_id, cex_id),
-            Portfolio::Stub(portfolio) => portfolio.asset_in_cex(asset_id, cex_id),
+            Portfolio::InMemory { cex_assets } => cex_assets
+                .get(cex_id)
+                .and_then(|assets| assets.asset_counts.get(asset_id))
+                .copied()
+                .unwrap_or(0.0),
+            Portfolio::Stub => 1_000_000.0,
         }
     }
+
     pub fn active_orders(&self) -> f64 {
-        match self {
-            Portfolio::InMemory(portfolio) => portfolio.active_orders(),
-            Portfolio::Stub(portfolio) => portfolio.active_orders(),
+        0.0
+    }
+
+    pub fn active_orders_with_tag(&self, _tag: &Tag) -> f64 {
+        0.0
+    }
+
+    pub fn active_orders_in_cex(&self, _cex_id: &CexId) -> f64 {
+        0.0
+    }
+
+    pub fn active_orders_in_cex_with_tag(&self, _cex_id: &CexId, _tag: &Tag) -> f64 {
+        0.0
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Builder for InMemory variant
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Default)]
+pub struct Builder {
+    cex_assets: HashMap<CexId, Assets>,
+}
+
+impl Builder {
+    pub fn new() -> Self {
+        Self {
+            cex_assets: HashMap::new(),
         }
     }
-    pub fn active_orders_with_tag(&self, order_tag: &Tag) -> f64 {
-        match self {
-            Portfolio::InMemory(portfolio) => portfolio.active_orders_with_tag(order_tag),
-            Portfolio::Stub(portfolio) => portfolio.active_orders_with_tag(order_tag),
-        }
+
+    pub fn assets(&mut self, cex_id: CexId, asset_id: AssetId, quantity: f64) -> &mut Self {
+        self.cex_assets
+            .entry(cex_id)
+            .or_insert_with(|| Assets::new(HashMap::new()))
+            .asset_counts
+            .entry(asset_id)
+            .and_modify(|prev| *prev += quantity)
+            .or_insert(quantity);
+        self
     }
-    pub fn active_orders_in_cex(&self, cex_id: &CexId) -> f64 {
-        match self {
-            Portfolio::InMemory(portfolio) => portfolio.active_orders_in_cex(cex_id),
-            Portfolio::Stub(portfolio) => portfolio.active_orders_in_cex(cex_id),
-        }
-    }
-    pub fn active_orders_in_cex_with_tag(&self, cex_id: &CexId, order_tag: &Tag) -> f64 {
-        match self {
-            Portfolio::InMemory(portfolio) => {
-                portfolio.active_orders_in_cex_with_tag(cex_id, order_tag)
-            }
-            Portfolio::Stub(portfolio) => {
-                portfolio.active_orders_in_cex_with_tag(cex_id, order_tag)
-            }
+
+    pub fn build(&self) -> Portfolio {
+        Portfolio::InMemory {
+            cex_assets: self.cex_assets.clone(),
         }
     }
 }
 
-impl From<InMemoryPortfolio> for Portfolio {
-    fn from(value: InMemoryPortfolio) -> Self {
-        Portfolio::InMemory(value)
-    }
-}
+// ---------------------------------------------------------------------------
+// Factory
+// ---------------------------------------------------------------------------
 
-impl From<StubPortfolio> for Portfolio {
-    fn from(value: StubPortfolio) -> Self {
-        Portfolio::Stub(value)
+pub struct PortfolioFactory;
+
+impl PortfolioFactory {
+    pub fn stub() -> Portfolio {
+        Portfolio::Stub
+    }
+
+    pub fn in_memory_builder() -> Builder {
+        Builder::new()
     }
 }
