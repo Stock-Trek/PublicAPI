@@ -1,9 +1,8 @@
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub enum Allocation {
-    #[default]
     Stub,
     InMemory {
         cex_assets: HashMap<CexId, Allocations>,
@@ -44,11 +43,11 @@ impl Allocations {
 }
 
 #[derive(Clone, Default)]
-pub struct Builder {
+pub struct InMemoryAllocationBuilder {
     cex_allocations: HashMap<CexId, Allocations>,
 }
 
-impl Builder {
+impl InMemoryAllocationBuilder {
     pub fn new() -> Self {
         Self {
             cex_allocations: HashMap::new(),
