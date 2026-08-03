@@ -1,8 +1,76 @@
+use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 
-pub type Allocation = Box<dyn AllocationTrait>;
+#[derive(Debug, Clone)]
+pub enum Allocation {
+    Stub,
+    InMemory {
+        cex_assets: HashMap<CexId, Allocations>,
+    },
+}
 
-pub trait AllocationTrait {
-    fn allocation_for_asset_total(&self, asset_id: &AssetId) -> f64;
-    fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64;
+impl Allocation {
+    pub fn allocation_for_asset_total(&self, asset_id: &AssetId) -> f64 {
+        match self {
+            Allocation::Stub => 100.0,
+            Allocation::InMemory { cex_assets } => cex_assets
+                .values()
+                .map(|assets| assets.asset_allocations.get(asset_id).unwrap_or(&0.0))
+                .sum(),
+        }
+    }
+    pub fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
+        match self {
+            Allocation::Stub => 100.0,
+            Allocation::InMemory { cex_assets } => cex_assets
+                .get(cex_id)
+                .and_then(|assets| assets.asset_allocations.get(asset_id))
+                .copied()
+                .unwrap_or(0.0),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct Allocations {
+    asset_allocations: HashMap<AssetId, f64>,
+}
+
+impl Allocations {
+    pub fn new(asset_allocations: HashMap<AssetId, f64>) -> Self {
+        Self { asset_allocations }
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct InMemoryAllocationBuilder {
+    cex_allocations: HashMap<CexId, Allocations>,
+}
+
+impl InMemoryAllocationBuilder {
+    pub fn new() -> Self {
+        Self {
+            cex_allocations: HashMap::new(),
+        }
+    }
+    pub fn allocation(&mut self, cex_id: CexId, asset_id: AssetId, quantity: f64) -> &mut Self {
+        assert!(quantity > 0.0, "allocation must be greater than 0.0");
+        assert!(
+            quantity <= 100.0,
+            "allocation must be less or equal to 100.0"
+        );
+        self.cex_allocations
+            .entry(cex_id)
+            .or_insert_with(|| Allocations::new(HashMap::new()))
+            .asset_allocations
+            .entry(asset_id)
+            .and_modify(|prev| *prev += quantity)
+            .or_insert(quantity);
+        self
+    }
+    pub fn build(&self) -> Allocation {
+        Allocation::InMemory {
+            cex_assets: self.cex_allocations.clone(),
+        }
+    }
 }
