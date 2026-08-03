@@ -1,15 +1,12 @@
-use crate::allocations::{
-    allocation::Allocation, in_memory_allocation::Builder as InMemoryAllocationBuilder,
-    stub_allocation::StubAllocation,
-};
+use crate::allocations::allocation::{Allocation, Builder as AllocationBuilder};
 
 pub struct AllocationFactory;
 
 impl AllocationFactory {
     pub fn stub() -> Allocation {
-        StubAllocation::new().into()
+        Allocation::Stub
     }
-    pub fn in_memory_builder() -> InMemoryAllocationBuilder {
-        InMemoryAllocationBuilder::new()
+    pub fn in_memory_builder() -> AllocationBuilder {
+        AllocationBuilder::new()
     }
 }
