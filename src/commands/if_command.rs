@@ -1,7 +1,7 @@
 use crate::{
     cex::capability::{HasRequiredCapabilities, combine_capabilities},
     commands::command::{Command, CommandTrait},
-    conditions::condition::Condition,
+    conditions::Condition,
     error::result::StockTrekResult,
     resolved_context::ResolvedContext,
 };
