@@ -34,11 +34,10 @@ impl Command {
             } => {
                 let condition = condition.test(c)?;
                 if condition {
-                    if_true.execute(c)?;
+                    if_true.execute(c)
                 } else {
-                    if_false.execute(c)?;
+                    if_false.execute(c)
                 }
-                Ok(())
             }
             Command::List { commands } => {
                 for command in commands {
