@@ -4,11 +4,8 @@ use stock_trek_types::cex::{
 };
 
 use crate::{
-    cex::capability::HasRequiredCapabilities,
-    error::result::StockTrekResult,
-    resolveable::Resolvable,
-    resolved_context::ResolvedContext,
-    values::value::Value,
+    cex::capability::HasRequiredCapabilities, error::result::StockTrekResult,
+    resolveable::Resolvable, resolved_context::ResolvedContext, values::value::Value,
 };
 
 impl Resolvable<SingleOrder<AssetId, f64>> for SingleOrder<Value, Value> {

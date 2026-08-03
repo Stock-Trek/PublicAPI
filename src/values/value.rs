@@ -94,7 +94,7 @@ pub enum Value {
 impl Value {
     pub fn cex_id(&self, c: &ResolvedContext) -> StockTrekResult<CexId> {
         match self {
-            Value::CexId(cex_id) => Ok(cex_id.clone()),
+            Value::CexId(cex_id) => Ok(*cex_id),
             Value::CexIdSignal(key) => key.read(c),
             _ => err("CexId", self),
         }
@@ -102,7 +102,7 @@ impl Value {
 
     pub fn asset_id(&self, c: &ResolvedContext) -> StockTrekResult<AssetId> {
         match self {
-            Value::AssetId(asset_id) => Ok(asset_id.clone()),
+            Value::AssetId(asset_id) => Ok(*asset_id),
             Value::AssetIdSignal(key) => key.read(c),
             _ => err("AssetId", self),
         }

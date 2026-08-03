@@ -19,13 +19,13 @@ impl ActionFactory {
         RecoverableAction::new(
             Action::SendOrderRequest {
                 cex_id_value,
-                order_request,
+                order_request: Box::new(order_request),
             },
             recovery_policy,
         )
     }
     // TODO
-    // pub fn cancel_order(&self, cex_id_value: CexIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
+    // pub fn cancel_order(&self, cex_id_value: Value, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
     //   RecoverableAction::new(
     //     Action::CancelOrder { cex_id_value, order_id },
     //     recovery_policy,

@@ -31,21 +31,21 @@ impl OrderFactory {
     //     &self,
     //     primary: SingleOrderRaw,
     //     secondary: SingleOrderRaw,
-    // ) -> OrderRequest<AssetIdValue, NumberValue> {
+    // ) -> OrderRequest<Value, Value> {
     //     OrderRequest::OneCancelsOther(OneCancelsOtherOrderGeneric { primary, secondary })
     // }
     // pub fn one_triggers_other(
     //     &self,
     //     primary: SingleOrderRaw,
     //     secondary: SingleOrderRaw,
-    // ) -> OrderRequest<AssetIdValue, NumberValue> {
+    // ) -> OrderRequest<Value, Value> {
     //     OrderRequest::OneTriggersOther(OneTriggersOtherOrderGeneric { primary, secondary })
     // }
     // pub fn one_triggers_oco(
     //     &self,
     //     primary: SingleOrderRaw,
     //     oco_order: OneCancelsOtherOrderRaw,
-    // ) -> OrderRequest<AssetIdValue, NumberValue> {
+    // ) -> OrderRequest<Value, Value> {
     //     OrderRequest::OneTriggersOco(OneTriggersOcoOrderGeneric { primary, oco_order })
     // }
 }

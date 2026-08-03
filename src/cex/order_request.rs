@@ -1,9 +1,6 @@
 use crate::{
-    cex::capability::HasRequiredCapabilities,
-    error::result::StockTrekResult,
-    resolveable::Resolvable,
-    resolved_context::ResolvedContext,
-    values::value::Value,
+    cex::capability::HasRequiredCapabilities, error::result::StockTrekResult,
+    resolveable::Resolvable, resolved_context::ResolvedContext, values::value::Value,
 };
 use stock_trek_types::cex::{
     asset_id::AssetId, capability::CexCapability, order_request::OrderRequest,
