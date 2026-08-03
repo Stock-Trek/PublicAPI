@@ -4,7 +4,7 @@ use crate::{
         command::Command, if_command::IfCommand, list_command::ListCommand,
         no_op_command::NoOpCommand, plan_command::PlanCommand,
     },
-    conditions::condition::Condition,
+    conditions::Condition,
 };
 
 pub struct CommandFactory;
