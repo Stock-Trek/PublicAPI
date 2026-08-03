@@ -5,7 +5,7 @@ use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 pub enum Allocation {
     Stub,
     InMemory {
-        cex_assets: HashMap<CexId, Allocations>,
+        cex_allocations: HashMap<CexId, Allocations>,
     },
 }
 
@@ -13,7 +13,7 @@ impl Allocation {
     pub fn allocation_for_asset_total(&self, asset_id: &AssetId) -> f64 {
         match self {
             Allocation::Stub => 100.0,
-            Allocation::InMemory { cex_assets } => cex_assets
+            Allocation::InMemory { cex_allocations } => cex_allocations
                 .values()
                 .map(|assets| assets.asset_allocations.get(asset_id).unwrap_or(&0.0))
                 .sum(),
@@ -22,7 +22,7 @@ impl Allocation {
     pub fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
         match self {
             Allocation::Stub => 100.0,
-            Allocation::InMemory { cex_assets } => cex_assets
+            Allocation::InMemory { cex_allocations } => cex_allocations
                 .get(cex_id)
                 .and_then(|assets| assets.asset_allocations.get(asset_id))
                 .copied()
@@ -70,7 +70,7 @@ impl InMemoryAllocationBuilder {
     }
     pub fn build(&self) -> Allocation {
         Allocation::InMemory {
-            cex_assets: self.cex_allocations.clone(),
+            cex_allocations: self.cex_allocations.clone(),
         }
     }
 }

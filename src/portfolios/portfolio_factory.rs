@@ -1,14 +1,12 @@
-use crate::portfolios::{
-    in_memory_portfolio::Builder as InMemoryPortfolioBuilder, portfolio::Portfolio,
-    stub_portfolio::StubPortfolio,
-};
+use crate::portfolios::portfolio::{InMemoryPortfolioBuilder, Portfolio};
 
 pub struct PortfolioFactory;
 
 impl PortfolioFactory {
     pub fn stub() -> Portfolio {
-        StubPortfolio::new().into()
+        Portfolio::Stub
     }
+
     pub fn in_memory_builder() -> InMemoryPortfolioBuilder {
         InMemoryPortfolioBuilder::new()
     }
