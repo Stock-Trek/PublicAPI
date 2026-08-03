@@ -1,5 +1,5 @@
 use crate::{
-    commands::command::Command, preferences::Preferences, signal::signals::Signals,
+    commands::Command, preferences::Preferences, signal::signals::Signals,
     signal_context::SignalContext, strategy_context::StrategyContext,
 };
 
