@@ -1,18 +1,13 @@
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub enum Allocation {
+    #[default]
     Stub,
     InMemory {
         cex_assets: HashMap<CexId, Allocations>,
     },
-}
-
-impl Default for Allocation {
-    fn default() -> Self {
-        Allocation::Stub
-    }
 }
 
 impl Allocation {
