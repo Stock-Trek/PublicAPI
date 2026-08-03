@@ -1,7 +1,7 @@
 use crate::{
     error::result::{StockTrekError, StockTrekResult},
     resolved_context::ResolvedContext,
-    signal::value::SignalValue,
+    values::value::Value,
 };
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, marker::PhantomData};
@@ -16,7 +16,7 @@ pub struct SignalKey<T> {
 
 impl<T> Display for SignalKey<T>
 where
-    T: Clone + SignalKeyType + Into<SignalValue> + TryFrom<SignalValue, Error = StockTrekError>,
+    T: Clone + SignalKeyType + Into<Value> + TryFrom<Value, Error = StockTrekError>,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "SignalKey::{}({})", T::KEY_NAME, self.key)
@@ -25,7 +25,7 @@ where
 
 impl<T> SignalKey<T>
 where
-    T: Clone + SignalKeyType + Into<SignalValue> + TryFrom<SignalValue, Error = StockTrekError>,
+    T: Clone + SignalKeyType + Into<Value> + TryFrom<Value, Error = StockTrekError>,
 {
     pub fn new_required(key: impl AsRef<str>) -> Self {
         Self {

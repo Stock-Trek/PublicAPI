@@ -6,7 +6,7 @@ use crate::{
     resolved_context::ResolvedContext,
     signal::key::SignalKey,
     util::serde_ordering,
-    values::value::NumberValue,
+    values::value::Value,
 };
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
@@ -17,10 +17,10 @@ use strum::Display;
 #[serde(tag = "type")]
 pub enum Condition {
     Compare {
-        left: NumberValue,
+        left: Value,
         #[serde(with = "serde_ordering")]
         comparison: Ordering,
-        right: NumberValue,
+        right: Value,
     },
     HasAccountInCex {
         cex_id: CexId,
@@ -119,12 +119,7 @@ pub enum QuantityOf {
 pub struct ConditionFactory;
 
 impl ConditionFactory {
-    pub fn compare(
-        &self,
-        left: NumberValue,
-        comparison: Ordering,
-        right: NumberValue,
-    ) -> Condition {
+    pub fn compare(&self, left: Value, comparison: Ordering, right: Value) -> Condition {
         Condition::Compare {
             left,
             comparison,

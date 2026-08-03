@@ -26,9 +26,10 @@ pub mod prelude {
         commands::Command,
         portfolios::PortfolioFactory,
         preferences::Preferences,
-        signal::{key::SignalKey, signals::Signals, value::SignalValue},
+        signal::{key::SignalKey, signals::Signals},
         signal_context::SignalContext,
         strategy_context::StrategyContext,
+        values::value::Value,
     };
 
     pub use rust_decimal::RoundingStrategy;

@@ -3,7 +3,8 @@ use crate::{
         result::{StockTrekError, StockTrekResult},
         value::ValueError,
     },
-    signal::{key::SignalKey, key::SignalKeyType, value::SignalValue},
+    signal::key::{SignalKey, SignalKeyType},
+    values::value::Value,
 };
 use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
@@ -11,7 +12,7 @@ use std::convert::TryFrom;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Signals {
-    signal_values: HashMap<String, SignalValue>,
+    signal_values: HashMap<String, Value>,
 }
 
 impl Signals {
@@ -31,7 +32,7 @@ impl Default for Signals {
 impl Signals {
     pub fn read<T>(&self, key: &SignalKey<T>) -> StockTrekResult<T>
     where
-        T: Clone + SignalKeyType + Into<SignalValue> + TryFrom<SignalValue, Error = StockTrekError>,
+        T: Clone + SignalKeyType + Into<Value> + TryFrom<Value, Error = StockTrekError>,
     {
         let key_str = key.key();
         let v = self.signal_values.get(key_str);
@@ -51,7 +52,7 @@ impl Signals {
     }
     pub fn write<T>(&mut self, key: &SignalKey<T>, value: T)
     where
-        T: Clone + SignalKeyType + Into<SignalValue> + TryFrom<SignalValue, Error = StockTrekError>,
+        T: Clone + SignalKeyType + Into<Value> + TryFrom<Value, Error = StockTrekError>,
     {
         self.signal_values
             .insert(key.key().to_string(), value.into());

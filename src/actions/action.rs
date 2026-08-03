@@ -4,7 +4,7 @@ use crate::{
     error::result::StockTrekResult,
     resolveable::Resolvable,
     resolved_context::ResolvedContext,
-    values::value::{AssetIdValue, CexIdValue, NumberValue},
+    values::value::Value,
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest, tag::Tag};
@@ -12,18 +12,18 @@ use stock_trek_types::cex::{capability::CexCapability, order_request::OrderReque
 #[derive(Serialize, Deserialize)]
 pub enum Action {
     SendOrderRequest {
-        cex_id_value: CexIdValue,
-        order_request: OrderRequest<AssetIdValue, NumberValue>,
+        cex_id_value: Value,
+        order_request: OrderRequest<Value, Value>,
     },
     CancelAllOrders,
     CancelAllOrdersWithTag {
         tag: Tag,
     },
     CancelAllOrdersInCex {
-        cex_id_value: CexIdValue,
+        cex_id_value: Value,
     },
     CancelAllOrdersInCexWithTag {
-        cex_id_value: CexIdValue,
+        cex_id_value: Value,
         tag: Tag,
     },
 }

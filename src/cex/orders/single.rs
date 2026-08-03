@@ -8,10 +8,10 @@ use crate::{
     error::result::StockTrekResult,
     resolveable::Resolvable,
     resolved_context::ResolvedContext,
-    values::value::{AssetIdValue, NumberValue},
+    values::value::Value,
 };
 
-impl Resolvable<SingleOrder<AssetId, f64>> for SingleOrder<AssetIdValue, NumberValue> {
+impl Resolvable<SingleOrder<AssetId, f64>> for SingleOrder<Value, Value> {
     fn try_resolve(&self, c: &ResolvedContext) -> StockTrekResult<SingleOrder<AssetId, f64>> {
         Ok(SingleOrder {
             base: self.base.asset_id(c)?,

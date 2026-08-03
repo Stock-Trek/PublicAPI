@@ -1,10 +1,10 @@
 use crate::{
     error::result::StockTrekResult, resolveable::Resolvable, resolved_context::ResolvedContext,
-    values::value::NumberValue,
+    values::value::Value,
 };
 use stock_trek_types::cex::pricing::Pricing;
 
-impl Resolvable<Pricing<f64>> for Pricing<NumberValue> {
+impl Resolvable<Pricing<f64>> for Pricing<Value> {
     fn try_resolve(&self, context: &ResolvedContext) -> StockTrekResult<Pricing<f64>> {
         match self {
             Self::Market => Ok(Pricing::Market),

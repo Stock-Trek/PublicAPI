@@ -1,4 +1,4 @@
-use crate::values::value::{AssetIdValue, NumberValue};
+use crate::values::value::Value;
 use stock_trek_types::cex::{
     activation::Activation, order_request::OrderRequest, orders::single_order::SingleOrder,
     pricing::Pricing, quantity::Quantity, side::Side, tag::Tag,
@@ -9,14 +9,14 @@ pub struct OrderFactory;
 impl OrderFactory {
     pub fn single(
         &self,
-        base: AssetIdValue,
-        quote: AssetIdValue,
+        base: Value,
+        quote: Value,
         side: Side,
-        activation: Activation<NumberValue>,
-        pricing: Pricing<NumberValue>,
-        quantity: Quantity<NumberValue>,
+        activation: Activation<Value>,
+        pricing: Pricing<Value>,
+        quantity: Quantity<Value>,
         tag: Tag,
-    ) -> OrderRequest<AssetIdValue, NumberValue> {
+    ) -> OrderRequest<Value, Value> {
         OrderRequest::Single(SingleOrder {
             base,
             quote,
