@@ -1,7 +1,7 @@
 use crate::{
     actions::{
+        action::Action,
         recoverable_action::{RecoverableAction, RecoveryPolicy},
-        send_order_request_action::SendOrderRequestAction,
     },
     values::value::{AssetIdValue, CexIdValue, NumberValue},
 };
@@ -17,14 +17,17 @@ impl ActionFactory {
         recovery_policy: RecoveryPolicy,
     ) -> RecoverableAction {
         RecoverableAction::new(
-            SendOrderRequestAction::new(cex_id_value, order_request),
+            Action::SendOrderRequest {
+                cex_id_value,
+                order_request,
+            },
             recovery_policy,
         )
     }
     // TODO
     // pub fn cancel_order(&self, cex_id_value: CexIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
     //   RecoverableAction::new(
-    //     PlaceOrderAction::new(cex_id_value, order_request),
+    //     Action::CancelOrder { cex_id_value, order_id },
     //     recovery_policy,
     //   )
     // }
