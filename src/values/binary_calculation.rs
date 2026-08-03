@@ -65,10 +65,7 @@ impl BinaryOperator {
                 if left < 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
-                        message: format!(
-                            "argument {} < 0 would produce a complex number",
-                            left
-                        ),
+                        message: format!("argument {} < 0 would produce a complex number", left),
                     }));
                 }
                 if right < 0.0 {
