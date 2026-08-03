@@ -1,40 +1,157 @@
-use crate::{error::result::StockTrekResult, resolved_context::ResolvedContext};
-use std::{
-    fmt::{Debug, Formatter},
-    hash::{Hash, Hasher},
+use crate::{
+    error::result::StockTrekResult,
+    resolved_context::ResolvedContext,
+    signal::key::SignalKey,
+    values::{binary_operator::BinaryOperator, unary_operator::UnaryOperator},
 };
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
+use serde::{Deserialize, Serialize};
+use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
 
-macro_rules! value_type {
-    ($name:ident, $trait_name:ident, $getter:ident, $value:ident) => {
-        pub type $name = Box<dyn $trait_name>;
-        impl Debug for $name {
-            fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
-                f.debug_tuple(stringify!($name)).finish()
-            }
-        }
-        impl Clone for $name {
-            fn clone(&self) -> $name {
-                (**self).clone_box()
-            }
-        }
-        impl Hash for $name {
-            fn hash<H>(&self, state: &mut H)
-            where
-                H: Hasher,
-            {
-                stringify!($name).hash(state)
-            }
-        }
-        #[typetag::serde]
-        pub trait $trait_name: Send + Sync {
-            fn clone_box(&self) -> $name;
-            fn $getter(&self, c: &ResolvedContext) -> StockTrekResult<$value>;
-        }
-    };
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum CexIdValue {
+    Literal { literal: CexId },
+    Signal { signal: SignalKey<CexId> },
 }
 
-value_type! {CexIdValue, CexIdValueTrait, cex_id, CexId}
-value_type! {AssetIdValue, AssetIdValueTrait, asset_id, AssetId}
-value_type! {FlagValue, FlagValueTrait, flag, bool}
-value_type! {NumberValue, NumberValueTrait, number, f64}
+impl CexIdValue {
+    pub fn cex_id(&self, c: &ResolvedContext) -> StockTrekResult<CexId> {
+        match self {
+            Self::Literal { literal } => Ok(*literal),
+            Self::Signal { signal } => signal.read(c),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum AssetIdValue {
+    Literal { literal: AssetId },
+    Signal { signal: SignalKey<AssetId> },
+}
+
+impl AssetIdValue {
+    pub fn asset_id(&self, c: &ResolvedContext) -> StockTrekResult<AssetId> {
+        match self {
+            Self::Literal { literal } => Ok(*literal),
+            Self::Signal { signal } => signal.read(c),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum FlagValue {
+    Literal { literal: bool },
+    Signal { signal: SignalKey<bool> },
+}
+
+impl FlagValue {
+    pub fn flag(&self, c: &ResolvedContext) -> StockTrekResult<bool> {
+        match self {
+            Self::Literal { literal } => Ok(*literal),
+            Self::Signal { signal } => signal.read(c),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum NumberValue {
+    Literal {
+        literal: f64,
+    },
+    Signal {
+        signal: SignalKey<f64>,
+    },
+    ActiveOrders,
+    ActiveOrdersInCex {
+        cex_id_value: CexIdValue,
+    },
+    ActiveOrdersInCexWithTag {
+        cex_id_value: CexIdValue,
+        tag: Tag,
+    },
+    ActiveOrdersWithTag {
+        tag: Tag,
+    },
+    AllocationForAssetInCex {
+        cex_id_value: CexIdValue,
+        asset_id_value: AssetIdValue,
+    },
+    AllocationForAssetTotal {
+        asset_id_value: AssetIdValue,
+    },
+    AssetInCex {
+        cex_id_value: CexIdValue,
+        asset_id_value: AssetIdValue,
+    },
+    AssetTotal {
+        asset_id_value: AssetIdValue,
+    },
+    BinaryCalculation {
+        left: Box<NumberValue>,
+        operator: BinaryOperator,
+        right: Box<NumberValue>,
+    },
+    UnaryCalculation {
+        operator: UnaryOperator,
+        number: Box<NumberValue>,
+    },
+}
+
+impl NumberValue {
+    pub fn number(&self, c: &ResolvedContext) -> StockTrekResult<f64> {
+        match self {
+            Self::Literal { literal } => Ok(*literal),
+            Self::Signal { signal } => signal.read(c),
+            Self::ActiveOrders => Ok(c.portfolio.active_orders()),
+            Self::ActiveOrdersInCex { cex_id_value } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                Ok(c.portfolio.active_orders_in_cex(&cex_id))
+            }
+            Self::ActiveOrdersInCexWithTag { cex_id_value, tag } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                Ok(c.portfolio.active_orders_in_cex_with_tag(&cex_id, tag))
+            }
+            Self::ActiveOrdersWithTag { tag } => Ok(c.portfolio.active_orders_with_tag(tag)),
+            Self::AllocationForAssetInCex {
+                cex_id_value,
+                asset_id_value,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.allocation.allocation_for_asset_in_cex(&asset_id, &cex_id))
+            }
+            Self::AllocationForAssetTotal { asset_id_value } => {
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.allocation.allocation_for_asset_total(&asset_id))
+            }
+            Self::AssetInCex {
+                cex_id_value,
+                asset_id_value,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio.asset_in_cex(&asset_id, &cex_id))
+            }
+            Self::AssetTotal { asset_id_value } => {
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio.asset_total(&asset_id))
+            }
+            Self::BinaryCalculation {
+                left,
+                operator,
+                right,
+            } => {
+                let left_value = left.number(c)?;
+                let right_value = right.number(c)?;
+                operator.calculate(left_value, right_value)
+            }
+            Self::UnaryCalculation { number, operator } => {
+                let value = number.number(c)?;
+                operator.calculate(value)
+            }
+        }
+    }
+}

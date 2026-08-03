@@ -1,10 +1,6 @@
-use crate::{
-    error::{
-        result::{StockTrekError, StockTrekResult},
-        stats::StatsError,
-    },
-    resolved_context::ResolvedContext,
-    values::value::{NumberValue, NumberValueTrait},
+use crate::error::{
+    result::{StockTrekError, StockTrekResult},
+    stats::StatsError,
 };
 use serde::{Deserialize, Serialize};
 use strum::Display;
@@ -21,102 +17,76 @@ pub enum BinaryOperator {
     Atan2,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct BinaryCalculationValue {
-    left: NumberValue,
-    operator: BinaryOperator,
-    right: NumberValue,
-}
-
-impl BinaryCalculationValue {
-    pub fn new(left: NumberValue, operator: BinaryOperator, right: NumberValue) -> NumberValue {
-        Box::new(Self {
-            left,
-            operator,
-            right,
-        })
-    }
-}
-
-#[typetag::serde]
-impl NumberValueTrait for BinaryCalculationValue {
-    fn clone_box(&self) -> NumberValue {
-        Box::new(self.clone())
-    }
-    fn number(&self, c: &ResolvedContext) -> StockTrekResult<f64> {
-        let left_value = self.left.number(c)?;
-        let right_value = self.right.number(c)?;
-        let calculation_result = match self.operator {
-            BinaryOperator::Add => left_value + right_value,
-            BinaryOperator::Atan2 => left_value.atan2(right_value),
+impl BinaryOperator {
+    pub fn calculate(self, left: f64, right: f64) -> StockTrekResult<f64> {
+        let calculation_result = match self {
+            BinaryOperator::Add => left + right,
+            BinaryOperator::Atan2 => left.atan2(right),
             BinaryOperator::Div => {
-                if right_value == 0.0 {
+                if right == 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DivisionByZero {
                         function: "Div",
                         detail: "divisor = 0 would produce +/- infinity".to_string(),
                     }));
                 }
-                left_value / right_value
+                left / right
             }
             BinaryOperator::Pow => {
-                if left_value < 0.0 && right_value.fract() != 0.0 {
+                if left < 0.0 && right.fract() != 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Pow",
                         message: format!(
                             "base {} < 0 with fractional exponent {} would produce a complex number",
-                            left_value, right_value
+                            left, right
                         ),
                     }));
                 }
-                left_value.powf(right_value)
+                left.powf(right)
             }
             BinaryOperator::Log => {
-                if left_value == 0.0 {
+                if left == 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
                         message: "argument = 0 is undefined".to_string(),
                     }));
                 }
-                if right_value == 0.0 {
+                if right == 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
                         message: "base = 0 is undefined".to_string(),
                     }));
                 }
-                if right_value == 1.0 {
+                if right == 1.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
                         message: "base = 1 is undefined".to_string(),
                     }));
                 }
-                if left_value < 0.0 {
+                if left < 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
-                        message: format!(
-                            "argument {} < 0 would produce a complex number",
-                            left_value
-                        ),
+                        message: format!("argument {} < 0 would produce a complex number", left),
                     }));
                 }
-                if right_value < 0.0 {
+                if right < 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DomainError {
                         function: "Log",
-                        message: format!("base {} < 0 would produce a complex number", right_value),
+                        message: format!("base {} < 0 would produce a complex number", right),
                     }));
                 }
-                left_value.log(right_value)
+                left.log(right)
             }
             BinaryOperator::Mod => {
-                if right_value == 0.0 {
+                if right == 0.0 {
                     return Err(StockTrekError::Stats(StatsError::DivisionByZero {
                         function: "Mod",
                         detail: "divisor = 0 would produce +/- infinity".to_string(),
                     }));
                 }
-                left_value % right_value
+                left % right
             }
-            BinaryOperator::Mul => left_value * right_value,
-            BinaryOperator::Sub => left_value - right_value,
+            BinaryOperator::Mul => left * right,
+            BinaryOperator::Sub => left - right,
         };
         Ok(calculation_result)
     }

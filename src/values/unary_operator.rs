@@ -1,10 +1,6 @@
-use crate::{
-    error::{
-        result::{StockTrekError, StockTrekResult},
-        stats::StatsError,
-    },
-    resolved_context::ResolvedContext,
-    values::value::{NumberValue, NumberValueTrait},
+use crate::error::{
+    result::{StockTrekError, StockTrekResult},
+    stats::StatsError,
 };
 use serde::{Deserialize, Serialize};
 use strum::Display;
@@ -39,26 +35,9 @@ pub enum UnaryOperator {
     Atanh,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct UnaryCalculationValue {
-    number: NumberValue,
-    operator: UnaryOperator,
-}
-
-impl UnaryCalculationValue {
-    pub fn new(number: NumberValue, operator: UnaryOperator) -> NumberValue {
-        Box::new(Self { number, operator })
-    }
-}
-
-#[typetag::serde]
-impl NumberValueTrait for UnaryCalculationValue {
-    fn clone_box(&self) -> NumberValue {
-        Box::new(self.clone())
-    }
-    fn number(&self, c: &ResolvedContext) -> StockTrekResult<f64> {
-        let value = self.number.number(c)?;
-        let calculation_result = match self.operator {
+impl UnaryOperator {
+    pub fn calculate(self, value: f64) -> StockTrekResult<f64> {
+        let calculation_result = match self {
             UnaryOperator::Abs => value.abs(),
             UnaryOperator::Acos => {
                 if value < -1.0 {
