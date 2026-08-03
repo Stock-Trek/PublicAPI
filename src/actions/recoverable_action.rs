@@ -1,6 +1,6 @@
 use crate::{
     actions::action::Action, cex::capability::HasRequiredCapabilities,
-    error::result::StockTrekResult, resolved_context::ResolvedContext,
+    error::result::StockTrekResult, resolveable::Resolvable, resolved_context::ResolvedContext,
 };
 use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
