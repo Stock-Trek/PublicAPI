@@ -24,7 +24,7 @@ pub mod prelude {
         algorithm::Algorithm,
         allocations::allocation_factory::AllocationFactory,
         commands::command::Command,
-        portfolios::portfolio::PortfolioFactory,
+        portfolios::portfolio_factory::PortfolioFactory,
         preferences::Preferences,
         signal::{key::SignalKey, signals::Signals, value::SignalValue},
         signal_context::SignalContext,
