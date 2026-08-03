@@ -1,20 +1,7 @@
 use crate::{
     signal::key::SignalKey,
-    values::{
-        active_orders_in_cex_value::ActiveOrdersInCexValue,
-        active_orders_in_cex_with_tag_value::ActiveOrdersInCexWithTagValue,
-        active_orders_value::ActiveOrdersValue,
-        active_orders_with_tag_value::ActiveOrdersWithTagValue,
-        allocation_for_asset_in_cex_value::AllocationForAssetInCexValue,
-        allocation_for_asset_total_value::AllocationForAssetTotalValue,
-        asset_in_cex_value::AssetInCexValue,
-        asset_total_value::AssetTotalValue,
-        binary_calculation_value::{BinaryCalculationValue, BinaryOperator},
-        literal_value::{
-            LiteralAssetIdValue, LiteralCexIdValue, LiteralFlagValue, LiteralNumberValue,
-        },
-        unary_calculation_value::{UnaryCalculationValue, UnaryOperator},
-        value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
+    values::value::{
+        AssetIdValue, BinaryOperator, CexIdValue, FlagValue, NumberValue, UnaryOperator,
     },
 };
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
@@ -31,10 +18,13 @@ impl AllocationValuesFactory {
         cex_id_value: CexIdValue,
         asset_id_value: AssetIdValue,
     ) -> NumberValue {
-        AllocationForAssetInCexValue::new(cex_id_value, asset_id_value)
+        NumberValue::AllocationForAssetInCex {
+            cex_id_value,
+            asset_id_value,
+        }
     }
     pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        AllocationForAssetTotalValue::new(asset_id_value)
+        NumberValue::AllocationForAssetTotal { asset_id_value }
     }
 }
 
@@ -44,22 +34,25 @@ impl PortfolioValuesFactory {
         cex_id_value: CexIdValue,
         asset_id_value: AssetIdValue,
     ) -> NumberValue {
-        AssetInCexValue::new(cex_id_value, asset_id_value)
+        NumberValue::AssetInCex {
+            cex_id_value,
+            asset_id_value,
+        }
     }
     pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        AssetTotalValue::new(asset_id_value)
+        NumberValue::AssetTotal { asset_id_value }
     }
     pub fn active_orders_in_cex(&self, cex_id_value: CexIdValue) -> NumberValue {
-        ActiveOrdersInCexValue::new(cex_id_value)
+        NumberValue::ActiveOrdersInCex { cex_id_value }
     }
     pub fn active_orders_in_cex_with_tag(&self, cex_id_value: CexIdValue, tag: Tag) -> NumberValue {
-        ActiveOrdersInCexWithTagValue::new(cex_id_value, tag)
+        NumberValue::ActiveOrdersInCexWithTag { cex_id_value, tag }
     }
     pub fn active_orders(&self) -> NumberValue {
-        ActiveOrdersValue::new()
+        NumberValue::ActiveOrders
     }
     pub fn active_orders_with_tag(&self, tag: Tag) -> NumberValue {
-        ActiveOrdersWithTagValue::new(tag)
+        NumberValue::ActiveOrdersWithTag { tag }
     }
 }
 
@@ -70,39 +63,54 @@ impl CalculationValuesFactory {
         operator: BinaryOperator,
         right: NumberValue,
     ) -> NumberValue {
-        BinaryCalculationValue::new(left, operator, right)
+        NumberValue::BinaryCalculation {
+            left: Box::new(left),
+            operator,
+            right: Box::new(right),
+        }
     }
     pub fn unary(&self, number: NumberValue, operator: UnaryOperator) -> NumberValue {
-        UnaryCalculationValue::new(number, operator)
+        NumberValue::UnaryCalculation {
+            number: Box::new(number),
+            operator,
+        }
     }
 }
 
 impl LiteralValuesFactory {
     pub fn cex_id(&self, literal: CexId) -> CexIdValue {
-        LiteralCexIdValue::new(literal)
+        CexIdValue::Literal { literal }
     }
     pub fn asset_id(&self, literal: AssetId) -> AssetIdValue {
-        LiteralAssetIdValue::new(literal)
+        AssetIdValue::Literal { literal }
     }
     pub fn flag(&self, literal: bool) -> FlagValue {
-        LiteralFlagValue::new(literal)
+        FlagValue::Literal { literal }
     }
     pub fn number(&self, literal: f64) -> NumberValue {
-        LiteralNumberValue::new(literal)
+        NumberValue::Literal { literal }
     }
 }
 
 impl SignalValuesFactory {
     pub fn cex_id(&self, key: &SignalKey<CexId>) -> CexIdValue {
-        Box::new(key.clone())
+        CexIdValue::Signal {
+            signal: key.clone(),
+        }
     }
     pub fn asset_id(&self, key: &SignalKey<AssetId>) -> AssetIdValue {
-        Box::new(key.clone())
+        AssetIdValue::Signal {
+            signal: key.clone(),
+        }
     }
     pub fn flag(&self, key: &SignalKey<bool>) -> FlagValue {
-        Box::new(key.clone())
+        FlagValue::Signal {
+            signal: key.clone(),
+        }
     }
     pub fn number(&self, key: &SignalKey<f64>) -> NumberValue {
-        Box::new(key.clone())
+        NumberValue::Signal {
+            signal: key.clone(),
+        }
     }
 }

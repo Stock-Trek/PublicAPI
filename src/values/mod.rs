@@ -1,14 +1,2 @@
-pub mod active_orders_in_cex_value;
-pub mod active_orders_in_cex_with_tag_value;
-pub mod active_orders_value;
-pub mod active_orders_with_tag_value;
-pub mod allocation_for_asset_in_cex_value;
-pub mod allocation_for_asset_total_value;
-pub mod asset_in_cex_value;
-pub mod asset_total_value;
-pub mod binary_calculation_value;
-pub mod literal_value;
-pub mod signal_value;
-pub mod unary_calculation_value;
 pub mod value;
 pub mod values_factory;
