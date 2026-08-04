@@ -9,7 +9,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Action {
     SendOrderRequest {
         cex_id_value: CexIdValue,

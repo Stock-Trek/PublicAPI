@@ -9,7 +9,7 @@ use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Signals {
     signal_values: HashMap<String, SignalValue>,
 }

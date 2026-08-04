@@ -1,8 +1,16 @@
 use serde::{Deserialize, Serialize};
-use strum::Display;
 
-#[derive(Debug, Display, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum AssetKind {
     Native,
     Contract(String),
+}
+
+impl std::fmt::Display for AssetKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AssetKind::Native => write!(f, "native"),
+            AssetKind::Contract(name) => write!(f, "contract({})", name),
+        }
+    }
 }

@@ -7,6 +7,7 @@ use crate::{
 };
 use stock_trek_types::cex::order_request::OrderRequest;
 
+#[derive(Debug, Clone)]
 pub struct ActionFactory;
 
 impl ActionFactory {

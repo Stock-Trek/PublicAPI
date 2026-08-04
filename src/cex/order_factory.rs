@@ -4,6 +4,7 @@ use stock_trek_types::cex::{
     pricing::Pricing, quantity::Quantity, side::Side, tag::Tag,
 };
 
+#[derive(Debug, Clone)]
 pub struct OrderFactory;
 
 impl OrderFactory {

@@ -9,6 +9,7 @@ use crate::{
     },
 };
 
+#[derive(Debug, Clone)]
 pub struct StrategyContext {
     pub actions: ActionFactory,
     pub allocation: AllocationValuesFactory,

@@ -8,7 +8,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::capability::CexCapability;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Command {
     If {
         condition: Condition,
@@ -81,6 +81,7 @@ impl HasRequiredCapabilities for Command {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct CommandFactory;
 
 impl CommandFactory {

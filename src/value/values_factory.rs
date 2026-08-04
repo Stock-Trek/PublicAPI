@@ -8,10 +8,15 @@ use crate::{
 };
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
 
+#[derive(Debug, Clone)]
 pub struct AllocationValuesFactory;
+#[derive(Debug, Clone)]
 pub struct PortfolioValuesFactory;
+#[derive(Debug, Clone)]
 pub struct CalculationValuesFactory;
+#[derive(Debug, Clone)]
 pub struct LiteralValuesFactory;
+#[derive(Debug, Clone)]
 pub struct SignalValuesFactory;
 
 impl AllocationValuesFactory {

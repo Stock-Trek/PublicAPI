@@ -42,7 +42,7 @@ impl Allocations {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct InMemoryAllocationBuilder {
     cex_allocations: HashMap<CexId, Allocations>,
 }

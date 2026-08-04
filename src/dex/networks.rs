@@ -19,7 +19,7 @@ pub const FAMILY_ID_TRON: &str = "tron";
 pub mod arbitrum {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Sepolia,
@@ -56,7 +56,7 @@ pub mod arbitrum {
 pub mod avalanche {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Fuji,
@@ -90,7 +90,7 @@ pub mod avalanche {
 pub mod base {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Sepolia,
@@ -124,7 +124,7 @@ pub mod base {
 pub mod bitcoin {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -161,7 +161,7 @@ pub mod bitcoin {
 pub mod bitcoin_cash {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -194,7 +194,7 @@ pub mod bitcoin_cash {
 pub mod bsc {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -228,7 +228,7 @@ pub mod bsc {
 pub mod celo {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Alfajores,
@@ -262,7 +262,7 @@ pub mod celo {
 pub mod cosmos {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Hub,
         Testnet,
@@ -295,7 +295,7 @@ pub mod cosmos {
 pub mod cronos {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -329,7 +329,7 @@ pub mod cronos {
 pub mod dogecoin {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -362,7 +362,7 @@ pub mod dogecoin {
 pub mod ethereum {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Sepolia,
@@ -399,7 +399,7 @@ pub mod ethereum {
 pub mod fantom {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -433,7 +433,7 @@ pub mod fantom {
 pub mod gnosis {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Chiado,
@@ -467,7 +467,7 @@ pub mod gnosis {
 pub mod litecoin {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -500,7 +500,7 @@ pub mod litecoin {
 pub mod moonbeam {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Moonbase,
@@ -534,7 +534,7 @@ pub mod moonbeam {
 pub mod near {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -567,7 +567,7 @@ pub mod near {
 pub mod optimism {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Sepolia,
@@ -601,7 +601,7 @@ pub mod optimism {
 pub mod osmosis {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -634,7 +634,7 @@ pub mod osmosis {
 pub mod polygon {
     use crate::dex::network::NetworkId;
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Amoy,
@@ -671,7 +671,7 @@ pub mod polygon {
 pub mod solana {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Testnet,
@@ -706,7 +706,7 @@ pub mod solana {
 pub mod tron {
     use crate::dex::network::{Network, NetworkId};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Debug, Display, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum NetworkName {
         Mainnet,
         Shasta,

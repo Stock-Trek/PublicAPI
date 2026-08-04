@@ -24,6 +24,7 @@ pub struct Market {
     pub order_book: MarketOrderBook,
 }
 
+#[derive(Debug, Clone)]
 pub struct MarketBuilder {
     pub base_increment: f64,
     pub quote_increment: f64,

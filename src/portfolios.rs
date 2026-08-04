@@ -83,7 +83,7 @@ impl Assets {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct InMemoryPortfolioBuilder {
     cex_assets: HashMap<CexId, Assets>,
 }

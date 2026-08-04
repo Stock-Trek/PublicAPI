@@ -2,6 +2,7 @@ use crate::market_data::market::Market;
 use hashbrown::HashMap;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 
+#[derive(Debug, Clone)]
 pub struct SignalContext {
     cex_market_data: HashMap<CexId, CexMarketDataByBaseContext>,
 }
@@ -38,6 +39,7 @@ impl SignalContext {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct CexMarketDataByBaseContext {
     markets_by_base: HashMap<AssetId, CexMarketDataByQuoteContext>,
 }
@@ -48,6 +50,7 @@ impl CexMarketDataByBaseContext {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct CexMarketDataByQuoteContext {
     markets_by_quote: HashMap<AssetId, Market>,
 }

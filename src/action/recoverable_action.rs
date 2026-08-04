@@ -4,10 +4,11 @@ use crate::{
 };
 use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
+use std::fmt::Debug;
 use stock_trek_types::cex::capability::CexCapability;
 use strum::Display;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecoverableAction {
     action: Action,
     recovery_policy: RecoveryPolicy,
@@ -33,7 +34,7 @@ impl HasRequiredCapabilities for RecoverableAction {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecoveryPolicy {
     default_response: ActionErrorResponse,
     on_error: HashMap<ActionErrorCause, ActionErrorResponse>,
@@ -52,7 +53,15 @@ impl RecoveryPolicy {
     }
 }
 
-#[derive(Display, Serialize, Deserialize)]
+#[derive(Debug, Display, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ActionErrorCause {
+    PermanentCexRejection,
+    TemporaryCexRejection,
+    InsufficientBalance,
+    StaleAction,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ActionErrorResponse {
     Stop,
     Ignore,
@@ -60,10 +69,13 @@ pub enum ActionErrorResponse {
     Instead { plan: Vec<RecoverableAction> },
 }
 
-#[derive(Debug, Display, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ActionErrorCause {
-    PermanentCexRejection,
-    TemporaryCexRejection,
-    InsufficientBalance,
-    StaleAction,
+impl std::fmt::Display for ActionErrorResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ActionErrorResponse::Ignore => write!(f, "ignore"),
+            ActionErrorResponse::Instead { plan } => write!(f, "instead({:#?})", plan),
+            ActionErrorResponse::Retry { max_retries } => write!(f, "max_retries({})", max_retries),
+            ActionErrorResponse::Stop => write!(f, "stop"),
+        }
+    }
 }

@@ -29,7 +29,7 @@ impl std::fmt::Display for NetworkId {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct ChainId(u64);
 
 impl ChainId {
