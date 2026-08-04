@@ -6,7 +6,7 @@ use crate::{
     resolved_context::ResolvedContext,
     signal::key::SignalKey,
     util::serde_ordering,
-    values::value::NumberValue,
+    value::value::NumberValue,
 };
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;

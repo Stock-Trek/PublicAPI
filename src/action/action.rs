@@ -1,10 +1,10 @@
 use crate::{
-    actions::resolved_action::ResolvedAction,
+    action::resolved_action::ResolvedAction,
     cex::capability::HasRequiredCapabilities,
     error::result::StockTrekResult,
     resolveable::Resolvable,
     resolved_context::ResolvedContext,
-    values::value::{AssetIdValue, CexIdValue, NumberValue},
+    value::value::{AssetIdValue, CexIdValue, NumberValue},
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest, tag::Tag};

@@ -1,5 +1,5 @@
 use crate::{
-    actions::recoverable_action::RecoverableAction,
+    action::recoverable_action::RecoverableAction,
     cex::capability::{HasRequiredCapabilities, combine_capabilities},
     conditions::Condition,
     error::result::StockTrekResult,

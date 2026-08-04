@@ -78,9 +78,9 @@ impl Algorithm for CostAveraging {
                         Quantity::OfQuote(quantity),
                         Tag::new("CostAveraging"),
                     ),
-                    RecoveryPolicy::with_default(ErrorResponse::Stop).on_error(
-                        ErrorCause::TemporaryCexRejection,
-                        ErrorResponse::Retry { max_retries: 3 },
+                    RecoveryPolicy::with_default_response(ActionErrorResponse::Stop).on_error(
+                        ActionErrorCause::TemporaryCexRejection,
+                        ActionErrorResponse::Retry { max_retries: 3 },
                     ),
                 )]),
                 c.commands.no_op(),

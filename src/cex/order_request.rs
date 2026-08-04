@@ -3,7 +3,7 @@ use crate::{
     error::result::StockTrekResult,
     resolveable::Resolvable,
     resolved_context::ResolvedContext,
-    values::value::{AssetIdValue, NumberValue},
+    value::value::{AssetIdValue, NumberValue},
 };
 use stock_trek_types::cex::{
     asset_id::AssetId, capability::CexCapability, order_request::OrderRequest,

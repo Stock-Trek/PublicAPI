@@ -1,6 +1,6 @@
 use crate::{
     error::result::StockTrekResult, resolveable::Resolvable, resolved_context::ResolvedContext,
-    values::value::NumberValue,
+    value::value::NumberValue,
 };
 use stock_trek_types::cex::pricing::Pricing;
 

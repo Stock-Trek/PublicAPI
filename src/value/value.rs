@@ -2,7 +2,7 @@ use crate::{
     error::result::StockTrekResult,
     resolved_context::ResolvedContext,
     signal::key::SignalKey,
-    values::{binary_operator::BinaryOperator, unary_operator::UnaryOperator},
+    value::{binary_operator::BinaryOperator, unary_operator::UnaryOperator},
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};

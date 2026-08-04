@@ -1,5 +1,5 @@
 use crate::{
-    actions::action::Action, cex::capability::HasRequiredCapabilities,
+    action::action::Action, cex::capability::HasRequiredCapabilities,
     error::result::StockTrekResult, resolveable::Resolvable, resolved_context::ResolvedContext,
 };
 use hashbrown::HashMap;
@@ -35,25 +35,25 @@ impl HasRequiredCapabilities for RecoverableAction {
 
 #[derive(Serialize, Deserialize)]
 pub struct RecoveryPolicy {
-    default: ErrorResponse,
-    on_error: HashMap<ErrorCause, ErrorResponse>,
+    default_response: ActionErrorResponse,
+    on_error: HashMap<ActionErrorCause, ActionErrorResponse>,
 }
 
 impl RecoveryPolicy {
-    pub fn with_default(default: ErrorResponse) -> Self {
+    pub fn with_default_response(default_response: ActionErrorResponse) -> Self {
         Self {
-            default,
+            default_response,
             on_error: HashMap::new(),
         }
     }
-    pub fn on_error(mut self, cause: ErrorCause, response: ErrorResponse) -> Self {
+    pub fn on_error(mut self, cause: ActionErrorCause, response: ActionErrorResponse) -> Self {
         self.on_error.insert(cause, response);
         self
     }
 }
 
 #[derive(Display, Serialize, Deserialize)]
-pub enum ErrorResponse {
+pub enum ActionErrorResponse {
     Stop,
     Ignore,
     Retry { max_retries: u8 },
@@ -61,7 +61,7 @@ pub enum ErrorResponse {
 }
 
 #[derive(Debug, Display, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ErrorCause {
+pub enum ActionErrorCause {
     PermanentCexRejection,
     TemporaryCexRejection,
     InsufficientBalance,
