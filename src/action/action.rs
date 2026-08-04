@@ -7,7 +7,7 @@ use crate::{
     value::value::{AssetIdValue, CexIdValue, NumberValue},
 };
 use serde::{Deserialize, Serialize};
-use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest, tag::Tag};
+use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest};
 
 #[derive(Serialize, Deserialize)]
 pub enum Action {
@@ -15,17 +15,17 @@ pub enum Action {
         cex_id_value: CexIdValue,
         order_request: Box<OrderRequest<AssetIdValue, NumberValue>>,
     },
-    CancelAllOrders,
-    CancelAllOrdersWithTag {
-        tag: Tag,
-    },
-    CancelAllOrdersInCex {
-        cex_id_value: CexIdValue,
-    },
-    CancelAllOrdersInCexWithTag {
-        cex_id_value: CexIdValue,
-        tag: Tag,
-    },
+    // CancelAllOrders,
+    // CancelAllOrdersWithTag {
+    //     tag: Tag,
+    // },
+    // CancelAllOrdersInCex {
+    //     cex_id_value: CexIdValue,
+    // },
+    // CancelAllOrdersInCexWithTag {
+    //     cex_id_value: CexIdValue,
+    //     tag: Tag,
+    // },
 }
 
 impl Resolvable<ResolvedAction> for Action {
@@ -38,21 +38,21 @@ impl Resolvable<ResolvedAction> for Action {
                 cex_id: cex_id_value.cex_id(c)?,
                 order_request: order_request.try_resolve(c)?,
             }),
-            Action::CancelAllOrders => Ok(ResolvedAction::CancelAllOrders),
-            Action::CancelAllOrdersWithTag { tag } => {
-                Ok(ResolvedAction::CancelAllOrdersWithTag { tag: tag.clone() })
-            }
-            Action::CancelAllOrdersInCex { cex_id_value } => {
-                Ok(ResolvedAction::CancelAllOrdersInCex {
-                    cex_id: cex_id_value.cex_id(c)?,
-                })
-            }
-            Action::CancelAllOrdersInCexWithTag { cex_id_value, tag } => {
-                Ok(ResolvedAction::CancelAllOrdersInCexWithTag {
-                    cex_id: cex_id_value.cex_id(c)?,
-                    tag: tag.clone(),
-                })
-            }
+            // Action::CancelAllOrders => Ok(ResolvedAction::CancelAllOrders),
+            // Action::CancelAllOrdersWithTag { tag } => {
+            //     Ok(ResolvedAction::CancelAllOrdersWithTag { tag: tag.clone() })
+            // }
+            // Action::CancelAllOrdersInCex { cex_id_value } => {
+            //     Ok(ResolvedAction::CancelAllOrdersInCex {
+            //         cex_id: cex_id_value.cex_id(c)?,
+            //     })
+            // }
+            // Action::CancelAllOrdersInCexWithTag { cex_id_value, tag } => {
+            //     Ok(ResolvedAction::CancelAllOrdersInCexWithTag {
+            //         cex_id: cex_id_value.cex_id(c)?,
+            //         tag: tag.clone(),
+            //     })
+            // }
         }
     }
 }
@@ -61,10 +61,10 @@ impl HasRequiredCapabilities for Action {
     fn required_capabilities(&self) -> Vec<CexCapability> {
         match self {
             Action::SendOrderRequest { order_request, .. } => order_request.required_capabilities(),
-            Action::CancelAllOrders
-            | Action::CancelAllOrdersWithTag { .. }
-            | Action::CancelAllOrdersInCex { .. }
-            | Action::CancelAllOrdersInCexWithTag { .. } => vec![],
+            // Action::CancelAllOrders
+            // | Action::CancelAllOrdersWithTag { .. }
+            // | Action::CancelAllOrdersInCex { .. }
+            // | Action::CancelAllOrdersInCexWithTag { .. } => vec![],
         }
     }
 }
