@@ -10,3 +10,16 @@ pub mod market_tick;
 pub mod market_ticks;
 pub mod rolling_window;
 pub mod timestamp;
+
+pub use aligned_window::AlignedWindow;
+pub use market::Market;
+pub use market_aligned_window::MarketAlignedWindow;
+pub use market_candle::MarketCandle;
+pub use market_ohlcv::MarketOhlcv;
+pub use market_order_book::MarketOrderBook;
+pub use market_quote::{MarketQuote, PriceQuantity, TimedPriceQuantity};
+pub use market_rolling_window::{MarketRollingWindow, Ohlcv};
+pub use market_tick::MarketTick;
+pub use market_ticks::MarketTicks;
+pub use rolling_window::RollingWindow;
+pub use timestamp::TimestampMillis;
