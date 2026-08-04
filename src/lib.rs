@@ -24,6 +24,7 @@ pub use commands::{Command, CommandFactory};
 pub use conditions::{Condition, ConditionFactory, QuantityOf};
 pub use portfolios::{InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
 pub use preferences::Preferences;
+pub use resolved_context::{EnqueueActionFn, ResolvedContext};
 pub use rust_decimal::RoundingStrategy;
 pub use strategy_context::StrategyContext;
 pub use traitreg;
