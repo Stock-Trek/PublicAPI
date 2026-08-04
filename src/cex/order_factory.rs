@@ -7,6 +7,7 @@ use stock_trek_types::cex::{
 pub struct OrderFactory;
 
 impl OrderFactory {
+    #[allow(clippy::too_many_arguments)]
     pub fn single(
         &self,
         base: AssetIdValue,

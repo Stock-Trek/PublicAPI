@@ -32,8 +32,6 @@ strum = { version = "0.28.0", features = ["derive"] }
 traitreg = "0.4.0"
 
 [lints.clippy]
-new_ret_no_self = "allow"
-too_many_arguments = "allow"
 module_inception = "allow"
 
 [package.metadata.docs.rs]
