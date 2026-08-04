@@ -34,6 +34,7 @@ traitreg = "0.4.0"
 [lints.clippy]
 new_ret_no_self = "allow"
 too_many_arguments = "allow"
+module_inception = "allow"
 
 [package.metadata.docs.rs]
 default-target = "x86_64-unknown-linux-gnu"
