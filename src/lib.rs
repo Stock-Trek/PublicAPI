@@ -37,58 +37,58 @@ pub mod strategy_context;
 pub mod util;
 pub mod values;
 
-pub use crate::actions::action::Action;
-pub use crate::actions::action_factory::ActionFactory;
-pub use crate::actions::recoverable_action::{
+pub use actions::action::Action;
+pub use actions::action_factory::ActionFactory;
+pub use actions::recoverable_action::{
     ErrorCause, ErrorResponse, RecoverableAction, RecoveryPolicy,
 };
-pub use crate::actions::resolved_action::ResolvedAction;
-pub use crate::algorithm::Algorithm;
-pub use crate::allocations::{
+pub use actions::resolved_action::ResolvedAction;
+pub use algorithm::Algorithm;
+pub use allocations::{
     Allocation, AllocationFactory, Allocations, InMemoryAllocationBuilder,
 };
-pub use crate::cex::capability::{HasRequiredCapabilities, combine_capabilities};
-pub use crate::cex::order_factory::OrderFactory;
-pub use crate::commands::{Command, CommandFactory};
-pub use crate::conditions::{Condition, ConditionFactory, QuantityOf};
-pub use crate::error::portfolio::PortfolioError;
-pub use crate::error::result::{StockTrekError, StockTrekResult};
-pub use crate::error::stats::StatsError;
-pub use crate::error::value::ValueError;
-pub use crate::error::verification::VerificationError;
-pub use crate::market_data::aligned_window::AlignedWindow;
-pub use crate::market_data::market::Market;
-pub use crate::market_data::market_aligned_window::MarketAlignedWindow;
-pub use crate::market_data::market_candle::MarketCandle;
-pub use crate::market_data::market_ohlcv::MarketOhlcv;
-pub use crate::market_data::market_order_book::MarketOrderBook;
-pub use crate::market_data::market_quote::{MarketQuote, PriceQuantity, TimedPriceQuantity};
-pub use crate::market_data::market_rolling_window::{MarketRollingWindow, Ohlcv};
-pub use crate::market_data::market_tick::MarketTick;
-pub use crate::market_data::market_ticks::MarketTicks;
-pub use crate::market_data::rolling_window::RollingWindow;
-pub use crate::market_data::timestamp::TimestampMillis;
-pub use crate::portfolios::{Assets, InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
-pub use crate::preferences::Preferences;
-pub use crate::resolveable::Resolvable;
-pub use crate::resolved_context::{EnqueueActionFn, ResolvedContext};
-pub use crate::signal::key::{SignalKey, SignalKeyType};
-pub use crate::signal::signals::Signals;
-pub use crate::signal::value::SignalValue;
-pub use crate::signal_context::{
+pub use cex::capability::{HasRequiredCapabilities, combine_capabilities};
+pub use cex::order_factory::OrderFactory;
+pub use commands::{Command, CommandFactory};
+pub use conditions::{Condition, ConditionFactory, QuantityOf};
+pub use error::portfolio::PortfolioError;
+pub use error::result::{StockTrekError, StockTrekResult};
+pub use error::stats::StatsError;
+pub use error::value::ValueError;
+pub use error::verification::VerificationError;
+pub use market_data::aligned_window::AlignedWindow;
+pub use market_data::market::Market;
+pub use market_data::market_aligned_window::MarketAlignedWindow;
+pub use market_data::market_candle::MarketCandle;
+pub use market_data::market_ohlcv::MarketOhlcv;
+pub use market_data::market_order_book::MarketOrderBook;
+pub use market_data::market_quote::{MarketQuote, PriceQuantity, TimedPriceQuantity};
+pub use market_data::market_rolling_window::{MarketRollingWindow, Ohlcv};
+pub use market_data::market_tick::MarketTick;
+pub use market_data::market_ticks::MarketTicks;
+pub use market_data::rolling_window::RollingWindow;
+pub use market_data::timestamp::TimestampMillis;
+pub use portfolios::{Assets, InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
+pub use preferences::Preferences;
+pub use resolveable::Resolvable;
+pub use resolved_context::{EnqueueActionFn, ResolvedContext};
+pub use signal::key::{SignalKey, SignalKeyType};
+pub use signal::signals::Signals;
+pub use signal::value::SignalValue;
+pub use signal_context::{
     CexMarketDataByBaseContext, CexMarketDataByQuoteContext, SignalContext,
 };
-pub use crate::strategy_context::StrategyContext;
-pub use crate::values::binary_operator::BinaryOperator;
-pub use crate::values::unary_operator::UnaryOperator;
-pub use crate::values::value::{AssetIdValue, CexIdValue, FlagValue, NumberValue};
-pub use crate::values::values_factory::{
+pub use strategy_context::StrategyContext;
+pub use values::binary_operator::BinaryOperator;
+pub use values::unary_operator::UnaryOperator;
+pub use values::value::{AssetIdValue, CexIdValue, FlagValue, NumberValue};
+pub use values::values_factory::{
     AllocationValuesFactory, CalculationValuesFactory, LiteralValuesFactory,
     PortfolioValuesFactory, SignalValuesFactory,
 };
 
 pub mod prelude {
-    pub use crate::{
+    pub use super::{
         Action, ActionFactory, Algorithm, Allocation, AllocationFactory, Allocations, Assets,
         CexMarketDataByBaseContext, CexMarketDataByQuoteContext, Command, CommandFactory,
         Condition, ConditionFactory, EnqueueActionFn, ErrorCause, ErrorResponse,
