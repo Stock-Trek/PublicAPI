@@ -13,7 +13,7 @@ use stock_trek_types::cex::{capability::CexCapability, order_request::OrderReque
 pub enum Action {
     SendOrderRequest {
         cex_id_value: CexIdValue,
-        order_request: OrderRequest<AssetIdValue, NumberValue>,
+        order_request: Box<OrderRequest<AssetIdValue, NumberValue>>,
     },
     CancelAllOrders,
     CancelAllOrdersWithTag {
