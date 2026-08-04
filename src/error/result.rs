@@ -1,7 +1,4 @@
-use crate::error::{
-    portfolio::PortfolioError, stats::StatsError, value::ValueError,
-    verification::VerificationError,
-};
+use crate::error::{portfolio::PortfolioError, stats::StatsError, value::ValueError};
 use std::fmt;
 
 pub type StockTrekResult<T> = Result<T, StockTrekError>;
@@ -11,7 +8,6 @@ pub enum StockTrekError {
     Portfolio(PortfolioError),
     Stats(StatsError),
     Value(ValueError),
-    Verification(VerificationError),
 }
 
 impl fmt::Display for StockTrekError {
@@ -20,7 +16,6 @@ impl fmt::Display for StockTrekError {
             StockTrekError::Portfolio(e) => write!(f, "Portfolio error: {}", e),
             StockTrekError::Stats(e) => write!(f, "Stats error: {}", e),
             StockTrekError::Value(e) => write!(f, "Value error: {}", e),
-            StockTrekError::Verification(e) => write!(f, "Verification error: {}", e),
         }
     }
 }
@@ -31,7 +26,6 @@ impl std::error::Error for StockTrekError {
             StockTrekError::Portfolio(e) => Some(e),
             StockTrekError::Stats(e) => Some(e),
             StockTrekError::Value(e) => Some(e),
-            StockTrekError::Verification(e) => Some(e),
         }
     }
 }

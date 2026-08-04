@@ -1,4 +1,4 @@
-use crate::values::value::{AssetIdValue, NumberValue};
+use crate::value::value::{AssetIdValue, NumberValue};
 use stock_trek_types::cex::{
     activation::Activation, order_request::OrderRequest, orders::single_order::SingleOrder,
     pricing::Pricing, quantity::Quantity, side::Side, tag::Tag,

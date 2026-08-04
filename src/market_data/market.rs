@@ -24,7 +24,7 @@ pub struct Market {
     pub order_book: MarketOrderBook,
 }
 
-pub struct Builder {
+pub struct MarketBuilder {
     pub base_increment: f64,
     pub quote_increment: f64,
     pub minimum_notional: f64,
@@ -35,7 +35,7 @@ pub struct Builder {
     pub order_book_bids: Vec<MarketQuote>,
 }
 
-impl Builder {
+impl MarketBuilder {
     pub fn new(base_increment: f64, quote_increment: f64, minimum_notional: f64) -> Self {
         Self {
             base_increment,
