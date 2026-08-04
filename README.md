@@ -7,11 +7,10 @@ A tool for running crypto bots on [stock-trek.com](https://stock-trek.com). Rust
 
 ## Installation
 
-Add to your Cargo.toml:
+Add the dependency
 
-```rs
-[dependencies]
-stock-trek = "0.10.1"
+```sh
+cargo add stock-trek
 ```
 
 ## Python Bindings (coming soon)
