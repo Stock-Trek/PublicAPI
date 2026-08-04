@@ -1,8 +1,7 @@
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[non_exhaustive]
-#[repr(u8)]
 pub enum ValueError {
     NotFound { name: String, key: String },
     IncorrectType { expected: String, found: String },

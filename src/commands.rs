@@ -8,7 +8,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::capability::CexCapability;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Command {
     If {
         condition: Condition,

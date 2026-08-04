@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, order_request::OrderRequest};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ResolvedAction {
     // CancelAllOrders,
     // CancelAllOrdersWithTag {

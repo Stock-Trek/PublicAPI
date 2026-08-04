@@ -3,7 +3,7 @@ use std::fmt;
 
 pub type StockTrekResult<T> = Result<T, StockTrekError>;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum StockTrekError {
     Portfolio(PortfolioError),
     Stats(StatsError),

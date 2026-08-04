@@ -13,7 +13,7 @@ use std::cmp::Ordering;
 use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 use strum::Display;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Condition {
     Compare {
