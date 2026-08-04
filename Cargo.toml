@@ -1,6 +1,6 @@
 [package]
 name = "stock-trek"
-version = "0.9.6"
+version = "0.9.3"
 edition = "2024"
 description = "Stock Trek time-series analysis"
 authors = ["stock-trek.com <stock-trek@proton.me>"]
@@ -21,10 +21,7 @@ name = "stock_trek"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-async-trait = "0.1.89"
-chrono = { version = "0.4", features = ["serde"] }
 hashbrown = { version = "0.17.1", features = ["serde"] }
-num-complex = "0.4.6"
 regex = "1.12.3"
 rust_decimal = "1.42.0"
 serde = "1.0.228"
@@ -32,10 +29,7 @@ serde_json = {version = "1.0.149", features = ["float_roundtrip"] }
 serde_with = "3.21.0"
 stock-trek-types = "0.1.5"
 strum = { version = "0.28.0", features = ["derive"] }
-table_enum = "0.3.0"
 traitreg = "0.4.0"
-typify = "0.6.1"
-uuid = { version = "1.23.0", features = ["serde", "v4"] }
 
 [lints.clippy]
 new_ret_no_self = "allow"
