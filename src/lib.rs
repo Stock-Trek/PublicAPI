@@ -45,7 +45,7 @@ pub use crate::algorithm::Algorithm;
 pub use crate::allocations::{
     Allocation, AllocationFactory, Allocations, InMemoryAllocationBuilder,
 };
-pub use crate::cex::{combine_capabilities, HasRequiredCapabilities, OrderFactory};
+pub use crate::cex::{HasRequiredCapabilities, OrderFactory, combine_capabilities};
 pub use crate::commands::{Command, CommandFactory};
 pub use crate::conditions::{Condition, ConditionFactory, QuantityOf};
 pub use crate::error::{
@@ -53,14 +53,14 @@ pub use crate::error::{
 };
 pub use crate::market_data::{
     AlignedWindow, Market, MarketAlignedWindow, MarketCandle, MarketOhlcv, MarketOrderBook,
-    MarketQuote, MarketRollingWindow, MarketTick, MarketTicks, Ohlcv, PriceQuantity,
-    RollingWindow, TimedPriceQuantity, TimestampMillis,
+    MarketQuote, MarketRollingWindow, MarketTick, MarketTicks, Ohlcv, PriceQuantity, RollingWindow,
+    TimedPriceQuantity, TimestampMillis,
 };
 pub use crate::portfolios::{Assets, InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
 pub use crate::preferences::Preferences;
 pub use crate::resolveable::Resolvable;
 pub use crate::resolved_context::{EnqueueActionFn, ResolvedContext};
-pub use crate::signal::{SignalKey, SignalKeyType, Signals, SignalValue};
+pub use crate::signal::{SignalKey, SignalKeyType, SignalValue, Signals};
 pub use crate::signal_context::{
     CexMarketDataByBaseContext, CexMarketDataByQuoteContext, SignalContext,
 };
@@ -78,8 +78,8 @@ pub mod prelude {
         Condition, ConditionFactory, EnqueueActionFn, ErrorCause, ErrorResponse,
         InMemoryAllocationBuilder, InMemoryPortfolioBuilder, OrderFactory, Portfolio,
         PortfolioFactory, Preferences, QuantityOf, RecoverableAction, RecoveryPolicy, Resolvable,
-        ResolvedAction, ResolvedContext, SignalContext, SignalKey, SignalKeyType, Signals,
-        SignalValue, StockTrekError, StockTrekResult, StrategyContext, VerificationError,
+        ResolvedAction, ResolvedContext, SignalContext, SignalKey, SignalKeyType, SignalValue,
+        Signals, StockTrekError, StockTrekResult, StrategyContext, VerificationError,
     };
 
     pub use rust_decimal::RoundingStrategy;
