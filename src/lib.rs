@@ -44,9 +44,7 @@ pub use actions::recoverable_action::{
 };
 pub use actions::resolved_action::ResolvedAction;
 pub use algorithm::Algorithm;
-pub use allocations::{
-    Allocation, AllocationFactory, Allocations, InMemoryAllocationBuilder,
-};
+pub use allocations::{Allocation, AllocationFactory, Allocations, InMemoryAllocationBuilder};
 pub use cex::capability::{HasRequiredCapabilities, combine_capabilities};
 pub use cex::order_factory::OrderFactory;
 pub use commands::{Command, CommandFactory};
@@ -75,9 +73,7 @@ pub use resolved_context::{EnqueueActionFn, ResolvedContext};
 pub use signal::key::{SignalKey, SignalKeyType};
 pub use signal::signals::Signals;
 pub use signal::value::SignalValue;
-pub use signal_context::{
-    CexMarketDataByBaseContext, CexMarketDataByQuoteContext, SignalContext,
-};
+pub use signal_context::{CexMarketDataByBaseContext, CexMarketDataByQuoteContext, SignalContext};
 pub use strategy_context::StrategyContext;
 pub use values::binary_operator::BinaryOperator;
 pub use values::unary_operator::UnaryOperator;
