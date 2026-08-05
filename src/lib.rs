@@ -22,7 +22,7 @@ pub use algorithm::Algorithm;
 pub use cex::order_factory::OrderFactory;
 pub use commands::{Command, CommandFactory};
 pub use conditions::{Condition, ConditionFactory, QuantityOf};
-pub use portfolios::{InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
+pub use portfolios::{Assets, InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
 pub use preferences::Preferences;
 pub use resolved_context::{EnqueueActionFn, ResolvedContext};
 pub use rust_decimal::RoundingStrategy;
