@@ -14,26 +14,12 @@ impl ActionFactory {
     pub fn send_order_request(
         &self,
         cex_id_value: CexIdValue,
-        order_request: OrderRequest<AssetIdValue, NumberValue>,
-        recovery_policy: RecoveryPolicy,
-    ) -> RecoverableAction {
-        RecoverableAction::new(
-            Action::SendOrderRequest {
-                cex_id_value,
-                order_request: Box::new(order_request),
-            },
-            recovery_policy,
-        )
-    }
-    pub fn send_order_request_in_account(
-        &self,
-        cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
         order_request: OrderRequest<AssetIdValue, NumberValue>,
         recovery_policy: RecoveryPolicy,
     ) -> RecoverableAction {
         RecoverableAction::new(
-            Action::SendOrderRequestInAccount {
+            Action::SendOrderRequest {
                 cex_id_value,
                 account_id_value,
                 order_request: Box::new(order_request),
@@ -42,9 +28,9 @@ impl ActionFactory {
         )
     }
     // TODO
-    // pub fn cancel_order(&self, cex_id_value: CexIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
+    // pub fn cancel_order(&self, cex_id_value: CexIdValue, account_id_value: AccountIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
     //   RecoverableAction::new(
-    //     Action::CancelOrder { cex_id_value, order_id },
+    //     Action::CancelOrder { cex_id_value, account_id_value, order_id },
     //     recovery_policy,
     //   )
     // }

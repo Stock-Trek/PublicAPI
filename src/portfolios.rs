@@ -10,22 +10,12 @@ pub enum Portfolio {
 }
 
 impl Portfolio {
-    pub fn has_account(&self, account_id: &AccountId) -> bool {
-        match self {
-            Portfolio::InMemory { cex_account_assets } => cex_account_assets
-                .values()
-                .any(|accounts| accounts.contains_key(account_id)),
-            Portfolio::Stub => true,
-        }
-    }
-
-    pub fn has_account_in_cex(&self, cex_id: &CexId) -> bool {
+    pub fn has_cex_account(&self, cex_id: &CexId) -> bool {
         match self {
             Portfolio::InMemory { cex_account_assets } => cex_account_assets.contains_key(cex_id),
             Portfolio::Stub => true,
         }
     }
-
     pub fn owns_asset(&self, asset_id: &AssetId) -> bool {
         match self {
             Portfolio::InMemory { cex_account_assets } => cex_account_assets
@@ -35,8 +25,7 @@ impl Portfolio {
             Portfolio::Stub => true,
         }
     }
-
-    pub fn owns_asset_in_account_in_cex(
+    pub fn owns_asset_in_cex_account(
         &self,
         asset_id: &AssetId,
         account_id: &AccountId,
@@ -51,7 +40,6 @@ impl Portfolio {
             Portfolio::Stub => true,
         }
     }
-
     pub fn asset_total(&self, asset_id: &AssetId) -> f64 {
         match self {
             Portfolio::InMemory { cex_account_assets } => cex_account_assets
@@ -62,8 +50,7 @@ impl Portfolio {
             Portfolio::Stub => 1_000_000.0,
         }
     }
-
-    pub fn asset_in_account_in_cex(
+    pub fn asset_in_cex_account(
         &self,
         asset_id: &AssetId,
         account_id: &AccountId,
@@ -79,36 +66,16 @@ impl Portfolio {
             Portfolio::Stub => 1_000_000.0,
         }
     }
-
     pub fn active_orders(&self) -> f64 {
         0.0
     }
-
     pub fn active_orders_with_tag(&self, _tag: &Tag) -> f64 {
         0.0
     }
-
-    pub fn active_orders_in_account(&self, _account_id: &AccountId) -> f64 {
+    pub fn active_orders_in_cex_account(&self, _account_id: &AccountId, _cex_id: &CexId) -> f64 {
         0.0
     }
-
-    pub fn active_orders_in_account_with_tag(&self, _account_id: &AccountId, _tag: &Tag) -> f64 {
-        0.0
-    }
-
-    pub fn active_orders_in_cex(&self, _cex_id: &CexId) -> f64 {
-        0.0
-    }
-
-    pub fn active_orders_in_cex_with_tag(&self, _cex_id: &CexId, _tag: &Tag) -> f64 {
-        0.0
-    }
-
-    pub fn active_orders_in_account_in_cex(&self, _account_id: &AccountId, _cex_id: &CexId) -> f64 {
-        0.0
-    }
-
-    pub fn active_orders_in_account_in_cex_with_tag(
+    pub fn active_orders_in_cex_account_with_tag(
         &self,
         _account_id: &AccountId,
         _cex_id: &CexId,
@@ -140,11 +107,9 @@ impl InMemoryPortfolioBuilder {
             cex_account_assets: HashMap::new(),
         }
     }
-
     pub fn assets(&mut self, cex_id: CexId, asset_id: AssetId, quantity: f64) -> &mut Self {
         self.assets_in_account(cex_id, AccountId::new(""), asset_id, quantity)
     }
-
     pub fn assets_in_account(
         &mut self,
         cex_id: CexId,
@@ -163,7 +128,6 @@ impl InMemoryPortfolioBuilder {
             .or_insert(quantity);
         self
     }
-
     pub fn build(&self) -> Portfolio {
         Portfolio::InMemory {
             cex_account_assets: self.cex_account_assets.clone(),
@@ -177,7 +141,6 @@ impl PortfolioFactory {
     pub fn stub() -> Portfolio {
         Portfolio::Stub
     }
-
     pub fn in_memory_builder() -> InMemoryPortfolioBuilder {
         InMemoryPortfolioBuilder::new()
     }

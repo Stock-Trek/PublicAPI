@@ -15,9 +15,9 @@ pub enum SignalValue {
     Number(f64),
 }
 
-impl From<AssetId> for SignalValue {
-    fn from(value: AssetId) -> Self {
-        SignalValue::AssetId(value)
+impl From<CexId> for SignalValue {
+    fn from(value: CexId) -> Self {
+        SignalValue::CexId(value)
     }
 }
 impl From<AccountId> for SignalValue {
@@ -25,9 +25,9 @@ impl From<AccountId> for SignalValue {
         SignalValue::AccountId(value)
     }
 }
-impl From<CexId> for SignalValue {
-    fn from(value: CexId) -> Self {
-        SignalValue::CexId(value)
+impl From<AssetId> for SignalValue {
+    fn from(value: AssetId) -> Self {
+        SignalValue::AssetId(value)
     }
 }
 impl From<bool> for SignalValue {
@@ -41,18 +41,6 @@ impl From<f64> for SignalValue {
     }
 }
 
-impl TryFrom<SignalValue> for AccountId {
-    type Error = StockTrekError;
-    fn try_from(value: SignalValue) -> StockTrekResult<Self> {
-        match value {
-            SignalValue::CexId(_) => err("AccountId", "CexId"),
-            SignalValue::AccountId(a) => Ok(a),
-            SignalValue::AssetId(_) => err("AccountId", "AssetId"),
-            SignalValue::Flag(_) => err("AccountId", "Flag"),
-            SignalValue::Number(_) => err("AccountId", "Number"),
-        }
-    }
-}
 impl TryFrom<SignalValue> for CexId {
     type Error = StockTrekError;
     fn try_from(value: SignalValue) -> StockTrekResult<Self> {
@@ -62,6 +50,18 @@ impl TryFrom<SignalValue> for CexId {
             SignalValue::AssetId(_) => err("CexId", "AssetId"),
             SignalValue::Flag(_) => err("CexId", "Flag"),
             SignalValue::Number(_) => err("CexId", "Number"),
+        }
+    }
+}
+impl TryFrom<SignalValue> for AccountId {
+    type Error = StockTrekError;
+    fn try_from(value: SignalValue) -> StockTrekResult<Self> {
+        match value {
+            SignalValue::CexId(_) => err("AccountId", "CexId"),
+            SignalValue::AccountId(a) => Ok(a),
+            SignalValue::AssetId(_) => err("AccountId", "AssetId"),
+            SignalValue::Flag(_) => err("AccountId", "Flag"),
+            SignalValue::Number(_) => err("AccountId", "Number"),
         }
     }
 }

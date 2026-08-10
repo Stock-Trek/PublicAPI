@@ -30,6 +30,7 @@ use std::cmp::Ordering;
 
 pub struct CostAveraging {
     key_cex: SignalKey<CexId>,
+    key_account: SignalKey<AccountId>,
     key_market_exists: SignalKey<bool>,
     key_satoshi_price: SignalKey<f64>,
     key_satoshi_quantity: SignalKey<f64>,
@@ -39,6 +40,7 @@ impl Default for CostAveraging {
     fn default() -> Self {
         Self {
             key_cex: SignalKey::new_required("CEX"),
+            key_account: SignalKey::new_required("ACCOUNT"),
             key_market_exists: SignalKey::new_optional("MARKET_EXISTS", false),
             key_satoshi_price: SignalKey::new_required("SATOSHI_PRICE"),
             key_satoshi_quantity: SignalKey::new_required("SATOSHI_QUANTITY"),
@@ -82,6 +84,7 @@ impl Algorithm for CostAveraging {
     }
     fn strategy(&self, c: &StrategyContext) -> Command {
         let cex = c.signals.cex_id(&self.key_cex);
+        let account = c.signals.account_id(&self.key_account);
         let btc = c.literals.asset_id(AssetId::Bitcoin);
         let usdt = c.literals.asset_id(AssetId::TetherUSD);
         let satoshi_price = c.signals.number(&self.key_satoshi_price);
@@ -90,12 +93,14 @@ impl Algorithm for CostAveraging {
             c.conditions.signal(&self.key_market_exists),
             c.commands.if_else(
                 c.conditions.compare(
-                    c.portfolio.asset_total(usdt.clone()),
+                    c.portfolio
+                        .asset_in_cex_account(cex.clone(), account.clone(), usdt.clone()),
                     Ordering::Greater,
                     satoshi_price,
                 ),
                 c.commands.plan(vec![c.actions.send_order_request(
                     cex.clone(),
+                    account.clone(),
                     c.orders.single(
                         btc,
                         usdt.clone(),
@@ -105,9 +110,9 @@ impl Algorithm for CostAveraging {
                         Quantity::OfQuote(quantity),
                         Tag::new("CostAveraging"),
                     ),
-                    RecoveryPolicy::with_default(ErrorResponse::Stop).on_error(
-                        ErrorCause::TemporaryCexRejection,
-                        ErrorResponse::Retry { max_retries: 3 },
+                    RecoveryPolicy::with_default_response(ActionErrorResponse::Stop).on_error(
+                        ActionErrorCause::TemporaryCexRejection,
+                        ActionErrorResponse::Retry { max_retries: 3 },
                     ),
                 )]),
                 c.commands.no_op(),

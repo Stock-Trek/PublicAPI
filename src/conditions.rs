@@ -15,18 +15,14 @@ use strum::Display;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
-#[allow(clippy::large_enum_variant)]
 pub enum Condition {
     Compare {
-        left: NumberValue,
+        left: Box<NumberValue>,
         #[serde(with = "serde_ordering")]
         comparison: Ordering,
-        right: NumberValue,
+        right: Box<NumberValue>,
     },
-    HasAccount {
-        account_id: AccountId,
-    },
-    HasAccountInCex {
+    HasCexAccount {
         cex_id: CexId,
     },
     Not {
@@ -69,8 +65,7 @@ impl Condition {
                     })),
                 }
             }
-            Condition::HasAccount { account_id } => Ok(c.portfolio.has_account(account_id)),
-            Condition::HasAccountInCex { cex_id } => Ok(c.portfolio.has_account_in_cex(cex_id)),
+            Condition::HasCexAccount { cex_id } => Ok(c.portfolio.has_cex_account(cex_id)),
             Condition::Not { condition } => {
                 let test_result = condition.test(c)?;
                 Ok(!test_result)
@@ -82,7 +77,7 @@ impl Condition {
                 asset_id,
             } => Ok(c
                 .portfolio
-                .owns_asset_in_account_in_cex(asset_id, account_id, cex_id)),
+                .owns_asset_in_cex_account(asset_id, account_id, cex_id)),
             Condition::QuantityOf {
                 quantity_of,
                 conditions,
@@ -137,16 +132,13 @@ impl ConditionFactory {
         right: NumberValue,
     ) -> Condition {
         Condition::Compare {
-            left,
+            left: Box::new(left),
             comparison,
-            right,
+            right: Box::new(right),
         }
     }
-    pub fn has_account(&self, account_id: AccountId) -> Condition {
-        Condition::HasAccount { account_id }
-    }
-    pub fn has_account_in_cex(&self, cex_id: CexId) -> Condition {
-        Condition::HasAccountInCex { cex_id }
+    pub fn has_cex_account(&self, cex_id: CexId) -> Condition {
+        Condition::HasCexAccount { cex_id }
     }
     pub fn not(&self, condition: Condition) -> Condition {
         Condition::Not {
@@ -156,7 +148,7 @@ impl ConditionFactory {
     pub fn owns_asset(&self, asset_id: AssetId) -> Condition {
         Condition::OwnsAsset { asset_id }
     }
-    pub fn owns_asset_in_account_in_cex(
+    pub fn owns_asset_in_cex_account(
         &self,
         asset_id: AssetId,
         account_id: AccountId,

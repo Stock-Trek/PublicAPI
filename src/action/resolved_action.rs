@@ -9,18 +9,16 @@ pub enum ResolvedAction {
     // CancelAllOrdersWithTag {
     //     tag: Tag,
     // },
-    // CancelAllOrdersInCex {
+    // CancelAllOrdersInCexAccount {
     //     cex_id: CexId,
+    //     account_id: AccountId,
     // },
-    // CancelAllOrdersInCexWithTag {
+    // CancelAllOrdersInCexAccountWithTag {
     //     cex_id: CexId,
+    //     account_id: AccountId,
     //     tag: Tag,
     // },
     PlaceOrder {
-        cex_id: CexId,
-        order_request: OrderRequest<AssetId, f64>,
-    },
-    PlaceOrderInAccount {
         cex_id: CexId,
         account_id: AccountId,
         order_request: OrderRequest<AssetId, f64>,

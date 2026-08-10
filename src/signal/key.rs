@@ -58,11 +58,11 @@ mod sealed {
     pub trait Sealed {
         const KEY_NAME: &str;
     }
-    impl Sealed for AccountId {
-        const KEY_NAME: &str = "AccountId";
-    }
     impl Sealed for CexId {
         const KEY_NAME: &str = "CexId";
+    }
+    impl Sealed for AccountId {
+        const KEY_NAME: &str = "AccountId";
     }
     impl Sealed for AssetId {
         const KEY_NAME: &str = "AssetId";
@@ -77,8 +77,8 @@ mod sealed {
 
 pub trait SignalKeyType: sealed::Sealed {}
 
-impl SignalKeyType for AccountId {}
 impl SignalKeyType for CexId {}
+impl SignalKeyType for AccountId {}
 impl SignalKeyType for AssetId {}
 impl SignalKeyType for bool {}
 impl SignalKeyType for f64 {}

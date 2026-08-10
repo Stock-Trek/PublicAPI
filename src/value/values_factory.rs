@@ -20,85 +20,66 @@ pub struct LiteralValuesFactory;
 pub struct SignalValuesFactory;
 
 impl AllocationValuesFactory {
-    pub fn allocation_for_asset_in_account_in_cex(
+    pub fn allocation_for_asset(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AllocationForAsset { asset_id_value }
+    }
+    pub fn allocation_for_asset_in_cex_account(
         &self,
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     ) -> NumberValue {
-        NumberValue::AllocationForAssetInAccountInCex {
+        NumberValue::AllocationForAssetInCexAccount {
             cex_id_value,
             account_id_value,
             asset_id_value,
         }
-    }
-    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        NumberValue::AllocationForAssetTotal { asset_id_value }
     }
 }
 
 impl PortfolioValuesFactory {
-    pub fn active_orders_in_account(&self, account_id_value: AccountIdValue) -> NumberValue {
-        NumberValue::ActiveOrdersInAccount { account_id_value }
-    }
-    pub fn active_orders_in_account_in_cex(
-        &self,
-        cex_id_value: CexIdValue,
-        account_id_value: AccountIdValue,
-    ) -> NumberValue {
-        NumberValue::ActiveOrdersInAccountInCex {
-            cex_id_value,
-            account_id_value,
-        }
-    }
-    pub fn active_orders_in_account_in_cex_with_tag(
-        &self,
-        cex_id_value: CexIdValue,
-        account_id_value: AccountIdValue,
-        tag: Tag,
-    ) -> NumberValue {
-        NumberValue::ActiveOrdersInAccountInCexWithTag {
-            cex_id_value,
-            account_id_value,
-            tag,
-        }
-    }
-    pub fn active_orders_in_account_with_tag(
-        &self,
-        account_id_value: AccountIdValue,
-        tag: Tag,
-    ) -> NumberValue {
-        NumberValue::ActiveOrdersInAccountWithTag {
-            account_id_value,
-            tag,
-        }
-    }
-    pub fn asset_in_account_in_cex(
-        &self,
-        cex_id_value: CexIdValue,
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AssetInAccountInCex {
-            cex_id_value,
-            account_id_value,
-            asset_id_value,
-        }
-    }
-    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        NumberValue::AssetTotal { asset_id_value }
-    }
-    pub fn active_orders_in_cex(&self, cex_id_value: CexIdValue) -> NumberValue {
-        NumberValue::ActiveOrdersInCex { cex_id_value }
-    }
-    pub fn active_orders_in_cex_with_tag(&self, cex_id_value: CexIdValue, tag: Tag) -> NumberValue {
-        NumberValue::ActiveOrdersInCexWithTag { cex_id_value, tag }
-    }
     pub fn active_orders(&self) -> NumberValue {
         NumberValue::ActiveOrders
     }
     pub fn active_orders_with_tag(&self, tag: Tag) -> NumberValue {
         NumberValue::ActiveOrdersWithTag { tag }
+    }
+    pub fn active_orders_in_cex_account(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInCexAccount {
+            cex_id_value,
+            account_id_value,
+        }
+    }
+    pub fn active_orders_in_cex_account_with_tag(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        tag: Tag,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInCexAccountWithTag {
+            cex_id_value,
+            account_id_value,
+            tag,
+        }
+    }
+    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AssetTotal { asset_id_value }
+    }
+    pub fn asset_in_cex_account(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetInCexAccount {
+            cex_id_value,
+            account_id_value,
+            asset_id_value,
+        }
     }
 }
 
@@ -124,11 +105,11 @@ impl CalculationValuesFactory {
 }
 
 impl LiteralValuesFactory {
-    pub fn account_id(&self, literal: AccountId) -> AccountIdValue {
-        AccountIdValue::Literal { literal }
-    }
     pub fn cex_id(&self, literal: CexId) -> CexIdValue {
         CexIdValue::Literal { literal }
+    }
+    pub fn account_id(&self, literal: AccountId) -> AccountIdValue {
+        AccountIdValue::Literal { literal }
     }
     pub fn asset_id(&self, literal: AssetId) -> AssetIdValue {
         AssetIdValue::Literal { literal }
@@ -142,13 +123,13 @@ impl LiteralValuesFactory {
 }
 
 impl SignalValuesFactory {
-    pub fn account_id(&self, key: &SignalKey<AccountId>) -> AccountIdValue {
-        AccountIdValue::Signal {
+    pub fn cex_id(&self, key: &SignalKey<CexId>) -> CexIdValue {
+        CexIdValue::Signal {
             signal: key.clone(),
         }
     }
-    pub fn cex_id(&self, key: &SignalKey<CexId>) -> CexIdValue {
-        CexIdValue::Signal {
+    pub fn account_id(&self, key: &SignalKey<AccountId>) -> AccountIdValue {
+        AccountIdValue::Signal {
             signal: key.clone(),
         }
     }

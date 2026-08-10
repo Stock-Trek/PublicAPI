@@ -22,11 +22,11 @@ impl Allocation {
                 .sum(),
         }
     }
-    pub fn allocation_for_asset_in_account_in_cex(
+    pub fn allocation_for_asset_in_cex_account(
         &self,
         asset_id: &AssetId,
-        account_id: &AccountId,
         cex_id: &CexId,
+        account_id: &AccountId,
     ) -> f64 {
         match self {
             Allocation::Stub => 100.0,
@@ -64,7 +64,7 @@ impl InMemoryAllocationBuilder {
             cex_account_allocations: HashMap::new(),
         }
     }
-    pub fn allocation_in_account(
+    pub fn allocation_in_cex_account(
         &mut self,
         cex_id: CexId,
         account_id: AccountId,
