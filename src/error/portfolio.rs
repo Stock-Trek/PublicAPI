@@ -5,7 +5,7 @@ use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
 #[non_exhaustive]
 #[repr(u8)]
 pub enum PortfolioError {
-    NoAccountInCex {
+    NoCexAccount {
         cex_id: CexId,
     },
     AssetNotOwned {
@@ -23,7 +23,7 @@ pub enum PortfolioError {
 impl fmt::Display for PortfolioError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PortfolioError::NoAccountInCex { cex_id } => {
+            PortfolioError::NoCexAccount { cex_id } => {
                 write!(f, "No account in {}", cex_id)
             }
             PortfolioError::AssetNotOwned { cex_id, asset_id } => {

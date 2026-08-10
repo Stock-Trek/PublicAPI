@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::capability::CexCapability;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[allow(clippy::large_enum_variant)]
 pub enum Command {
     If {
         condition: Condition,

@@ -31,7 +31,7 @@ pub enum Condition {
     OwnsAsset {
         asset_id: AssetId,
     },
-    OwnsAssetInAccountInCex {
+    OwnsAssetInCexAccount {
         cex_id: CexId,
         account_id: AccountId,
         asset_id: AssetId,
@@ -71,7 +71,7 @@ impl Condition {
                 Ok(!test_result)
             }
             Condition::OwnsAsset { asset_id } => Ok(c.portfolio.owns_asset(asset_id)),
-            Condition::OwnsAssetInAccountInCex {
+            Condition::OwnsAssetInCexAccount {
                 cex_id,
                 account_id,
                 asset_id,
@@ -154,7 +154,7 @@ impl ConditionFactory {
         account_id: AccountId,
         cex_id: CexId,
     ) -> Condition {
-        Condition::OwnsAssetInAccountInCex {
+        Condition::OwnsAssetInCexAccount {
             cex_id,
             account_id,
             asset_id,
