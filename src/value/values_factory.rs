@@ -3,10 +3,10 @@ use crate::{
     value::{
         binary_operator::BinaryOperator,
         unary_operator::UnaryOperator,
-        value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
+        value::{AccountIdValue, AssetIdValue, CexIdValue, FlagValue, NumberValue},
     },
 };
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
+use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId, tag::Tag};
 
 #[derive(Debug, Clone)]
 pub struct AllocationValuesFactory;
@@ -20,6 +20,28 @@ pub struct LiteralValuesFactory;
 pub struct SignalValuesFactory;
 
 impl AllocationValuesFactory {
+    pub fn allocation_for_asset_in_account(
+        &self,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AllocationForAssetInAccount {
+            account_id_value,
+            asset_id_value,
+        }
+    }
+    pub fn allocation_for_asset_in_account_in_cex(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AllocationForAssetInAccountInCex {
+            cex_id_value,
+            account_id_value,
+            asset_id_value,
+        }
+    }
     pub fn allocation_for_asset_in_cex(
         &self,
         cex_id_value: CexIdValue,
@@ -36,6 +58,63 @@ impl AllocationValuesFactory {
 }
 
 impl PortfolioValuesFactory {
+    pub fn active_orders_in_account(&self, account_id_value: AccountIdValue) -> NumberValue {
+        NumberValue::ActiveOrdersInAccount { account_id_value }
+    }
+    pub fn active_orders_in_account_in_cex(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInAccountInCex {
+            cex_id_value,
+            account_id_value,
+        }
+    }
+    pub fn active_orders_in_account_in_cex_with_tag(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        tag: Tag,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInAccountInCexWithTag {
+            cex_id_value,
+            account_id_value,
+            tag,
+        }
+    }
+    pub fn active_orders_in_account_with_tag(
+        &self,
+        account_id_value: AccountIdValue,
+        tag: Tag,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInAccountWithTag {
+            account_id_value,
+            tag,
+        }
+    }
+    pub fn asset_in_account(
+        &self,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetInAccount {
+            account_id_value,
+            asset_id_value,
+        }
+    }
+    pub fn asset_in_account_in_cex(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetInAccountInCex {
+            cex_id_value,
+            account_id_value,
+            asset_id_value,
+        }
+    }
     pub fn asset_in_cex(
         &self,
         cex_id_value: CexIdValue,
@@ -85,6 +164,9 @@ impl CalculationValuesFactory {
 }
 
 impl LiteralValuesFactory {
+    pub fn account_id(&self, literal: AccountId) -> AccountIdValue {
+        AccountIdValue::Literal { literal }
+    }
     pub fn cex_id(&self, literal: CexId) -> CexIdValue {
         CexIdValue::Literal { literal }
     }
@@ -100,6 +182,11 @@ impl LiteralValuesFactory {
 }
 
 impl SignalValuesFactory {
+    pub fn account_id(&self, key: &SignalKey<AccountId>) -> AccountIdValue {
+        AccountIdValue::Signal {
+            signal: key.clone(),
+        }
+    }
     pub fn cex_id(&self, key: &SignalKey<CexId>) -> CexIdValue {
         CexIdValue::Signal {
             signal: key.clone(),

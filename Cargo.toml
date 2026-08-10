@@ -27,7 +27,7 @@ rust_decimal = "1.42.0"
 serde = "1.0.228"
 serde_json = {version = "1.0.149", features = ["float_roundtrip"] }
 serde_with = "3.21.0"
-stock-trek-types = "0.1.5"
+stock-trek-types = { version = "0.2.0", features = ["serde"] }
 strum = { version = "0.28.0", features = ["derive"] }
 traitreg = "0.4.0"
 

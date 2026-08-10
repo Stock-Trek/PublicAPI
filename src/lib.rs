@@ -81,6 +81,7 @@ pub mod signals {
 
 pub mod types {
     pub use stock_trek_types::cex::{
+        account_id::AccountId,
         activation::Activation,
         asset_id::AssetId,
         capability::CexCapability,
@@ -105,7 +106,9 @@ pub mod types {
 pub mod values {
     pub use crate::value::binary_operator::BinaryOperator;
     pub use crate::value::unary_operator::UnaryOperator;
-    pub use crate::value::value::{AssetIdValue, CexIdValue, FlagValue, NumberValue};
+    pub use crate::value::value::{
+        AccountIdValue, AssetIdValue, CexIdValue, FlagValue, NumberValue,
+    };
     pub use crate::value::values_factory::{
         AllocationValuesFactory, CalculationValuesFactory, LiteralValuesFactory,
         PortfolioValuesFactory, SignalValuesFactory,
@@ -120,8 +123,8 @@ pub mod prelude {
         signals::{SignalContext, SignalKey, Signals},
         traitreg,
         types::{
-            Activation, AssetId, CexId, CexPreferences, CexRoundingPreferences, Pricing, Quantity,
-            Side, Tag,
+            AccountId, Activation, AssetId, CexId, CexPreferences, CexRoundingPreferences, Pricing,
+            Quantity, Side, Tag,
         },
     };
 }

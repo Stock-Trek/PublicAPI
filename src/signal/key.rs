@@ -5,7 +5,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, marker::PhantomData};
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
+use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignalKey<T> {
@@ -53,10 +53,13 @@ where
 }
 
 mod sealed {
-    use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
+    use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId};
 
     pub trait Sealed {
         const KEY_NAME: &str;
+    }
+    impl Sealed for AccountId {
+        const KEY_NAME: &str = "AccountId";
     }
     impl Sealed for CexId {
         const KEY_NAME: &str = "CexId";
@@ -74,6 +77,7 @@ mod sealed {
 
 pub trait SignalKeyType: sealed::Sealed {}
 
+impl SignalKeyType for AccountId {}
 impl SignalKeyType for CexId {}
 impl SignalKeyType for AssetId {}
 impl SignalKeyType for bool {}

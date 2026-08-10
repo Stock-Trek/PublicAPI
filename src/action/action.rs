@@ -4,7 +4,7 @@ use crate::{
     error::result::StockTrekResult,
     resolveable::Resolvable,
     resolved_context::ResolvedContext,
-    value::value::{AssetIdValue, CexIdValue, NumberValue},
+    value::value::{AccountIdValue, AssetIdValue, CexIdValue, NumberValue},
 };
 use serde::{Deserialize, Serialize};
 use stock_trek_types::cex::{capability::CexCapability, order_request::OrderRequest};
@@ -13,6 +13,11 @@ use stock_trek_types::cex::{capability::CexCapability, order_request::OrderReque
 pub enum Action {
     SendOrderRequest {
         cex_id_value: CexIdValue,
+        order_request: Box<OrderRequest<AssetIdValue, NumberValue>>,
+    },
+    SendOrderRequestInAccount {
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
         order_request: Box<OrderRequest<AssetIdValue, NumberValue>>,
     },
     // CancelAllOrders,
@@ -38,6 +43,15 @@ impl Resolvable<ResolvedAction> for Action {
                 cex_id: cex_id_value.cex_id(c)?,
                 order_request: order_request.try_resolve(c)?,
             }),
+            Action::SendOrderRequestInAccount {
+                cex_id_value,
+                account_id_value,
+                order_request,
+            } => Ok(ResolvedAction::PlaceOrderInAccount {
+                cex_id: cex_id_value.cex_id(c)?,
+                account_id: account_id_value.account_id(c)?,
+                order_request: order_request.try_resolve(c)?,
+            }),
             // Action::CancelAllOrders => Ok(ResolvedAction::CancelAllOrders),
             // Action::CancelAllOrdersWithTag { tag } => {
             //     Ok(ResolvedAction::CancelAllOrdersWithTag { tag: tag.clone() })
@@ -60,11 +74,13 @@ impl Resolvable<ResolvedAction> for Action {
 impl HasRequiredCapabilities for Action {
     fn required_capabilities(&self) -> Vec<CexCapability> {
         match self {
-            Action::SendOrderRequest { order_request, .. } => order_request.required_capabilities(),
-            // Action::CancelAllOrders
-            // | Action::CancelAllOrdersWithTag { .. }
-            // | Action::CancelAllOrdersInCex { .. }
-            // | Action::CancelAllOrdersInCexWithTag { .. } => vec![],
+            Action::SendOrderRequest { order_request, .. }
+            | Action::SendOrderRequestInAccount { order_request, .. } => {
+                order_request.required_capabilities()
+            } // Action::CancelAllOrders
+              // | Action::CancelAllOrdersWithTag { .. }
+              // | Action::CancelAllOrdersInCex { .. }
+              // | Action::CancelAllOrdersInCexWithTag { .. } => vec![],
         }
     }
 }
