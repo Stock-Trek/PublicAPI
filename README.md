@@ -90,7 +90,7 @@ impl Algorithm for CostAveraging {
             c.conditions.signal(&self.key_market_exists),
             c.commands.if_else(
                 c.conditions.compare(
-                    c.portfolio.asset_in_cex(cex.clone(), usdt.clone()),
+                    c.portfolio.asset_total(usdt.clone()),
                     Ordering::Greater,
                     satoshi_price,
                 ),

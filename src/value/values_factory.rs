@@ -20,16 +20,6 @@ pub struct LiteralValuesFactory;
 pub struct SignalValuesFactory;
 
 impl AllocationValuesFactory {
-    pub fn allocation_for_asset_in_account(
-        &self,
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AllocationForAssetInAccount {
-            account_id_value,
-            asset_id_value,
-        }
-    }
     pub fn allocation_for_asset_in_account_in_cex(
         &self,
         cex_id_value: CexIdValue,
@@ -39,16 +29,6 @@ impl AllocationValuesFactory {
         NumberValue::AllocationForAssetInAccountInCex {
             cex_id_value,
             account_id_value,
-            asset_id_value,
-        }
-    }
-    pub fn allocation_for_asset_in_cex(
-        &self,
-        cex_id_value: CexIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AllocationForAssetInCex {
-            cex_id_value,
             asset_id_value,
         }
     }
@@ -93,16 +73,6 @@ impl PortfolioValuesFactory {
             tag,
         }
     }
-    pub fn asset_in_account(
-        &self,
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AssetInAccount {
-            account_id_value,
-            asset_id_value,
-        }
-    }
     pub fn asset_in_account_in_cex(
         &self,
         cex_id_value: CexIdValue,
@@ -112,16 +82,6 @@ impl PortfolioValuesFactory {
         NumberValue::AssetInAccountInCex {
             cex_id_value,
             account_id_value,
-            asset_id_value,
-        }
-    }
-    pub fn asset_in_cex(
-        &self,
-        cex_id_value: CexIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AssetInCex {
-            cex_id_value,
             asset_id_value,
         }
     }

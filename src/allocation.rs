@@ -22,40 +22,6 @@ impl Allocation {
                 .sum(),
         }
     }
-    pub fn allocation_for_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
-        match self {
-            Allocation::Stub => 100.0,
-            Allocation::InMemory {
-                cex_account_allocations,
-            } => cex_account_allocations
-                .get(cex_id)
-                .map(|accounts| {
-                    accounts
-                        .values()
-                        .map(|allocations| {
-                            allocations.asset_allocations.get(asset_id).unwrap_or(&0.0)
-                        })
-                        .sum()
-                })
-                .unwrap_or(0.0),
-        }
-    }
-    pub fn allocation_for_asset_in_account(
-        &self,
-        asset_id: &AssetId,
-        account_id: &AccountId,
-    ) -> f64 {
-        match self {
-            Allocation::Stub => 100.0,
-            Allocation::InMemory {
-                cex_account_allocations,
-            } => cex_account_allocations
-                .values()
-                .filter_map(|accounts| accounts.get(account_id))
-                .map(|allocations| allocations.asset_allocations.get(asset_id).unwrap_or(&0.0))
-                .sum(),
-        }
-    }
     pub fn allocation_for_asset_in_account_in_cex(
         &self,
         asset_id: &AssetId,
@@ -97,9 +63,6 @@ impl InMemoryAllocationBuilder {
         Self {
             cex_account_allocations: HashMap::new(),
         }
-    }
-    pub fn allocation(&mut self, cex_id: CexId, asset_id: AssetId, quantity: f64) -> &mut Self {
-        self.allocation_in_account(cex_id, AccountId::new(""), asset_id, quantity)
     }
     pub fn allocation_in_account(
         &mut self,

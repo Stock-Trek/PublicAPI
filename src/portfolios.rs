@@ -36,30 +36,6 @@ impl Portfolio {
         }
     }
 
-    pub fn owns_asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> bool {
-        match self {
-            Portfolio::InMemory { cex_account_assets } => cex_account_assets
-                .get(cex_id)
-                .map(|accounts| {
-                    accounts
-                        .values()
-                        .any(|assets| assets.asset_counts.contains_key(asset_id))
-                })
-                .unwrap_or(false),
-            Portfolio::Stub => true,
-        }
-    }
-
-    pub fn owns_asset_in_account(&self, asset_id: &AssetId, account_id: &AccountId) -> bool {
-        match self {
-            Portfolio::InMemory { cex_account_assets } => cex_account_assets
-                .values()
-                .filter_map(|accounts| accounts.get(account_id))
-                .any(|assets| assets.asset_counts.contains_key(asset_id)),
-            Portfolio::Stub => true,
-        }
-    }
-
     pub fn owns_asset_in_account_in_cex(
         &self,
         asset_id: &AssetId,
@@ -81,32 +57,6 @@ impl Portfolio {
             Portfolio::InMemory { cex_account_assets } => cex_account_assets
                 .values()
                 .flat_map(|accounts| accounts.values())
-                .map(|assets| assets.asset_counts.get(asset_id).unwrap_or(&0.0))
-                .sum(),
-            Portfolio::Stub => 1_000_000.0,
-        }
-    }
-
-    pub fn asset_in_cex(&self, asset_id: &AssetId, cex_id: &CexId) -> f64 {
-        match self {
-            Portfolio::InMemory { cex_account_assets } => cex_account_assets
-                .get(cex_id)
-                .map(|accounts| {
-                    accounts
-                        .values()
-                        .map(|assets| assets.asset_counts.get(asset_id).unwrap_or(&0.0))
-                        .sum()
-                })
-                .unwrap_or(0.0),
-            Portfolio::Stub => 1_000_000.0,
-        }
-    }
-
-    pub fn asset_in_account(&self, asset_id: &AssetId, account_id: &AccountId) -> f64 {
-        match self {
-            Portfolio::InMemory { cex_account_assets } => cex_account_assets
-                .values()
-                .filter_map(|accounts| accounts.get(account_id))
                 .map(|assets| assets.asset_counts.get(asset_id).unwrap_or(&0.0))
                 .sum(),
             Portfolio::Stub => 1_000_000.0,

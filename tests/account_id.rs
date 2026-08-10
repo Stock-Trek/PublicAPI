@@ -64,8 +64,6 @@ fn portfolio_account_queries() {
     assert!(!portfolio.has_account(&AccountId::new("missing")));
     assert!(portfolio.has_account_in_cex(&CexId::Binance));
 
-    assert!(portfolio.owns_asset_in_account(&AssetId::Bitcoin, &AccountId::new("main")));
-    assert!(!portfolio.owns_asset_in_account(&AssetId::Ethereum, &AccountId::new("main")));
     assert!(portfolio.owns_asset_in_account_in_cex(
         &AssetId::Bitcoin,
         &AccountId::new("sub"),
@@ -73,20 +71,12 @@ fn portfolio_account_queries() {
     ));
 
     assert_eq!(
-        portfolio.asset_in_account(&AssetId::Bitcoin, &AccountId::new("main")),
-        2.0
-    );
-    assert_eq!(
         portfolio.asset_in_account_in_cex(
             &AssetId::Bitcoin,
             &AccountId::new("sub"),
             &CexId::Binance
         ),
         3.0
-    );
-    assert_eq!(
-        portfolio.asset_in_cex(&AssetId::Bitcoin, &CexId::Binance),
-        5.0
     );
     assert_eq!(portfolio.asset_total(&AssetId::Bitcoin), 5.0);
 }
@@ -110,20 +100,12 @@ fn allocation_account_queries() {
     let allocation = builder.build();
 
     assert_eq!(
-        allocation.allocation_for_asset_in_account(&AssetId::Bitcoin, &AccountId::new("main")),
-        20.0
-    );
-    assert_eq!(
         allocation.allocation_for_asset_in_account_in_cex(
             &AssetId::Bitcoin,
             &AccountId::new("sub"),
             &CexId::Binance
         ),
         30.0
-    );
-    assert_eq!(
-        allocation.allocation_for_asset_in_cex(&AssetId::Bitcoin, &CexId::Binance),
-        50.0
     );
     assert_eq!(
         allocation.allocation_for_asset_total(&AssetId::Bitcoin),
@@ -157,19 +139,13 @@ fn condition_account_queries() {
     );
     assert!(
         factory
-            .owns_asset_in_account(AssetId::Bitcoin, AccountId::new("main"))
-            .test(&c)
-            .unwrap()
-    );
-    assert!(
-        factory
             .owns_asset_in_account_in_cex(AssetId::Bitcoin, AccountId::new("main"), CexId::Binance)
             .test(&c)
             .unwrap()
     );
     assert!(
         !factory
-            .owns_asset_in_account(AssetId::Ethereum, AccountId::new("main"))
+            .owns_asset_in_account_in_cex(AssetId::Ethereum, AccountId::new("main"), CexId::Binance)
             .test(&c)
             .unwrap()
     );

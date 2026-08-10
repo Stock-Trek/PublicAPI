@@ -107,33 +107,17 @@ pub enum NumberValue {
     ActiveOrdersWithTag {
         tag: Tag,
     },
-    AllocationForAssetInAccount {
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    },
     AllocationForAssetInAccountInCex {
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     },
-    AllocationForAssetInCex {
-        cex_id_value: CexIdValue,
-        asset_id_value: AssetIdValue,
-    },
     AllocationForAssetTotal {
-        asset_id_value: AssetIdValue,
-    },
-    AssetInAccount {
-        account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     },
     AssetInAccountInCex {
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    },
-    AssetInCex {
-        cex_id_value: CexIdValue,
         asset_id_value: AssetIdValue,
     },
     AssetTotal {
@@ -196,15 +180,6 @@ impl NumberValue {
                 Ok(c.portfolio.active_orders_in_cex_with_tag(&cex_id, tag))
             }
             Self::ActiveOrdersWithTag { tag } => Ok(c.portfolio.active_orders_with_tag(tag)),
-            Self::AllocationForAssetInAccount {
-                account_id_value,
-                asset_id_value,
-            } => {
-                let account_id = account_id_value.account_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.allocation
-                    .allocation_for_asset_in_account(&asset_id, &account_id))
-            }
             Self::AllocationForAssetInAccountInCex {
                 cex_id_value,
                 account_id_value,
@@ -219,25 +194,9 @@ impl NumberValue {
                     &cex_id,
                 ))
             }
-            Self::AllocationForAssetInCex {
-                cex_id_value,
-                asset_id_value,
-            } => {
-                let cex_id = cex_id_value.cex_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.allocation.allocation_for_asset_in_cex(&asset_id, &cex_id))
-            }
             Self::AllocationForAssetTotal { asset_id_value } => {
                 let asset_id = asset_id_value.asset_id(c)?;
                 Ok(c.allocation.allocation_for_asset_total(&asset_id))
-            }
-            Self::AssetInAccount {
-                account_id_value,
-                asset_id_value,
-            } => {
-                let account_id = account_id_value.account_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.portfolio.asset_in_account(&asset_id, &account_id))
             }
             Self::AssetInAccountInCex {
                 cex_id_value,
@@ -249,14 +208,6 @@ impl NumberValue {
                 let asset_id = asset_id_value.asset_id(c)?;
                 Ok(c.portfolio
                     .asset_in_account_in_cex(&asset_id, &account_id, &cex_id))
-            }
-            Self::AssetInCex {
-                cex_id_value,
-                asset_id_value,
-            } => {
-                let cex_id = cex_id_value.cex_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.portfolio.asset_in_cex(&asset_id, &cex_id))
             }
             Self::AssetTotal { asset_id_value } => {
                 let asset_id = asset_id_value.asset_id(c)?;
