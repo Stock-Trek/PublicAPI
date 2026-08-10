@@ -3,7 +3,7 @@ use crate::{
         action::Action,
         recoverable_action::{RecoverableAction, RecoveryPolicy},
     },
-    value::value::{AssetIdValue, CexIdValue, NumberValue},
+    value::value::{AccountIdValue, AssetIdValue, CexIdValue, NumberValue},
 };
 use stock_trek_types::cex::order_request::OrderRequest;
 
@@ -14,21 +14,23 @@ impl ActionFactory {
     pub fn send_order_request(
         &self,
         cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
         order_request: OrderRequest<AssetIdValue, NumberValue>,
         recovery_policy: RecoveryPolicy,
     ) -> RecoverableAction {
         RecoverableAction::new(
             Action::SendOrderRequest {
                 cex_id_value,
+                account_id_value,
                 order_request: Box::new(order_request),
             },
             recovery_policy,
         )
     }
     // TODO
-    // pub fn cancel_order(&self, cex_id_value: CexIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
+    // pub fn cancel_order(&self, cex_id_value: CexIdValue, account_id_value: AccountIdValue, order_id: OrderId, recovery_policy: RecoveryPolicy) -> RecoverableAction {
     //   RecoverableAction::new(
-    //     Action::CancelOrder { cex_id_value, order_id },
+    //     Action::CancelOrder { cex_id_value, account_id_value, order_id },
     //     recovery_policy,
     //   )
     // }

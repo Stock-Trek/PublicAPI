@@ -3,10 +3,10 @@ use crate::{
     value::{
         binary_operator::BinaryOperator,
         unary_operator::UnaryOperator,
-        value::{AssetIdValue, CexIdValue, FlagValue, NumberValue},
+        value::{AccountIdValue, AssetIdValue, CexIdValue, FlagValue, NumberValue},
     },
 };
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
+use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId, tag::Tag};
 
 #[derive(Debug, Clone)]
 pub struct AllocationValuesFactory;
@@ -20,46 +20,66 @@ pub struct LiteralValuesFactory;
 pub struct SignalValuesFactory;
 
 impl AllocationValuesFactory {
-    pub fn allocation_for_asset_in_cex(
+    pub fn allocation_for_asset(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AllocationForAsset { asset_id_value }
+    }
+    pub fn allocation_for_asset_in_cex_account(
         &self,
         cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     ) -> NumberValue {
-        NumberValue::AllocationForAssetInCex {
+        NumberValue::AllocationForAssetInCexAccount {
             cex_id_value,
+            account_id_value,
             asset_id_value,
         }
-    }
-    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        NumberValue::AllocationForAssetTotal { asset_id_value }
     }
 }
 
 impl PortfolioValuesFactory {
-    pub fn asset_in_cex(
-        &self,
-        cex_id_value: CexIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AssetInCex {
-            cex_id_value,
-            asset_id_value,
-        }
-    }
-    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        NumberValue::AssetTotal { asset_id_value }
-    }
-    pub fn active_orders_in_cex(&self, cex_id_value: CexIdValue) -> NumberValue {
-        NumberValue::ActiveOrdersInCex { cex_id_value }
-    }
-    pub fn active_orders_in_cex_with_tag(&self, cex_id_value: CexIdValue, tag: Tag) -> NumberValue {
-        NumberValue::ActiveOrdersInCexWithTag { cex_id_value, tag }
-    }
     pub fn active_orders(&self) -> NumberValue {
         NumberValue::ActiveOrders
     }
     pub fn active_orders_with_tag(&self, tag: Tag) -> NumberValue {
         NumberValue::ActiveOrdersWithTag { tag }
+    }
+    pub fn active_orders_in_cex_account(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInCexAccount {
+            cex_id_value,
+            account_id_value,
+        }
+    }
+    pub fn active_orders_in_cex_account_with_tag(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        tag: Tag,
+    ) -> NumberValue {
+        NumberValue::ActiveOrdersInCexAccountWithTag {
+            cex_id_value,
+            account_id_value,
+            tag,
+        }
+    }
+    pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AssetTotal { asset_id_value }
+    }
+    pub fn asset_in_cex_account(
+        &self,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        asset_id_value: AssetIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetInCexAccount {
+            cex_id_value,
+            account_id_value,
+            asset_id_value,
+        }
     }
 }
 
@@ -88,6 +108,9 @@ impl LiteralValuesFactory {
     pub fn cex_id(&self, literal: CexId) -> CexIdValue {
         CexIdValue::Literal { literal }
     }
+    pub fn account_id(&self, literal: AccountId) -> AccountIdValue {
+        AccountIdValue::Literal { literal }
+    }
     pub fn asset_id(&self, literal: AssetId) -> AssetIdValue {
         AssetIdValue::Literal { literal }
     }
@@ -102,6 +125,11 @@ impl LiteralValuesFactory {
 impl SignalValuesFactory {
     pub fn cex_id(&self, key: &SignalKey<CexId>) -> CexIdValue {
         CexIdValue::Signal {
+            signal: key.clone(),
+        }
+    }
+    pub fn account_id(&self, key: &SignalKey<AccountId>) -> AccountIdValue {
+        AccountIdValue::Signal {
             signal: key.clone(),
         }
     }

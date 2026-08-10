@@ -5,7 +5,23 @@ use crate::{
     value::{binary_operator::BinaryOperator, unary_operator::UnaryOperator},
 };
 use serde::{Deserialize, Serialize};
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId, tag::Tag};
+use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId, tag::Tag};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum AccountIdValue {
+    Literal { literal: AccountId },
+    Signal { signal: SignalKey<AccountId> },
+}
+
+impl AccountIdValue {
+    pub fn account_id(&self, c: &ResolvedContext) -> StockTrekResult<AccountId> {
+        match self {
+            Self::Literal { literal } => Ok(literal.clone()),
+            Self::Signal { signal } => signal.read(c),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -65,28 +81,32 @@ pub enum NumberValue {
         signal: SignalKey<f64>,
     },
     ActiveOrders,
-    ActiveOrdersInCex {
-        cex_id_value: CexIdValue,
-    },
-    ActiveOrdersInCexWithTag {
-        cex_id_value: CexIdValue,
-        tag: Tag,
-    },
     ActiveOrdersWithTag {
         tag: Tag,
     },
-    AllocationForAssetInCex {
+    ActiveOrdersInCexAccount {
         cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    },
+    ActiveOrdersInCexAccountWithTag {
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+        tag: Tag,
+    },
+    AllocationForAsset {
         asset_id_value: AssetIdValue,
     },
-    AllocationForAssetTotal {
-        asset_id_value: AssetIdValue,
-    },
-    AssetInCex {
+    AllocationForAssetInCexAccount {
         cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     },
     AssetTotal {
+        asset_id_value: AssetIdValue,
+    },
+    AssetInCexAccount {
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
         asset_id_value: AssetIdValue,
     },
     BinaryCalculation {
@@ -106,38 +126,58 @@ impl NumberValue {
             Self::Literal { literal } => Ok(*literal),
             Self::Signal { signal } => signal.read(c),
             Self::ActiveOrders => Ok(c.portfolio.active_orders()),
-            Self::ActiveOrdersInCex { cex_id_value } => {
-                let cex_id = cex_id_value.cex_id(c)?;
-                Ok(c.portfolio.active_orders_in_cex(&cex_id))
-            }
-            Self::ActiveOrdersInCexWithTag { cex_id_value, tag } => {
-                let cex_id = cex_id_value.cex_id(c)?;
-                Ok(c.portfolio.active_orders_in_cex_with_tag(&cex_id, tag))
-            }
             Self::ActiveOrdersWithTag { tag } => Ok(c.portfolio.active_orders_with_tag(tag)),
-            Self::AllocationForAssetInCex {
+            Self::ActiveOrdersInCexAccount {
                 cex_id_value,
-                asset_id_value,
+                account_id_value,
             } => {
                 let cex_id = cex_id_value.cex_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.allocation.allocation_for_asset_in_cex(&asset_id, &cex_id))
+                let account_id = account_id_value.account_id(c)?;
+                Ok(c.portfolio
+                    .active_orders_in_cex_account(&account_id, &cex_id))
             }
-            Self::AllocationForAssetTotal { asset_id_value } => {
+            Self::ActiveOrdersInCexAccountWithTag {
+                cex_id_value,
+                account_id_value,
+                tag,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let account_id = account_id_value.account_id(c)?;
+                Ok(c.portfolio
+                    .active_orders_in_cex_account_with_tag(&account_id, &cex_id, tag))
+            }
+            Self::AllocationForAsset { asset_id_value } => {
                 let asset_id = asset_id_value.asset_id(c)?;
                 Ok(c.allocation.allocation_for_asset_total(&asset_id))
             }
-            Self::AssetInCex {
+            Self::AllocationForAssetInCexAccount {
                 cex_id_value,
+                account_id_value,
                 asset_id_value,
             } => {
                 let cex_id = cex_id_value.cex_id(c)?;
+                let account_id = account_id_value.account_id(c)?;
                 let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.portfolio.asset_in_cex(&asset_id, &cex_id))
+                Ok(c.allocation.allocation_for_asset_in_cex_account(
+                    &asset_id,
+                    &cex_id,
+                    &account_id,
+                ))
             }
             Self::AssetTotal { asset_id_value } => {
                 let asset_id = asset_id_value.asset_id(c)?;
                 Ok(c.portfolio.asset_total(&asset_id))
+            }
+            Self::AssetInCexAccount {
+                cex_id_value,
+                account_id_value,
+                asset_id_value,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let account_id = account_id_value.account_id(c)?;
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio
+                    .asset_in_cex_account(&asset_id, &account_id, &cex_id))
             }
             Self::BinaryCalculation {
                 left,

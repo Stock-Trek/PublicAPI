@@ -10,19 +10,19 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
-use stock_trek_types::cex::{asset_id::AssetId, cex_id::CexId};
+use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId};
 use strum::Display;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Condition {
     Compare {
-        left: NumberValue,
+        left: Box<NumberValue>,
         #[serde(with = "serde_ordering")]
         comparison: Ordering,
-        right: NumberValue,
+        right: Box<NumberValue>,
     },
-    HasAccountInCex {
+    HasCexAccount {
         cex_id: CexId,
     },
     Not {
@@ -31,8 +31,9 @@ pub enum Condition {
     OwnsAsset {
         asset_id: AssetId,
     },
-    OwnsAssetInCex {
+    OwnsAssetInCexAccount {
         cex_id: CexId,
+        account_id: AccountId,
         asset_id: AssetId,
     },
     QuantityOf {
@@ -64,15 +65,19 @@ impl Condition {
                     })),
                 }
             }
-            Condition::HasAccountInCex { cex_id } => Ok(c.portfolio.has_account_in_cex(cex_id)),
+            Condition::HasCexAccount { cex_id } => Ok(c.portfolio.has_cex_account(cex_id)),
             Condition::Not { condition } => {
                 let test_result = condition.test(c)?;
                 Ok(!test_result)
             }
             Condition::OwnsAsset { asset_id } => Ok(c.portfolio.owns_asset(asset_id)),
-            Condition::OwnsAssetInCex { cex_id, asset_id } => {
-                Ok(c.portfolio.owns_asset_in_cex(asset_id, cex_id))
-            }
+            Condition::OwnsAssetInCexAccount {
+                cex_id,
+                account_id,
+                asset_id,
+            } => Ok(c
+                .portfolio
+                .owns_asset_in_cex_account(asset_id, account_id, cex_id)),
             Condition::QuantityOf {
                 quantity_of,
                 conditions,
@@ -127,13 +132,13 @@ impl ConditionFactory {
         right: NumberValue,
     ) -> Condition {
         Condition::Compare {
-            left,
+            left: Box::new(left),
             comparison,
-            right,
+            right: Box::new(right),
         }
     }
-    pub fn has_account_in_cex(&self, cex_id: CexId) -> Condition {
-        Condition::HasAccountInCex { cex_id }
+    pub fn has_cex_account(&self, cex_id: CexId) -> Condition {
+        Condition::HasCexAccount { cex_id }
     }
     pub fn not(&self, condition: Condition) -> Condition {
         Condition::Not {
@@ -143,8 +148,17 @@ impl ConditionFactory {
     pub fn owns_asset(&self, asset_id: AssetId) -> Condition {
         Condition::OwnsAsset { asset_id }
     }
-    pub fn owns_asset_in_cex(&self, asset_id: AssetId, cex_id: CexId) -> Condition {
-        Condition::OwnsAssetInCex { cex_id, asset_id }
+    pub fn owns_asset_in_cex_account(
+        &self,
+        asset_id: AssetId,
+        account_id: AccountId,
+        cex_id: CexId,
+    ) -> Condition {
+        Condition::OwnsAssetInCexAccount {
+            cex_id,
+            account_id,
+            asset_id,
+        }
     }
     pub fn quantity_of(&self, quantity_of: QuantityOf, conditions: Vec<Condition>) -> Condition {
         Condition::QuantityOf {
