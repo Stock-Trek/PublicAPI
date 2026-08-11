@@ -21,7 +21,7 @@ pub use algorithm::Algorithm;
 pub use cex::order_factory::OrderFactory;
 pub use commands::{Command, CommandFactory};
 pub use conditions::{Condition, ConditionFactory, QuantityOf};
-pub use portfolio::Portfolio;
+pub use portfolio::{Portfolio, PortfolioBuilder};
 pub use preferences::Preferences;
 pub use resolved_context::{EnqueueActionFn, ResolvedContext};
 pub use rust_decimal::RoundingStrategy;
@@ -111,7 +111,7 @@ pub mod prelude {
     pub use super::{
         Algorithm, Command, Preferences, RoundingStrategy, StrategyContext,
         actions::{ActionErrorCause, ActionErrorResponse, RecoveryPolicy},
-        portfolio::Portfolio,
+        portfolio::{Portfolio, PortfolioBuilder},
         register_algorithm,
         signals::{SignalContext, SignalKey, Signals},
         traitreg,
