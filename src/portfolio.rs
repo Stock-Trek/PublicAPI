@@ -23,35 +23,6 @@ struct PendingOrder {
     filled_quantity: Decimal,
 }
 
-// impl Portfolio {
-//     pub fn pending_orders(&self) -> f64 {}
-//     pub fn pending_orders_with_tag(&self, tag: &Tag) -> f64 {}
-//     pub fn pending_orders_in_cex_account(&self, cex_id: &CexId, account_id: &AccountId) -> f64 {}
-//     pub fn pending_orders_in_cex_account_with_tag(
-//         &self,
-//         cex_id: &CexId,
-//         account_id: &AccountId,
-//         tag: &Tag,
-//     ) -> f64 {
-//     }
-//     pub fn reserved(&self, asset_id: &AssetId) -> f64 {}
-//     pub fn reserved_in_cex_account(
-//         &self,
-//         asset_id: &AssetId,
-//         cex_id: &CexId,
-//         account_id: &AccountId,
-//     ) -> f64 {
-//     }
-//     pub fn available(&self, asset_id: &AssetId) -> f64 {}
-//     pub fn available_in_cex_account(
-//         &self,
-//         asset_id: &AssetId,
-//         cex_id: &CexId,
-//         account_id: &AccountId,
-//     ) -> f64 {
-//     }
-// }
-
 impl Portfolio {
     /// Whether an account exists
     pub fn has_cex_account(&self, cex_id: &CexId, account_id: &AccountId) -> bool {
