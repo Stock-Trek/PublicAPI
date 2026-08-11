@@ -241,7 +241,15 @@ impl PortfolioBuilder {
             portfolios: HashMap::new(),
         }
     }
+}
 
+impl Default for PortfolioBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl PortfolioBuilder {
     pub fn market_price(
         &mut self,
         cex_id: CexId,
@@ -419,14 +427,8 @@ mod tests {
         let portfolio = builder.build();
 
         assert_eq!(portfolio.pending_orders(), 3.0);
-        assert_eq!(
-            portfolio.pending_orders_with_tag(&Tag::new("t1")),
-            2.0
-        );
-        assert_eq!(
-            portfolio.pending_orders_with_tag(&Tag::new("missing")),
-            0.0
-        );
+        assert_eq!(portfolio.pending_orders_with_tag(&Tag::new("t1")), 2.0);
+        assert_eq!(portfolio.pending_orders_with_tag(&Tag::new("missing")), 0.0);
         assert_eq!(
             portfolio.pending_orders_in_cex_account(&CEX, &account()),
             2.0
