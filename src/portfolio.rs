@@ -12,13 +12,13 @@ pub struct Portfolio {
 }
 
 #[derive(Debug, Clone)]
-struct CexAccountPortfolio {
+pub struct CexAccountPortfolio {
     asset_counts: HashMap<AssetId, Decimal>,
     pending_orders: HashMap<Tag, Vec<PendingOrder>>,
 }
 
 #[derive(Debug, Clone)]
-struct PendingOrder {
+pub struct PendingOrder {
     order_request: OrderRequest<AssetId, Decimal>,
     filled_quantity: Decimal,
 }
