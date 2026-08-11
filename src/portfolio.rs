@@ -24,6 +24,15 @@ pub struct PendingOrder {
 }
 
 impl Portfolio {
+    pub fn new(
+        market_prices: HashMap<CexId, HashMap<TradingPair, Decimal>>,
+        portfolios: HashMap<CexId, HashMap<AccountId, CexAccountPortfolio>>,
+    ) -> Self {
+        Self {
+            market_prices,
+            portfolios,
+        }
+    }
     /// Whether an account exists
     pub fn has_cex_account(&self, cex_id: &CexId, account_id: &AccountId) -> bool {
         self.portfolios
@@ -224,6 +233,27 @@ impl Portfolio {
                 .get(cex_id)
                 .map(|market| market.get(trading_pair).copied().unwrap_or_default())
                 .unwrap_or_default(),
+        }
+    }
+}
+
+impl CexAccountPortfolio {
+    pub fn new(
+        asset_counts: HashMap<AssetId, Decimal>,
+        pending_orders: HashMap<Tag, Vec<PendingOrder>>,
+    ) -> Self {
+        Self {
+            asset_counts,
+            pending_orders,
+        }
+    }
+}
+
+impl PendingOrder {
+    pub fn new(order_request: OrderRequest<AssetId, Decimal>, filled_quantity: Decimal) -> Self {
+        Self {
+            order_request,
+            filled_quantity,
         }
     }
 }
