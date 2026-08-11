@@ -227,3 +227,377 @@ impl Portfolio {
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct PortfolioBuilder {
+    market_prices: HashMap<CexId, HashMap<TradingPair, Decimal>>,
+    portfolios: HashMap<CexId, HashMap<AccountId, CexAccountPortfolio>>,
+}
+
+impl PortfolioBuilder {
+    pub fn new() -> Self {
+        Self {
+            market_prices: HashMap::new(),
+            portfolios: HashMap::new(),
+        }
+    }
+
+    pub fn market_price(
+        &mut self,
+        cex_id: CexId,
+        trading_pair: TradingPair,
+        price: Decimal,
+    ) -> &mut Self {
+        self.market_prices
+            .entry(cex_id)
+            .or_default()
+            .insert(trading_pair, price);
+        self
+    }
+
+    pub fn asset_count(
+        &mut self,
+        cex_id: CexId,
+        account_id: AccountId,
+        asset_id: AssetId,
+        count: Decimal,
+    ) -> &mut Self {
+        self.portfolios
+            .entry(cex_id)
+            .or_default()
+            .entry(account_id)
+            .or_insert_with(|| CexAccountPortfolio {
+                asset_counts: HashMap::new(),
+                pending_orders: HashMap::new(),
+            })
+            .asset_counts
+            .insert(asset_id, count);
+        self
+    }
+
+    pub fn pending_order(
+        &mut self,
+        cex_id: CexId,
+        account_id: AccountId,
+        tag: Tag,
+        order_request: OrderRequest<AssetId, Decimal>,
+        filled_quantity: Decimal,
+    ) -> &mut Self {
+        self.portfolios
+            .entry(cex_id)
+            .or_default()
+            .entry(account_id)
+            .or_insert_with(|| CexAccountPortfolio {
+                asset_counts: HashMap::new(),
+                pending_orders: HashMap::new(),
+            })
+            .pending_orders
+            .entry(tag)
+            .or_default()
+            .push(PendingOrder {
+                order_request,
+                filled_quantity,
+            });
+        self
+    }
+
+    pub fn build(&self) -> Portfolio {
+        Portfolio {
+            market_prices: self.market_prices.clone(),
+            portfolios: self.portfolios.clone(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use stock_trek_types::cex::{
+        activation::Activation, orders::single_order::SingleOrder, pricing::Pricing,
+        quantity::Quantity, side::Side, time_in_force::TimeInForce,
+    };
+
+    const CEX: CexId = CexId::Binance;
+    const BTC: AssetId = AssetId::Bitcoin;
+    const USDC: AssetId = AssetId::USDCoin;
+
+    fn account() -> AccountId {
+        AccountId::new("account-1")
+    }
+
+    fn account_2() -> AccountId {
+        AccountId::new("account-2")
+    }
+
+    fn single_order(
+        side: Side,
+        quantity: Quantity<Decimal>,
+        pricing: Pricing<Decimal>,
+    ) -> OrderRequest<AssetId, Decimal> {
+        OrderRequest::Single(SingleOrder {
+            base: BTC,
+            quote: USDC,
+            activation: Activation::Immediate,
+            pricing,
+            side,
+            quantity,
+            tag: Tag::new("test"),
+        })
+    }
+
+    fn limit_order(
+        side: Side,
+        quantity: Quantity<Decimal>,
+        price: Decimal,
+    ) -> OrderRequest<AssetId, Decimal> {
+        single_order(
+            side,
+            quantity,
+            Pricing::Limit {
+                price,
+                time_in_force: TimeInForce::GoodTillCancelled,
+            },
+        )
+    }
+
+    fn market_order(side: Side, quantity: Quantity<Decimal>) -> OrderRequest<AssetId, Decimal> {
+        single_order(side, quantity, Pricing::Market)
+    }
+
+    #[test]
+    fn empty_portfolio_defaults() {
+        let portfolio = PortfolioBuilder::new().build();
+
+        assert!(!portfolio.has_cex_account(&CEX, &account()));
+        assert_eq!(portfolio.pending_orders(), 0.0);
+        assert_eq!(portfolio.asset_total(&BTC), Decimal::ZERO);
+        assert_eq!(portfolio.asset_available(&BTC), Decimal::ZERO);
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::ZERO);
+    }
+
+    #[test]
+    fn asset_counts_are_queryable() {
+        let mut builder = PortfolioBuilder::new();
+        builder
+            .asset_count(CEX, account(), BTC, Decimal::new(2, 0))
+            .asset_count(CEX, account(), USDC, Decimal::new(500, 0))
+            .asset_count(CEX, account_2(), BTC, Decimal::new(3, 0));
+        let portfolio = builder.build();
+
+        assert!(portfolio.has_cex_account(&CEX, &account()));
+        assert!(portfolio.has_cex_account(&CEX, &account_2()));
+        assert!(!portfolio.has_cex_account(&CEX, &AccountId::new("missing")));
+        assert_eq!(portfolio.asset_total(&BTC), Decimal::new(5, 0));
+        assert_eq!(
+            portfolio.asset_total_in_cex_account(&BTC, &CEX, &account()),
+            Decimal::new(2, 0)
+        );
+        assert_eq!(
+            portfolio.asset_total_in_cex_account(&BTC, &CEX, &account_2()),
+            Decimal::new(3, 0)
+        );
+        assert_eq!(portfolio.asset_total(&AssetId::Ethereum), Decimal::ZERO);
+        assert_eq!(portfolio.asset_available(&BTC), Decimal::new(5, 0));
+        assert_eq!(
+            portfolio.asset_available_in_cex_account(&BTC, &CEX, &account()),
+            Decimal::new(2, 0)
+        );
+    }
+
+    #[test]
+    fn pending_orders_are_queryable() {
+        let order = limit_order(
+            Side::Sell,
+            Quantity::OfBase(Decimal::new(1, 0)),
+            Decimal::new(100, 0),
+        );
+        let mut builder = PortfolioBuilder::new();
+        builder
+            .pending_order(CEX, account(), Tag::new("t1"), order.clone(), Decimal::ZERO)
+            .pending_order(CEX, account(), Tag::new("t1"), order.clone(), Decimal::ZERO)
+            .pending_order(CEX, account_2(), Tag::new("t2"), order, Decimal::ZERO);
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.pending_orders(), 3.0);
+        assert_eq!(
+            portfolio.pending_orders_with_tag(&Tag::new("t1")),
+            2.0
+        );
+        assert_eq!(
+            portfolio.pending_orders_with_tag(&Tag::new("missing")),
+            0.0
+        );
+        assert_eq!(
+            portfolio.pending_orders_in_cex_account(&CEX, &account()),
+            2.0
+        );
+        assert_eq!(
+            portfolio.pending_orders_in_cex_account(&CEX, &account_2()),
+            1.0
+        );
+        assert_eq!(
+            portfolio.pending_orders_in_cex_account_with_tag(&CEX, &account(), &Tag::new("t1")),
+            2.0
+        );
+        assert_eq!(
+            portfolio.pending_orders_in_cex_account_with_tag(&CEX, &account_2(), &Tag::new("t1")),
+            0.0
+        );
+    }
+
+    #[test]
+    fn sell_of_base_reserves_base() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            limit_order(
+                Side::Sell,
+                Quantity::OfBase(Decimal::new(2, 0)),
+                Decimal::new(100, 0),
+            ),
+            Decimal::ZERO,
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::new(2, 0));
+        assert_eq!(
+            portfolio.asset_reserved_in_cex_account(&BTC, &CEX, &account()),
+            Decimal::new(2, 0)
+        );
+        // A sell does not reserve the quote asset.
+        assert_eq!(portfolio.asset_reserved(&USDC), Decimal::ZERO);
+    }
+
+    #[test]
+    fn buy_of_quote_reserves_quote() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            limit_order(
+                Side::Buy,
+                Quantity::OfQuote(Decimal::new(500, 0)),
+                Decimal::new(100, 0),
+            ),
+            Decimal::ZERO,
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&USDC), Decimal::new(500, 0));
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::ZERO);
+    }
+
+    #[test]
+    fn buy_of_base_reserves_quote_at_limit_price() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            limit_order(
+                Side::Buy,
+                Quantity::OfBase(Decimal::new(2, 0)),
+                Decimal::new(100, 0),
+            ),
+            Decimal::ZERO,
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&USDC), Decimal::new(200, 0));
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::ZERO);
+    }
+
+    #[test]
+    fn sell_of_quote_reserves_base_at_market_price() {
+        let mut builder = PortfolioBuilder::new();
+        builder
+            .market_price(CEX, TradingPair::new(BTC, USDC), Decimal::new(100, 0))
+            .pending_order(
+                CEX,
+                account(),
+                Tag::new("t"),
+                market_order(Side::Sell, Quantity::OfQuote(Decimal::new(500, 0))),
+                Decimal::ZERO,
+            );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::new(5, 0));
+    }
+
+    #[test]
+    fn market_order_without_price_reserves_nothing() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            market_order(Side::Sell, Quantity::OfQuote(Decimal::new(500, 0))),
+            Decimal::ZERO,
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::ZERO);
+    }
+
+    #[test]
+    fn limit_order_uses_limit_price_even_when_market_price_is_set() {
+        let mut builder = PortfolioBuilder::new();
+        builder
+            .market_price(CEX, TradingPair::new(BTC, USDC), Decimal::new(100, 0))
+            .pending_order(
+                CEX,
+                account(),
+                Tag::new("t"),
+                limit_order(
+                    Side::Buy,
+                    Quantity::OfBase(Decimal::new(2, 0)),
+                    Decimal::new(50, 0),
+                ),
+                Decimal::ZERO,
+            );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&USDC), Decimal::new(100, 0));
+    }
+
+    #[test]
+    fn filled_quantity_reduces_reserved() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            limit_order(
+                Side::Sell,
+                Quantity::OfBase(Decimal::new(2, 0)),
+                Decimal::new(100, 0),
+            ),
+            Decimal::new(15, 1), // 1.5 filled
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::new(5, 1));
+    }
+
+    #[test]
+    fn fully_filled_order_reserves_nothing() {
+        let mut builder = PortfolioBuilder::new();
+        builder.pending_order(
+            CEX,
+            account(),
+            Tag::new("t"),
+            limit_order(
+                Side::Sell,
+                Quantity::OfBase(Decimal::new(2, 0)),
+                Decimal::new(100, 0),
+            ),
+            Decimal::new(2, 0),
+        );
+        let portfolio = builder.build();
+
+        assert_eq!(portfolio.asset_reserved(&BTC), Decimal::ZERO);
+    }
+}
