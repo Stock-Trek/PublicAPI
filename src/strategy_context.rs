@@ -4,15 +4,13 @@ use crate::{
     commands::CommandFactory,
     conditions::ConditionFactory,
     value::values_factory::{
-        AllocationValuesFactory, CalculationValuesFactory, LiteralValuesFactory,
-        PortfolioValuesFactory, SignalValuesFactory,
+        CalculationValuesFactory, LiteralValuesFactory, PortfolioValuesFactory, SignalValuesFactory,
     },
 };
 
 #[derive(Debug, Clone)]
 pub struct StrategyContext {
     pub actions: ActionFactory,
-    pub allocation: AllocationValuesFactory,
     pub calculations: CalculationValuesFactory,
     pub commands: CommandFactory,
     pub conditions: ConditionFactory,
@@ -26,7 +24,6 @@ impl StrategyContext {
     pub fn new() -> Self {
         Self {
             actions: ActionFactory,
-            allocation: AllocationValuesFactory,
             calculations: CalculationValuesFactory,
             commands: CommandFactory,
             conditions: ConditionFactory,

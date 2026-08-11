@@ -8,6 +8,7 @@ use crate::{
     util::serde_ordering,
     value::value::NumberValue,
 };
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId};
@@ -24,6 +25,7 @@ pub enum Condition {
     },
     HasCexAccount {
         cex_id: CexId,
+        account_id: AccountId,
     },
     Not {
         condition: Box<Condition>,
@@ -65,19 +67,24 @@ impl Condition {
                     })),
                 }
             }
-            Condition::HasCexAccount { cex_id } => Ok(c.portfolio.has_cex_account(cex_id)),
+            Condition::HasCexAccount { cex_id, account_id } => {
+                Ok(c.portfolio.has_cex_account(cex_id, account_id))
+            }
             Condition::Not { condition } => {
                 let test_result = condition.test(c)?;
                 Ok(!test_result)
             }
-            Condition::OwnsAsset { asset_id } => Ok(c.portfolio.owns_asset(asset_id)),
+            Condition::OwnsAsset { asset_id } => {
+                Ok(c.portfolio.asset_total(asset_id) > Decimal::ZERO)
+            }
             Condition::OwnsAssetInCexAccount {
                 cex_id,
                 account_id,
                 asset_id,
             } => Ok(c
                 .portfolio
-                .owns_asset_in_cex_account(asset_id, account_id, cex_id)),
+                .asset_total_in_cex_account(asset_id, cex_id, account_id)
+                > Decimal::ZERO),
             Condition::QuantityOf {
                 quantity_of,
                 conditions,
@@ -137,8 +144,8 @@ impl ConditionFactory {
             right: Box::new(right),
         }
     }
-    pub fn has_cex_account(&self, cex_id: CexId) -> Condition {
-        Condition::HasCexAccount { cex_id }
+    pub fn has_cex_account(&self, cex_id: CexId, account_id: AccountId) -> Condition {
+        Condition::HasCexAccount { cex_id, account_id }
     }
     pub fn not(&self, condition: Condition) -> Condition {
         Condition::Not {
