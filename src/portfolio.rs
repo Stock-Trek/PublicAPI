@@ -251,7 +251,7 @@ impl Portfolio {
             Pricing::Market => self
                 .market_prices
                 .get(cex_id)
-                .map(|market| market.get(trading_pair).map(|v| *v).unwrap_or_default())
+                .map(|market| market.get(trading_pair).copied().unwrap_or_default())
                 .unwrap_or_default(),
         }
     }
