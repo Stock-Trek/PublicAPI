@@ -9,8 +9,6 @@ use crate::{
 use stock_trek_types::cex::{account_id::AccountId, asset_id::AssetId, cex_id::CexId, tag::Tag};
 
 #[derive(Debug, Clone)]
-pub struct AllocationValuesFactory;
-#[derive(Debug, Clone)]
 pub struct PortfolioValuesFactory;
 #[derive(Debug, Clone)]
 pub struct CalculationValuesFactory;
@@ -19,48 +17,30 @@ pub struct LiteralValuesFactory;
 #[derive(Debug, Clone)]
 pub struct SignalValuesFactory;
 
-impl AllocationValuesFactory {
-    pub fn allocation_for_asset(&self, asset_id_value: AssetIdValue) -> NumberValue {
-        NumberValue::AllocationForAsset { asset_id_value }
-    }
-    pub fn allocation_for_asset_in_cex_account(
-        &self,
-        cex_id_value: CexIdValue,
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
-    ) -> NumberValue {
-        NumberValue::AllocationForAssetInCexAccount {
-            cex_id_value,
-            account_id_value,
-            asset_id_value,
-        }
-    }
-}
-
 impl PortfolioValuesFactory {
-    pub fn active_orders(&self) -> NumberValue {
-        NumberValue::ActiveOrders
+    pub fn pending_orders(&self) -> NumberValue {
+        NumberValue::PendingOrders
     }
-    pub fn active_orders_with_tag(&self, tag: Tag) -> NumberValue {
-        NumberValue::ActiveOrdersWithTag { tag }
+    pub fn pending_orders_with_tag(&self, tag: Tag) -> NumberValue {
+        NumberValue::PendingOrdersWithTag { tag }
     }
-    pub fn active_orders_in_cex_account(
+    pub fn pending_orders_inc_cex_account(
         &self,
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
     ) -> NumberValue {
-        NumberValue::ActiveOrdersInCexAccount {
+        NumberValue::PendingOrdersInCexAccount {
             cex_id_value,
             account_id_value,
         }
     }
-    pub fn active_orders_in_cex_account_with_tag(
+    pub fn pending_orders_inc_cex_account_with_tag(
         &self,
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
         tag: Tag,
     ) -> NumberValue {
-        NumberValue::ActiveOrdersInCexAccountWithTag {
+        NumberValue::PendingOrdersInCexAccountWithTag {
             cex_id_value,
             account_id_value,
             tag,
@@ -69,16 +49,46 @@ impl PortfolioValuesFactory {
     pub fn asset_total(&self, asset_id_value: AssetIdValue) -> NumberValue {
         NumberValue::AssetTotal { asset_id_value }
     }
-    pub fn asset_in_cex_account(
+    pub fn asset_total_in_cex_account(
         &self,
+        asset_id_value: AssetIdValue,
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
     ) -> NumberValue {
-        NumberValue::AssetInCexAccount {
+        NumberValue::AssetTotalInCexAccount {
+            asset_id_value,
             cex_id_value,
             account_id_value,
+        }
+    }
+    pub fn asset_available(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AssetAvailable { asset_id_value }
+    }
+    pub fn asset_available_in_cex_account(
+        &self,
+        asset_id_value: AssetIdValue,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetAvailableInCexAccount {
             asset_id_value,
+            cex_id_value,
+            account_id_value,
+        }
+    }
+    pub fn asset_reserved(&self, asset_id_value: AssetIdValue) -> NumberValue {
+        NumberValue::AssetReserved { asset_id_value }
+    }
+    pub fn asset_reserved_in_cex_account(
+        &self,
+        asset_id_value: AssetIdValue,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    ) -> NumberValue {
+        NumberValue::AssetReservedInCexAccount {
+            asset_id_value,
+            cex_id_value,
+            account_id_value,
         }
     }
 }

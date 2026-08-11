@@ -80,34 +80,42 @@ pub enum NumberValue {
     Signal {
         signal: SignalKey<f64>,
     },
-    ActiveOrders,
-    ActiveOrdersWithTag {
+    PendingOrders,
+    PendingOrdersWithTag {
         tag: Tag,
     },
-    ActiveOrdersInCexAccount {
+    PendingOrdersInCexAccount {
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
     },
-    ActiveOrdersInCexAccountWithTag {
+    PendingOrdersInCexAccountWithTag {
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
         tag: Tag,
-    },
-    AllocationForAsset {
-        asset_id_value: AssetIdValue,
-    },
-    AllocationForAssetInCexAccount {
-        cex_id_value: CexIdValue,
-        account_id_value: AccountIdValue,
-        asset_id_value: AssetIdValue,
     },
     AssetTotal {
         asset_id_value: AssetIdValue,
     },
-    AssetInCexAccount {
+    AssetTotalInCexAccount {
+        asset_id_value: AssetIdValue,
         cex_id_value: CexIdValue,
         account_id_value: AccountIdValue,
+    },
+    AssetAvailable {
         asset_id_value: AssetIdValue,
+    },
+    AssetAvailableInCexAccount {
+        asset_id_value: AssetIdValue,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
+    },
+    AssetReserved {
+        asset_id_value: AssetIdValue,
+    },
+    AssetReservedInCexAccount {
+        asset_id_value: AssetIdValue,
+        cex_id_value: CexIdValue,
+        account_id_value: AccountIdValue,
     },
     BinaryCalculation {
         left: Box<NumberValue>,
@@ -125,18 +133,18 @@ impl NumberValue {
         match self {
             Self::Literal { literal } => Ok(*literal),
             Self::Signal { signal } => signal.read(c),
-            Self::ActiveOrders => Ok(c.portfolio.active_orders()),
-            Self::ActiveOrdersWithTag { tag } => Ok(c.portfolio.active_orders_with_tag(tag)),
-            Self::ActiveOrdersInCexAccount {
+            Self::PendingOrders => Ok(c.portfolio.pending_orders()),
+            Self::PendingOrdersWithTag { tag } => Ok(c.portfolio.pending_orders_with_tag(tag)),
+            Self::PendingOrdersInCexAccount {
                 cex_id_value,
                 account_id_value,
             } => {
                 let cex_id = cex_id_value.cex_id(c)?;
                 let account_id = account_id_value.account_id(c)?;
                 Ok(c.portfolio
-                    .active_orders_in_cex_account(&account_id, &cex_id))
+                    .pending_orders_in_cex_account(&cex_id, &account_id))
             }
-            Self::ActiveOrdersInCexAccountWithTag {
+            Self::PendingOrdersInCexAccountWithTag {
                 cex_id_value,
                 account_id_value,
                 tag,
@@ -144,31 +152,13 @@ impl NumberValue {
                 let cex_id = cex_id_value.cex_id(c)?;
                 let account_id = account_id_value.account_id(c)?;
                 Ok(c.portfolio
-                    .active_orders_in_cex_account_with_tag(&account_id, &cex_id, tag))
-            }
-            Self::AllocationForAsset { asset_id_value } => {
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.allocation.allocation_for_asset_total(&asset_id))
-            }
-            Self::AllocationForAssetInCexAccount {
-                cex_id_value,
-                account_id_value,
-                asset_id_value,
-            } => {
-                let cex_id = cex_id_value.cex_id(c)?;
-                let account_id = account_id_value.account_id(c)?;
-                let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.allocation.allocation_for_asset_in_cex_account(
-                    &asset_id,
-                    &cex_id,
-                    &account_id,
-                ))
+                    .pending_orders_in_cex_account_with_tag(&cex_id, &account_id, tag))
             }
             Self::AssetTotal { asset_id_value } => {
                 let asset_id = asset_id_value.asset_id(c)?;
-                Ok(c.portfolio.asset_total(&asset_id))
+                Ok(c.portfolio.asset_total(&asset_id).as_f64())
             }
-            Self::AssetInCexAccount {
+            Self::AssetTotalInCexAccount {
                 cex_id_value,
                 account_id_value,
                 asset_id_value,
@@ -177,7 +167,40 @@ impl NumberValue {
                 let account_id = account_id_value.account_id(c)?;
                 let asset_id = asset_id_value.asset_id(c)?;
                 Ok(c.portfolio
-                    .asset_in_cex_account(&asset_id, &account_id, &cex_id))
+                    .asset_total_in_cex_account(&asset_id, &cex_id, &account_id)
+                    .as_f64())
+            }
+            Self::AssetAvailable { asset_id_value } => {
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio.asset_available(&asset_id).as_f64())
+            }
+            Self::AssetAvailableInCexAccount {
+                cex_id_value,
+                account_id_value,
+                asset_id_value,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let account_id = account_id_value.account_id(c)?;
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio
+                    .asset_available_in_cex_account(&asset_id, &cex_id, &account_id)
+                    .as_f64())
+            }
+            Self::AssetReserved { asset_id_value } => {
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio.asset_reserved(&asset_id).as_f64())
+            }
+            Self::AssetReservedInCexAccount {
+                cex_id_value,
+                account_id_value,
+                asset_id_value,
+            } => {
+                let cex_id = cex_id_value.cex_id(c)?;
+                let account_id = account_id_value.account_id(c)?;
+                let asset_id = asset_id_value.asset_id(c)?;
+                Ok(c.portfolio
+                    .asset_reserved_in_cex_account(&asset_id, &cex_id, &account_id)
+                    .as_f64())
             }
             Self::BinaryCalculation {
                 left,

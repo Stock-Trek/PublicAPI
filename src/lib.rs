@@ -1,6 +1,5 @@
 mod action;
 mod algorithm;
-mod allocation;
 mod cex;
 mod commands;
 mod conditions;
@@ -8,7 +7,7 @@ mod conditions;
 mod error;
 mod examples;
 mod market_data;
-mod portfolios;
+mod portfolio;
 mod preferences;
 mod resolveable;
 mod resolved_context;
@@ -22,7 +21,7 @@ pub use algorithm::Algorithm;
 pub use cex::order_factory::OrderFactory;
 pub use commands::{Command, CommandFactory};
 pub use conditions::{Condition, ConditionFactory, QuantityOf};
-pub use portfolios::{Assets, InMemoryPortfolioBuilder, Portfolio, PortfolioFactory};
+pub use portfolio::Portfolio;
 pub use preferences::Preferences;
 pub use resolved_context::{EnqueueActionFn, ResolvedContext};
 pub use rust_decimal::RoundingStrategy;
@@ -37,12 +36,6 @@ pub mod actions {
         ActionErrorCause, ActionErrorResponse, RecoverableAction, RecoveryPolicy,
     };
     pub use crate::action::resolved_action::ResolvedAction;
-}
-
-pub mod allocations {
-    pub use crate::allocation::{
-        Allocation, AllocationFactory, Allocations, InMemoryAllocationBuilder,
-    };
 }
 
 pub mod capabilities {
@@ -110,8 +103,7 @@ pub mod values {
         AccountIdValue, AssetIdValue, CexIdValue, FlagValue, NumberValue,
     };
     pub use crate::value::values_factory::{
-        AllocationValuesFactory, CalculationValuesFactory, LiteralValuesFactory,
-        PortfolioValuesFactory, SignalValuesFactory,
+        CalculationValuesFactory, LiteralValuesFactory, PortfolioValuesFactory, SignalValuesFactory,
     };
 }
 
@@ -119,6 +111,7 @@ pub mod prelude {
     pub use super::{
         Algorithm, Command, Preferences, RoundingStrategy, StrategyContext,
         actions::{ActionErrorCause, ActionErrorResponse, RecoveryPolicy},
+        portfolio::Portfolio,
         register_algorithm,
         signals::{SignalContext, SignalKey, Signals},
         traitreg,

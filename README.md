@@ -89,11 +89,16 @@ impl Algorithm for CostAveraging {
         let usdt = c.literals.asset_id(AssetId::TetherUSD);
         let satoshi_price = c.signals.number(&self.key_satoshi_price);
         let quantity = c.signals.number(&self.key_satoshi_quantity);
+        let tag = Tag::new("CostAveraging");
         c.commands.if_else(
             c.conditions.signal(&self.key_market_exists),
             c.commands.if_else(
                 c.conditions.compare(
-                    c.portfolio.asset_in_cex_account(cex.clone(), account.clone(), usdt.clone()),
+                    c.portfolio.asset_available_in_cex_account(
+                        usdt.clone(),
+                        cex.clone(),
+                        account.clone(),
+                    ),
                     Ordering::Greater,
                     satoshi_price,
                 ),
@@ -107,7 +112,7 @@ impl Algorithm for CostAveraging {
                         Activation::Immediate,
                         Pricing::Market,
                         Quantity::OfQuote(quantity),
-                        Tag::new("CostAveraging"),
+                        tag,
                     ),
                     RecoveryPolicy::with_default_response(ActionErrorResponse::Stop).on_error(
                         ActionErrorCause::TemporaryCexRejection,
