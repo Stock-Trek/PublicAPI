@@ -27,7 +27,7 @@ impl Resolvable<Activation<f64>> for Activation<NumberValue> {
             } => Ok(Activation::Trailing {
                 activation_price: activation_price.number(context)?,
                 basis: *basis,
-                callback_rate_bps: callback_rate_bps.number(context)?,
+                callback_rate_bps: *callback_rate_bps,
                 direction: *direction,
             }),
         }

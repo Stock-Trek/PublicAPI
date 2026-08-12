@@ -766,7 +766,7 @@ checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
 
 [[package]]
 name = "stock-trek"
-version = "0.12.0"
+version = "0.12.1"
 dependencies = [
  "hashbrown 0.17.1",
  "regex",
@@ -781,9 +781,9 @@ dependencies = [
 
 [[package]]
 name = "stock-trek-types"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80715f7e6f75194c71124687184df7c828195b4513b0381ac59f7fc1f401130d"
+checksum = "00983b0d71e29d259c25e791c84e62f1eb4f58a156f8c4b8290e18f9fb1cc40e"
 dependencies = [
  "rust_decimal",
  "serde",
