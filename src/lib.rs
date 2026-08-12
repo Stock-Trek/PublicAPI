@@ -81,10 +81,8 @@ pub mod types {
         cex_id::CexId,
         order_request::OrderRequest,
         order_response::OrderResponse,
-        orders::single_order::SingleOrder,
         preferences::{CexPreferences, CexRoundingPreferences},
         price_basis::PriceBasis,
-        pricing::Pricing,
         quantity::Quantity,
         side::Side,
         status::Status,
@@ -116,8 +114,8 @@ pub mod prelude {
         signals::{SignalContext, SignalKey, Signals},
         traitreg,
         types::{
-            AccountId, Activation, AssetId, CexId, CexPreferences, CexRoundingPreferences, Pricing,
-            Quantity, Side, Tag,
+            AccountId, Activation, AssetId, CexId, CexPreferences, CexRoundingPreferences,
+            Quantity, Side, Tag, TimeInForce,
         },
     };
 }

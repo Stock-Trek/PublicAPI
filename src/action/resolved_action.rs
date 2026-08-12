@@ -5,6 +5,7 @@ use stock_trek_types::cex::{
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ResolvedAction {
+    // TODO
     // CancelAllOrders,
     // CancelAllOrdersWithTag {
     //     tag: Tag,

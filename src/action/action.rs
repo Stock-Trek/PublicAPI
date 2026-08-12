@@ -16,6 +16,7 @@ pub enum Action {
         account_id_value: AccountIdValue,
         order_request: Box<OrderRequest<AssetIdValue, NumberValue>>,
     },
+    // TODO
     // CancelAllOrders,
     // CancelAllOrdersWithTag {
     //     tag: Tag,
@@ -43,6 +44,7 @@ impl Resolvable<ResolvedAction> for Action {
                 account_id: account_id_value.account_id(c)?,
                 order_request: order_request.try_resolve(c)?,
             }),
+            // TODO
             // Action::CancelAllOrders => Ok(ResolvedAction::CancelAllOrders),
             // Action::CancelAllOrdersWithTag { tag } => {
             //     Ok(ResolvedAction::CancelAllOrdersWithTag { tag: tag.clone() })
@@ -68,6 +70,7 @@ impl HasRequiredCapabilities for Action {
     fn required_capabilities(&self) -> Vec<CexCapability> {
         match self {
             Action::SendOrderRequest { order_request, .. } => order_request.required_capabilities(),
+            // TODO
             // Action::CancelAllOrders
             // | Action::CancelAllOrdersWithTag { .. }
             // | Action::CancelAllOrdersInCexAccount { .. }

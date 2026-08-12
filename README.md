@@ -32,7 +32,7 @@ pub struct CostAveraging {
     key_cex: SignalKey<CexId>,
     key_account: SignalKey<AccountId>,
     key_market_exists: SignalKey<bool>,
-    key_satoshi_price: SignalKey<f64>,
+    key_cheapest_price: SignalKey<f64>,
     key_satoshi_quantity: SignalKey<f64>,
 }
 
@@ -42,7 +42,7 @@ impl Default for CostAveraging {
             key_cex: SignalKey::new_required("CEX"),
             key_account: SignalKey::new_required("ACCOUNT"),
             key_market_exists: SignalKey::new_optional("MARKET_EXISTS", false),
-            key_satoshi_price: SignalKey::new_required("SATOSHI_PRICE"),
+            key_cheapest_price: SignalKey::new_required("CHEAPEST_PRICE"),
             key_satoshi_quantity: SignalKey::new_required("SATOSHI_QUANTITY"),
         }
     }
@@ -74,11 +74,11 @@ impl Algorithm for CostAveraging {
             let b_last_ask = b_market.ticks.ticks[0].ask.price;
             a_last_ask.partial_cmp(&b_last_ask).unwrap()
         });
-        if let Some((cheapest_cex_name, market)) = min_by_last_ask {
+        if let Some((cheapest_cex_name, cheapest_market)) = min_by_last_ask {
             signals.write(&self.key_cex, cheapest_cex_name);
             signals.write(&self.key_market_exists, true);
-            let satoshi_price = market.ticks.ticks[0].ask.price / 1_000_000.0;
-            signals.write(&self.key_satoshi_price, satoshi_price);
+            let cheapest_price = cheapest_market.ticks.ticks[0].ask.price / 1_000_000.0;
+            signals.write(&self.key_cheapest_price, cheapest_price);
         }
         signals
     }
@@ -87,8 +87,8 @@ impl Algorithm for CostAveraging {
         let account = c.signals.account_id(&self.key_account);
         let btc = c.literals.asset_id(AssetId::Bitcoin);
         let usdt = c.literals.asset_id(AssetId::TetherUSD);
-        let satoshi_price = c.signals.number(&self.key_satoshi_price);
-        let quantity = c.signals.number(&self.key_satoshi_quantity);
+        let cheapest_price = c.signals.number(&self.key_cheapest_price);
+        let satoshi_quantity = c.signals.number(&self.key_satoshi_quantity);
         let tag = Tag::new("CostAveraging");
         c.commands.if_else(
             c.conditions.signal(&self.key_market_exists),
@@ -100,18 +100,19 @@ impl Algorithm for CostAveraging {
                         account.clone(),
                     ),
                     Ordering::Greater,
-                    satoshi_price,
+                    cheapest_price.clone(),
                 ),
                 c.commands.plan(vec![c.actions.send_order_request(
                     cex.clone(),
                     account.clone(),
-                    c.orders.single(
+                    c.orders.limit(
                         btc,
                         usdt.clone(),
                         Side::Buy,
                         Activation::Immediate,
-                        Pricing::Market,
-                        Quantity::OfQuote(quantity),
+                        cheapest_price,
+                        TimeInForce::ImmediateOrCancel,
+                        Quantity::OfBase(satoshi_quantity),
                         tag,
                     ),
                     RecoveryPolicy::with_default_response(ActionErrorResponse::Stop).on_error(
